@@ -1,19 +1,19 @@
 <?php return array(
     'root' => array(
-        'name' => 'defre/todo',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'name' => 'edw_2425/fitgym_nutrition',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '947b4d1f9bce22e994dc5f59c0674ffde3509a34',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        'defre/todo' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+        'edw_2425/fitgym_nutrition' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '947b4d1f9bce22e994dc5f59c0674ffde3509a34',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
