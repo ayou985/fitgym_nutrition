@@ -1,51 +1,126 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Général */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+}
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
 }
 
-.navbar{
-    align-items: center;
-    background-color: #ffffff;
-    padding: 20px 20px;
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
-.navbar-nav{
-    display: flex;
-    justify-content: end;
-    align-items: center; 
-    width: 100%;
+.logo img {
+  height: 50px;
 }
 
-.navbar-nav a{
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    padding: 10px;
-    font-size: 20px;
+.nav-links, .nav-icons {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
 }
 
-.nav-container{
-    display: flex;
-
-    
-}
-
-.nav-icon{
-    margin-top: 20px;
-
-}
-
-.nav-container i{
-    justify-content: center;
-    color: rgb(0, 0, 0);
-
-}
-
-li{
-    list-style: none;
-    padding: 12px 45px;
+.nav-links li, .nav-icons li {
+  margin-left: 20px;
 }
 
 .nav-link {
-    margin: 0 105px 0 150px;
+  color: black;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #bbbbbb;
+}
+
+ 
+
+.nav-link i {
+  font-size: 20px;
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.nav-link i:hover {
+  color: #9f9f9f;
+}
+
+.burger {
+  display: none;
+}
+
+.carousel {
+  margin-top: 70px;  
+}
+
+.carousel-inner img {
+  width: 100%;
+  height: auto;
+}
+
+.carousel-image {
+  object-fit: cover; /* Ajuste l'image tout en gardant les proportions */
+  height: 500px; /* Ajustez cette valeur en fonction de vos besoins */
+}
+
+.carousel-inner {
+  max-height: 500px; /* Limite la hauteur totale du carrousel */
+}
+
+.carousel-control-next-icon, .carousel-control-prev-icon {
+  color: black;
+}
+
+/* Menu burger */
+.burger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.burger .line {
+  width: 25px;
+  height: 3px;
+  background: #333;
+  margin: 3px 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    background: #ffffff;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    border-radius: 10px;
+    padding: 10px;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .burger {
+    display: flex;
+  }
 }
