@@ -8,13 +8,13 @@ require_once(__DIR__ . "/partials/head.php");
     <div id="carouselExample" class="carousel slide">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="public/img/carrousel1.png" class="d-block w-100" alt="slide 1">
+                <img src="public/img/carrousel1.png"  class="w-100" alt="slide 1">
             </div>
             <div class="carousel-item">
-                <img src="/public/img/carrousel2.png" class="d-block w-100" alt="slide 2">
+                <img src="/public/img/carrousel2.png" class="w-100" alt="slide 2">
             </div>
             <div class="carousel-item">
-                <img src="public/img/carrousel3.jpg" class="d-block w-100" alt="slide 3">
+                <img src="public/img/carrousel3.jpg" class="w-100" alt="slide 3">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
@@ -28,16 +28,33 @@ require_once(__DIR__ . "/partials/head.php");
     </div>
 </div>
 
-<div class="home-text">
-    <p>Les produits recommandé</p>
+<section>
+    <div class="home-text">
+        <p>Les produits recommandés</p>
+    </div>
+
+    <div class="home-recommended-image">
+        <img src="public/img/produit_whey.png" alt="produit recommandé">
+        <img src="public/img/produit_gainer.png" alt="produit recommandé">
+        <img src="public/img/bcaa.png" alt="produit recommandé">
+    </div>
+</section>
+
+<div class="home-header2">
+    <img src="/public/img/accueil.png" alt="deuxième image ">
 </div>
 
-<div class="recommended-image">
-    <img src="public/img/produit_whey.png" alt="produit recommandé">
-    <img src="public/img/produit_gainer.png" alt="produit recommandé">
-    <img src="public/img/bcaa.png" alt="produit recommandé">
-</div>
+<section>
+    <div class="home-text2">
+        <p>Découvrer les packs</p>
+    </div>
 
+    <div class="home-pack">
+        <img src="public/img/pack1.png" alt="découvrir les packs">
+        <img src="public/img/pack2.png" alt="découvrir les packs">
+    </div>
+
+</section>
 
 <?php
 

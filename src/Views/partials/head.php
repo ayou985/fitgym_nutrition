@@ -20,26 +20,19 @@
       </div>
       
       <ul class="nav-links">
-        <li><a class="nav-link" href="#home">Accueil</a></li>
-        <li><a class="nav-link" href="#products">Produits</a></li>
-        <li><a class="nav-link" href="#about">À propos</a></li>
-        <li><a class="nav-link" href="#contact">Contact</a></li>
+        <li><a class="nav-link" href="/home">Accueil</a></li>
+        <li><a class="nav-link" href="/product">Produits</a></li>
+        <li><a class="nav-link" href="/about">À propos</a></li>
+        <li><a class="nav-link" href="/contact">Contact</a></li>
       </ul>
       
       <ul class="nav-icons">
-        <li><a class="nav-icon" href="#"><i class="fa-solid fa-search"></i></a></li>
-        <li><a class="nav-icon" href="#"><i class="fa-solid fa-user"></i></a></li>
-        <li><a class="nav-icon" href="#"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
+        <li><a class="nav-icon" href="/user"><i class="fa-solid fa-user"></i></a></li>
+        <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
       </ul>
       
-      <div class="burger">
-        <span class="line"></span>
-        <span class="line"></span>
-        <span class="line"></span>
-      </div>
-    </div>
   </nav>
 
 
 
-<div class="myBody">
