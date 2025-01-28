@@ -3,6 +3,8 @@
 namespace Config;
 
 use App\Controllers\ErrorController;
+use App\Controllers\PageController;
+use App\Controllers\ContactController;
 
 
 class Router
