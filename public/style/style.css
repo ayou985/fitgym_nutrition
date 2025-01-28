@@ -144,6 +144,18 @@
   font-family: Arial, sans-serif;
 }
 
+.footer-left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+
+
+/* .footer-left img{
+
+} */
+
 .footer-top p {
   font-size: 16px;
   margin-bottom: 20px;

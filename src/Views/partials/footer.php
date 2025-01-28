@@ -1,4 +1,7 @@
 <footer class="footer">
+  <div class="footer-left">
+  <img src="public/img/logo.png" alt="logo-footer">
+  </div>
   <div class="footer-top">
     <p>
       Boostez votre performance dès aujourd’hui avec nos compléments de qualité supérieure, conçus pour atteindre vos objectifs sportifs – commandez maintenant et faites la différence !
