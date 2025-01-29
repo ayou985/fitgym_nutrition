@@ -142,19 +142,23 @@
   text-align: center;
   padding: 40px 20px;
   font-family: Arial, sans-serif;
+  position: relative;
+  min-height: 250px;  
 }
 
 .footer-left {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: fit-content;
+  position: absolute;
+  bottom: 25%; 
+  left: 10%;
+  transform: translateX(-50%)
 }
 
 
-/* .footer-left img{
-
-} */
+.footer-left img {
+  display: flex;
+  width: 200px;
+  margin-right: 10px;
+}
 
 .footer-top p {
   font-size: 16px;
@@ -276,3 +280,21 @@ button {
 button:hover {
   background-color: #555;
 }
+
+.product-container{
+  align-items: center;
+  margin-top: 50px;
+  margin-bottom: 55px;
+}
+
+.product-container img{
+  width: 100%
+}
+
+.product-container h2,
+.product-container p{
+  display: flex;
+  font-size: 20px;
+  color: rgb(0, 0, 0);
+}
+  

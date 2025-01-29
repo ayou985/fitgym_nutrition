@@ -1,6 +1,6 @@
 <footer class="footer">
   <div class="footer-left">
-  <img src="public/img/logo.png" alt="logo-footer">
+    <a href="/"><img src="public/img/logo.png" alt="logo-footer"></a>
   </div>
   <div class="footer-top">
     <p>
