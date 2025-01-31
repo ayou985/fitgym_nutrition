@@ -20,5 +20,7 @@ $router->addRoute('/logout', 'AuthController', 'logout');
 $router->addRoute('/dashboard/user', 'DashboardController', 'userDashboard');
 $router->addRoute('/dashboard/admin', 'DashboardController', 'adminDashboard');
 
+$router->addRoute('/register','AccountsController','accountRegister');
+
 $router->handleRequest();
 ?>
