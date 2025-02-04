@@ -5,19 +5,17 @@ require_once(__DIR__ . "/partials/head.php");
 ?>
 
 
-
-
 <div class="container">
-    <h1>Inscription / Connexion</h1>
+    <h1>Inscription</h1>
     <form method="POST" class="formulaire-inscription">
 
         <p>Veuillez remplir les champs indiqués ci-dessous afin de créer votre compte.</p>
 
         <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="nom" required>
+        <input type="text" id="nom" name="lastName" required>
 
         <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="prenom" required>
+        <input type="text" id="prenom" name="firstName" required>
 
         <label for="email">Email :</label>
         <input type="email" id="email" name="email" required>
@@ -32,25 +30,8 @@ require_once(__DIR__ . "/partials/head.php");
 
     </form>
 
+<?php
 
+require_once(__DIR__ . "/partials/footer.php");
 
-
-
-
-        <div class="container">
-            <form>
-                <p>Bienvenue</p>
-                <input type="email" placeholder="Email"><br>
-                <input type="password" placeholder="Mot de passe"><br>
-                <input type="button" value="Connexion"><br>
-                <a href="#">Mot de passe oublié</a>
-            </form>
-
-        </div>
-
-
-        <?php
-
-        require_once(__DIR__ . "/partials/footer.php");
-
-        ?>
+?>

@@ -11,7 +11,7 @@ class PageController
 
     public function product()
     {
-        include_once __DIR__ . "/../Views/product.view.php";
+        (require_once __DIR__ . "/../Views/product.view.php");
     }
     
     public function about() {  

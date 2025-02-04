@@ -44,7 +44,7 @@ class User
         $statement = $pdo->prepare($sql);
         $statement->execute([$mail]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($row['id_role'] == 1) {
+        if ($row['id_role'] == 2) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role']);
         } elseif ($row['id_role'] == 2) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role'] );
@@ -70,80 +70,104 @@ class User
     public function getUser()
     {
         $pdo = DataBase::getConnection();
-        $sql = "SELECT `user`.`id`, `user`.`pseudo` FROM `user` WHERE `user`.`id_role` = 2";
+        $sql = "SELECT `user`.`id`, `user`.`email` FROM `user` WHERE `user`.`id_role` = 2";
         $statement = $pdo->prepare($sql);
         $statement->execute();
-        $resultKids = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
         $kids = [];
-        foreach ($resultKids as $row) {
-            $kid = new User($row['id'], $row['email'], null, null, null, null, null, null);
-            $kids[] = $kid;
+        foreach ($result as $row) {
+            $register = new User($row['id'], $row['email'], null, null, null, null, null, null);
+            $registers[] = $register;
         }
-        return $kids;
+        return $registers;
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getPseudo(): ?string
+    
+    public function getEmail(): ?string
     {
-        return $this->pseudo;
+        return $this->email;
     }
-
-    public function getMail(): ?string
-    {
-        return $this->mail;
-    }
-
+    
     public function getPassword(): ?string
     {
         return $this->password;
     }
-
-    public function getScore(): ?int
+    
+    public function getFirstName(): ?string
     {
-        return $this->score;
+        return $this->firstName;
     }
-
-    public function getId_role(): ?int
+    
+    public function getLastName(): ?string
     {
-        return $this->id_role;
+        return $this->lastName;
     }
-
+    
+    public function getPhoneNumber(): ?int
+    {
+        return $this->phoneNumber;
+    }
+    
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+    
+    public function getIdRole(): int|string|null
+    {
+        return $this->id_Role;
+    }
+    
     public function setId(int $id): static
     {
         $this->id = $id;
         return $this;
     }
-
-    public function setPseudo(string $pseudo): static
+    
+    public function setEmail(string $email): static
     {
-        $this->pseudo = $pseudo;
+        $this->email = $email;
         return $this;
     }
-
-    public function setMail(string $mail): static
-    {
-        $this->mail = $mail;
-        return $this;
-    }
-
+    
     public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
     }
-
-    public function setScore(int $score)
+    
+    public function setFirstName(string $firstName): static
     {
-        $this->score = $score;
+        $this->firstName = $firstName;
         return $this;
     }
-
-    public function setIdRole(int|string $id_role): static
+    
+    public function setLastName(string $lastName): static
     {
-        $this->id_role = $id_role;
+        $this->lastName = $lastName;
+        return $this;
+    }
+    
+    public function setPhoneNumber(?int $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+    
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
+        return $this;
+    }
+    
+    public function setIdRole(int|string|null $id_Role): static
+    {
+        $this->id_Role = $id_Role;
         return $this;
     }
 }

@@ -28,7 +28,7 @@
       
       <ul class="nav-icons">
         <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
-        <li><a class="nav-icon" href="/user"><i class="fa-solid fa-user"></i></a></li>
+        <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user"></i></a></li>
         <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
       </ul>
       
