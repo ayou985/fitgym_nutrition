@@ -2,7 +2,9 @@
 
 namespace Config;
 
+
 use App\Controllers\ErrorController;
+
 
 class Router
 {
@@ -33,7 +35,6 @@ class Router
         $controllerClass = "App\\Controllers\\" . $routeInfo['controller'];
         $method = $routeInfo['method'];
 
-        // ⚠️ Ici on utilise la classe dynamique et non RegisterController en dur
         $controller = new $controllerClass(); 
 
         if (method_exists($controller, $method)) {

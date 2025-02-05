@@ -40,13 +40,13 @@ class User
     public function login($mail)
     {
         $pdo = DataBase::getConnection();
-        $sql = "SELECT * FROM `user` WHERE `mail` = ?";
+        $sql = "SELECT * FROM `user` WHERE `email` = ?";
         $statement = $pdo->prepare($sql);
         $statement->execute([$mail]);
         $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($row['id_role'] == 2) {
+        if ($row['id_Role'] == 2) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role']);
-        } elseif ($row['id_role'] == 2) {
+        } elseif ($row['id_Role'] == 2) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role'] );
         } else {
             return null;

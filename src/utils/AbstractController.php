@@ -2,18 +2,19 @@
 
 namespace App\Utils;
 
-
 abstract class AbstractController
 {
     protected array $arrayError = [];
 
+    // Fonction de redirection
     public function redirectToRoute($route)
     {
         http_response_code(303);
-        header("Location: {$route} ");
-        exit;
+        header("Location: {$route}");
+        exit; // Arrêter l'exécution après la redirection
     }
 
+    // Vérifie si un champ est vide
     public function isNotEmpty($value)
     {
         if (empty($_POST[$value])) {
@@ -23,6 +24,7 @@ abstract class AbstractController
         return false;
     }
 
+    // Vérifie le format des valeurs selon un regex
     public function checkFormat($nameInput, $value)
     {
         $regexName = '/^[a-zA-Zà-üÀ-Ü -_]{2,255}$/';
@@ -46,7 +48,7 @@ abstract class AbstractController
                 break;
             case 'password':
                 if (!preg_match($regexPassword, $value)) {
-                    $this->arrayError['password'] = 'Merci de donné un mot de passe avec au minimum : 8 caractères, 1 majuscule, 1 miniscule, 1 caractère spécial!';
+                    $this->arrayError['password'] = 'Merci de donner un mot de passe avec au minimum : 8 caractères, 1 majuscule, 1 minuscule, 1 caractère spécial!';
                 }
                 break;
             case 'title':
@@ -66,7 +68,7 @@ abstract class AbstractController
                 break;
             case 'idRole':
                 if (!preg_match($regexRole, $value)) {
-                    $this->arrayError['idRole'] = 'Merci de renseigner un role correcte!';
+                    $this->arrayError['idRole'] = 'Merci de renseigner un rôle correct!';
                 }
                 break;
             case 'start_task':
@@ -81,22 +83,23 @@ abstract class AbstractController
                 break;
             case 'point':
                 if (!preg_match($regexPoint, $value)) {
-                    $this->arrayError['point'] = 'Merci de renseigner un nombre de point/s correcte!';
+                    $this->arrayError['point'] = 'Merci de renseigner un nombre de point(s) correct!';
                 }
                 break;
             case 'kid':
                 if (!preg_match($regexPoint, $value)) {
-                    $this->arrayError['kid'] = 'Merci de renseigner un enfant correcte!';
+                    $this->arrayError['kid'] = 'Merci de renseigner un enfant correct!';
                 }
                 break;
             case 'status':
                 if (!preg_match($regexName, $value)) {
-                    $this->arrayError['status'] = 'Merci de renseigner un status correcte!';
+                    $this->arrayError['status'] = 'Merci de renseigner un status correct!';
                 }
                 break;
         }
     }
 
+    // Fonction principale de validation des champs
     public function check($nameInput, $value)
     {
         $this->isNotEmpty($nameInput);
