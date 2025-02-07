@@ -16,7 +16,7 @@ class User
     protected string|null $address;
     protected int|string|null $id_Role;
 
-    public function __construct(?int $id, ?string $email, ?string $password, ?string $firstName,?string $lastName,int|null $phoneNumber,string|null $address,  int|string|null $id_Role)
+    public function __construct(?int $id, ?string $email, ?string $password, ?string $firstName, ?string $lastName, int|null $phoneNumber, string|null $address,  int|string|null $id_Role)
     {
         $this->id = $id;
         $this->email = $email;
@@ -26,7 +26,6 @@ class User
         $this->phoneNumber = $phoneNumber;
         $this->address = $address;
         $this->id_Role = $id_Role;
-
     }
 
     public function save(): bool
@@ -34,38 +33,46 @@ class User
         $pdo = DataBase::getConnection();
         $sql = "INSERT INTO user (id,email,password,firstName,lastName,phoneNumber,address,id_Role	) VALUES (?,?,?,?,?,?,?,?)";
         $statement = $pdo->prepare($sql);
-        return $statement->execute([$this->id, $this->email, $this->password, $this->firstName, $this->lastName, $this->phoneNumber,$this->address, $this->id_Role]);
+        return $statement->execute([$this->id, $this->email, $this->password, $this->firstName, $this->lastName, $this->phoneNumber, $this->address, $this->id_Role]);
     }
 
     public function login($mail)
-    {
-        $pdo = DataBase::getConnection();
-        $sql = "SELECT * FROM `user` WHERE `email` = ?";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$mail]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($row['id_Role'] == 2) {
+{
+    $pdo = DataBase::getConnection();
+    $sql = "SELECT * FROM `user` WHERE `email` = ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$mail]);
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        if ($row['id_Role'] == 1) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role']);
         } elseif ($row['id_Role'] == 2) {
-            return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role'] );
-        } else {
-            return null;
-        }
-    }
-
-    public function getUserById()
-    {
-        $pdo = DataBase::getConnection();
-        $sql = "SELECT * FROM `user` WHERE `id` = ?";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$this->id]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($row) {
             return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role']);
         } else {
             return null;
         }
+    } else {
+        // Gérer le cas où $row est false
+        return null;
     }
+}
+
+public function getUserById()
+{
+    $pdo = DataBase::getConnection();
+    $sql = "SELECT * FROM `user` WHERE `id` = ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$this->id]);
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+    if ($row) {
+        return new User($row['id'], $row['email'], $row['password'], $row['firstName'], $row['lastName'], $row['phoneNumber'], $row['address'], $row['id_Role']);
+    } else {
+        // Gérer le cas où $row est false
+        return null;
+    }
+}
 
     public function getUser()
     {
@@ -82,92 +89,129 @@ class User
         return $registers;
     }
 
-    
+
     public function getId(): ?int
     {
         return $this->id;
     }
-    
+
     public function getEmail(): ?string
     {
         return $this->email;
     }
-    
+
     public function getPassword(): ?string
     {
         return $this->password;
     }
-    
+
     public function getFirstName(): ?string
     {
         return $this->firstName;
     }
-    
+
     public function getLastName(): ?string
     {
         return $this->lastName;
     }
-    
+
     public function getPhoneNumber(): ?int
     {
         return $this->phoneNumber;
     }
-    
+
     public function getAddress(): ?string
     {
         return $this->address;
     }
-    
+
     public function getIdRole(): int|string|null
     {
         return $this->id_Role;
     }
-    
+
     public function setId(int $id): static
     {
         $this->id = $id;
         return $this;
     }
-    
+
     public function setEmail(string $email): static
     {
         $this->email = $email;
         return $this;
     }
-    
+
     public function setPassword(string $password): static
     {
         $this->password = $password;
         return $this;
     }
-    
+
     public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
         return $this;
     }
-    
+
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
         return $this;
     }
-    
+
     public function setPhoneNumber(?int $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
         return $this;
     }
-    
+
     public function setAddress(?string $address): static
     {
         $this->address = $address;
         return $this;
     }
-    
+
     public function setIdRole(int|string|null $id_Role): static
     {
         $this->id_Role = $id_Role;
         return $this;
     }
+    public static function getAll()
+    {
+        $db = Database::getConnection();
+        $stmt = $db->query("SELECT * FROM users");
+        return $stmt->fetchAll(\PDO::FETCH_OBJ);
+    }
+
+    public static function updateRole($userId, $newRole)
+    {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("UPDATE users SET id_role = ? WHERE id = ?");
+        return $stmt->execute([$newRole, $userId]);
+    }
+
+    public function getUserByEmail($email) {
+        $db = Database::getConnection();
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$email]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($row) {
+            return new User(
+                $row['id'], 
+                $row['email'], 
+                $row['password'], 
+                $row['firstName'], 
+                $row['lastName'], 
+                $row['phoneNumber'], 
+                $row['address'], 
+                $row['id_Role']
+            );
+        }
+        return null;
+    }
+
+    
 }

@@ -13,30 +13,46 @@
 </head>
 
 <body>
-  
-<nav class="navbar">
-  <div class="navbar-container">
-    <div class="logo">
-      <a href="/"><img src="/public/img/logo.png" alt="Logo"></a>
+
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="logo">
+        <a href="/"><img src="/public/img/logo.png" alt="Logo"></a>
+      </div>
+
+      <ul class="nav-links">
+        <li><a class="nav-link" href="/">Accueil</a></li>
+        <li><a class="nav-link" href="/product">Produits</a></li>
+        <li><a class="nav-link" href="/about">À propos</a></li>
+        <li><a class="nav-link" href="/contact">Contact</a></li>
+      </ul>
+
+      <ul class="nav-icons">
+    <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
+    <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
+
+    <?php if (!isset($_SESSION['user'])): ?>
+        <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user-plus"></i> S'inscrire</a></li>
+        <li><a class="nav-icon" href="/login"><i class="fa-solid fa-user"></i> Se connecter</a></li>
+    <?php else: ?>
+        <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
+
+        <?php if (isset($_SESSION['user']) && isset($_SESSION['user']['id_role'])): ?>
+            <?php $idRole = $_SESSION['user']['id_role']; ?>
+
+            <?php if ($idRole == 1): ?>
+                <li><a class="nav-icon" href="/"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
+                <li><a class="nav-icon" href="/"><i class="fa-solid fa-users"></i> Gérer Utilisateurs</a></li>
+            <?php elseif ($idRole == 2): ?>
+                <p>Bienvenue, Utilisateur</p>
+            <?php endif; ?>
+
+        <?php else: ?>
+            <p>Bienvenue, Ayb (admin) </p>
+        <?php endif; ?>
+    <?php endif; ?>
+</ul>
+
+
     </div>
-
-    <ul class="nav-links">
-      <li><a class="nav-link" href="/">Accueil</a></li>
-      <li><a class="nav-link" href="/product">Produits</a></li>
-      <li><a class="nav-link" href="/about">À propos</a></li>
-      <li><a class="nav-link" href="/contact">Contact</a></li>
-    </ul>
-
-    <ul class="nav-icons">
-      <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
-      <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
-
-      <!-- Vérifie si l'utilisateur est connecté -->
-      <?php if (isset($_SESSION['user'])): ?>
-        <li><a class="nav-icon" href="logout.php"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
-      <?php else: ?>
-        <li><a class="nav-icon" href="login.php"><i class="fa-solid fa-user"></i> Se connecter</a></li>
-      <?php endif; ?>
-    </ul>
-  </div>
-</nav>
+  </nav>

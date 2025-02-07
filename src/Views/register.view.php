@@ -26,12 +26,16 @@ require_once(__DIR__ . "/partials/head.php");
         <label for="confirm-password">Confirmer le mot de passe :</label>
         <input type="password" id="confirm-password" name="confirm-password" required>
 
+        
+
+
         <button type="submit">S'inscrire</button>
 
     </form>
 
-<?php
 
-require_once(__DIR__ . "/partials/footer.php");
+    <?php
 
-?>
+    require_once(__DIR__ . "/partials/footer.php");
+
+    ?>

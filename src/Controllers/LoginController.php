@@ -16,7 +16,6 @@ class LoginController extends AbstractController
         if (isset($_POST['mail'], $_POST['password'])) {
             $this->check('mail', $_POST['mail']);
             // $this->check('password', $_POST['password']);
-            var_dump("test");
             if (empty($this->arrayError)) {
                 $mail = htmlspecialchars($_POST['mail']);
                 $password = htmlspecialchars($_POST['password']);
