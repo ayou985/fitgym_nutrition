@@ -37,8 +37,14 @@ class LoginController extends AbstractController
                             'address'     => $responseGetUser->getAddress(),
                             'idRole'      => $responseGetUser->getIdRole()
                         ];
-                        $this->redirectToRoute('/');
-                        exit();
+
+                        // Redirection selon le rôle
+                        if ($_SESSION['user']['idRole'] == 1) { // Supposons que 1 = admin
+                            $this->redirectToRoute('/');
+                        } else {
+                            $this->redirectToRoute('/');
+                        }
+                        exit;
                     }
                     // Assurer que le script s'arrête après la redirection
                 } else {
