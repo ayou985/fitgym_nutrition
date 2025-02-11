@@ -1,7 +1,7 @@
 <?php
 
 require "vendor/autoload.php";
-
+session_start();
 use Config\Router;
 
 $router = new Router();

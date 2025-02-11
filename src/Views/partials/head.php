@@ -37,8 +37,8 @@
     <?php else: ?>
         <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
 
-        <?php if (isset($_SESSION['user']) && isset($_SESSION['user']['id_role'])): ?>
-            <?php $idRole = $_SESSION['user']['id_role']; ?>
+        <?php if (isset($_SESSION['user']) && isset($_SESSION['user']['idRole'])): ?>
+            <?php $idRole = $_SESSION['user']['idRole']; ?>
 
             <?php if ($idRole == 1): ?>
                 <li><a class="nav-icon" href="/"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
@@ -52,7 +52,9 @@
         <?php endif; ?>
     <?php endif; ?>
 </ul>
-
+<?php 
+session_start();
+?>
 
     </div>
   </nav>

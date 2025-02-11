@@ -11,6 +11,7 @@ use PDO;
 
 
 class ProductController {
+    
     private Product $productModel;
 
     public function __construct(PDO $pdo) {
