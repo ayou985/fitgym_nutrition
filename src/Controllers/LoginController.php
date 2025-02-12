@@ -9,8 +9,9 @@ class LoginController extends AbstractController
 {
     public function login()
     {
-        session_start(); // Assurer que la session est bien démarrée
-
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $error = null; // Initialiser la variable pour éviter une erreur "Undefined variable"
 
         if (isset($_POST['mail'], $_POST['password'])) {

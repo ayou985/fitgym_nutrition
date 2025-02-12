@@ -52,9 +52,6 @@
         <?php endif; ?>
     <?php endif; ?>
 </ul>
-<?php 
-session_start();
-?>
 
     </div>
   </nav>

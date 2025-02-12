@@ -20,7 +20,10 @@ class LogoutController extends AbstractController
         session_destroy();
         header("Location: /");
 
-        // Rediriger vers la page d'accueil après la déconnexion
-        $this->redirectToRoute('/'); // Ou la page que tu veux
+        
+        // $this->redirectToRoute('/'); 
     }
 }
+
+// Rediriger vers la page d'accueil après la déconnexion
+// Ou la page que tu veux

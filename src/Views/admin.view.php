@@ -37,7 +37,9 @@
         <th>Prix</th>
         <th>Image</th>
     </tr>
-    <?php session_start();
+    <?php if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
     if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
         header("Location: user_dashboard.php"); // Redirige les non-admins
         exit;

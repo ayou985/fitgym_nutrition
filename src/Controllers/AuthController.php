@@ -5,9 +5,11 @@ namespace App\Controllers;
 use App\Models\User;
 use Config\DataBase;
 
-class AuthController {
-    
-    public function login() {
+class AuthController
+{
+
+    public function login()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = trim($_POST['mail']);
             $password = trim($_POST['password']);
@@ -16,9 +18,13 @@ class AuthController {
             $userModel = new User(null, null, null, null, null, null, null, null);
             $user = $userModel->getUserByEmail($email);
 
-            if ($user && password_verify($password, $user->getPassword()))  {
+            if ($user && password_verify($password, $user->getPassword())) {
                 // Démarrer la session et enregistrer les informations utilisateur
-                session_start();
+                $_SESSION['username'] = $user->getName(); // Assurez-vous que getName() récupère bien le nom de l'utilisateur
+
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
                 $_SESSION['user_id'] = $user->getId();
                 $_SESSION['username'] = $user->getFirstName() . ' ' . $user->getLastName();
                 $_SESSION['role'] = $user->getIdRole();
@@ -54,7 +60,7 @@ class AuthController {
 
     public function verifyAuth()
     {
-        session_start();
+
         if (isset($_SESSION['user_id'])) {
             echo json_encode(['authenticated' => true]);
         } else {
@@ -62,8 +68,9 @@ class AuthController {
         }
     }
 
-    public function logout() {
-        session_start();
+    public function logout()
+    {
+
         session_destroy();
         header('Location: /login');
         exit;

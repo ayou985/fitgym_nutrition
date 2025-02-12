@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Controllers;
+
 use App\Utils\AbstractController;
 use App\Models\User;
 
-class AdminController extends AbstractController {
-    public function manageUsers() {
-        session_start();
-        
+class AdminController extends AbstractController
+{
+    public function manageUsers()
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         // Vérifier si l'utilisateur est un admin
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_role'] != 1) {
             die("Accès refusé.");
@@ -19,8 +23,9 @@ class AdminController extends AbstractController {
         require_once(__DIR__ . "/../Views/admin.view.php");
     }
 
-    public function updateRole() {
-        session_start();
+    public function updateRole()
+    {
+
 
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_role'] != 1) {
             die("Accès refusé.");

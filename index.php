@@ -1,7 +1,10 @@
 <?php
 
 require "vendor/autoload.php";
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 use Config\Router;
 
 $router = new Router();
@@ -14,8 +17,8 @@ $router->addRoute('/contact', 'PageController', 'contact');
 
 // 🔐 Routes d'inscription et de connexion
 $router->addRoute('/register', 'RegisterController', 'index');
-$router->addRoute('/login', 'LoginController', 'login');  
-$router->addRoute('/logout', 'LogoutController', 'logout'); 
+$router->addRoute('/login', 'LoginController', 'login');
+$router->addRoute('/logout', 'LogoutController', 'logout');
 
 // 🔑 Routes AuthController
 $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword');
