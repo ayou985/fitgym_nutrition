@@ -75,4 +75,5 @@ class AuthController
         header('Location: /login');
         exit;
     }
+    
 }

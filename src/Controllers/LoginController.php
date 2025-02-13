@@ -12,49 +12,37 @@ class LoginController extends AbstractController
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        $error = null; // Initialiser la variable pour éviter une erreur "Undefined variable"
 
-        if (isset($_POST['mail'], $_POST['password'])) {
-            $this->check('mail', $_POST['mail']);
-            // $this->check('password', $_POST['password']);
-            if (empty($this->arrayError)) {
-                $mail = htmlspecialchars($_POST['mail']);
-                $password = htmlspecialchars($_POST['password']);
+        $error = null;
 
-                // Correction : Utilisation de $mail au lieu de $email
-                $user = new User(null,  $mail, $password, null, null, null, null, null);
-                $responseGetUser = $user->login($mail);
+        if (!empty($_POST['mail']) && !empty($_POST['password'])) {
+            $mail = htmlspecialchars($_POST['mail']);
+            $password = htmlspecialchars($_POST['password']);
 
-                if ($responseGetUser) {
-                    $passwordUser = $responseGetUser->getPassword();
+            // Vérification de l'utilisateur en base de données
+            $user = User::authenticate($mail, $password);
 
-                    if (password_verify($password, $passwordUser)) {
-                        $_SESSION['user'] = [
-                            'id'          => $responseGetUser->getId(),
-                            'email'       => $responseGetUser->getEmail(),
-                            'firstName'   => $responseGetUser->getFirstName(),
-                            'lastName'    => $responseGetUser->getLastName(),
-                            'phoneNumber' => $responseGetUser->getPhoneNumber(),
-                            'address'     => $responseGetUser->getAddress(),
-                            'idRole'      => $responseGetUser->getIdRole()
-                        ];
+            
+            if ($user) {
+                // Stocker les infos de l'utilisateur en session
+                $_SESSION['user'] = [
+                    'id'          => $user->getId(),
+                    'email'       => $user->getEmail(),
+                    'firstName'   => $user->getFirstName(),
+                    'lastName'    => $user->getLastName(),
+                    'phoneNumber' => $user->getPhoneNumber(),
+                    'address'     => $user->getAddress(),
+                    'idRole'      => $user->getIdRole()
+                ];
 
-                        // Redirection selon le rôle
-                        if ($_SESSION['user']['idRole'] == 1) { // Supposons que 1 = admin
-                            $this->redirectToRoute('/');
-                        } else {
-                            $this->redirectToRoute('/');
-                        }
-                        exit;
-                    }
-                    // Assurer que le script s'arrête après la redirection
-                } else {
-                    $error = "Le mail ou mot de passe n'est pas correct";
-                }
+                // Redirection après connexion
+                $this->redirectToRoute('/');
+                exit;
             } else {
-                $error = "Le mail ou mot de passe n'est pas correct";
+                $error = "Email ou mot de passe incorrect.";
             }
         }
+
         // Redirection si l'utilisateur est déjà connecté
         if (isset($_SESSION['user'])) {
             $this->redirectToRoute('/');
