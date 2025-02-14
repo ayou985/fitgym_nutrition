@@ -13,7 +13,6 @@
 </head>
 
 <body>
-
   <nav class="navbar">
     <div class="navbar-container">
       <div class="logo">
@@ -28,30 +27,31 @@
       </ul>
 
       <ul class="nav-icons">
-    <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
-    <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
+        <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
 
-    <?php if (!isset($_SESSION['user'])): ?>
-        <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user-plus"></i> S'inscrire</a></li>
-        <li><a class="nav-icon" href="/login"><i class="fa-solid fa-user"></i> Se connecter</a></li>
-    <?php else: ?>
-        <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
-
-        <?php if (isset($_SESSION['user']) && isset($_SESSION['user']['idRole'])): ?>
-            <?php $idRole = $_SESSION['user']['idRole']; ?>
-
-            <?php if ($idRole == 1): ?>
-                <li><a class="nav-icon" href="/"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
-                <li><a class="nav-icon" href="/"><i class="fa-solid fa-users"></i> Gérer Utilisateurs</a></li>
-            <?php elseif ($idRole == 2): ?>
-                <p>Bienvenue, Utilisateur</p>
-            <?php endif; ?>
-
+        <?php if (!isset($_SESSION['user'])): ?>
+          <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user-plus"></i> S'inscrire</a></li>
+          <li><a class="nav-icon" href="/login"><i class="fa-solid fa-user"></i> Se connecter</a></li>
         <?php else: ?>
-            <p>Bienvenue, Ayb (admin) </p>
-        <?php endif; ?>
-    <?php endif; ?>
-</ul>
+          <?php
+          $prenom = $_SESSION['user']['prenom'] ?? 'Utilisateur';
+          $idRole = $_SESSION['user']['idRole'] ?? null;
+          ?>
+          <?php if (isset($_SESSION['user']) && !empty($_SESSION['user']['firstName'])): ?>
+            <li><span class="nav-text">Bienvenue <?= htmlspecialchars($_SESSION['user']['firstName']); ?></span></li>
+          <?php endif; ?>
 
+          <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
+
+          <?php if ($idRole == 1): ?>
+            <li><a class="nav-icon" href="/admin"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
+            <li><a class="nav-icon" href="/manage-users"><i class="fa-solid fa-users"></i> Gérer Utilisateurs</a></li>
+          <?php endif; ?>
+        <?php endif; ?>
+      </ul>
     </div>
   </nav>
+</body>
+
+</html>
