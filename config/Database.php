@@ -1,19 +1,18 @@
 <?php
 
-namespace Config;
+namespace App\Config;
 
 use PDO;
-use Exception;
+use PDOException;
 
-class DataBase
-{
-  static function getConnection()
-  {
-    try {
-      $pdo = new PDO('mysql:host=localhost;dbname=fitgym__nutrition;charset=utf8', 'root');
-    } catch (Exception $e) {
-      die('Erreur :' . $e->getMessage());
+class Database {
+    public static function getConnection() {
+        try {
+            $pdo = new PDO("mysql:host=localhost;dbname=fitgym__nutrition", "root", "");
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
+        } catch (PDOException $e) {
+            die("Erreur de connexion : " . $e->getMessage());
+        }
     }
-    return $pdo;
-  }
 }
