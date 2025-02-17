@@ -2,77 +2,113 @@
 
 namespace App\Models;
 
-use App\Config\Database;
 use PDO;
-use PDOException;
+use App\Config\Database;
 
 class User
 {
-    private PDO $db;
+    protected ?int $id;
+    protected ?string $email;
+    protected ?string $password;
+    protected ?string $firstName;
+    protected ?string $lastName;
+    protected ?string $phoneNumber;
+    protected ?string $address;
+    protected ?int $id_Role;
 
-    public function __construct(
-        private string $email,
-        private string $password,
-        private string $firstName,
-        private string $lastName,
-        private int $id_Role,
-        private int $id = 0, // ID optionnel, valeur par défaut
-        private ?string $address = null, // Doit être après les paramètres obligatoires
-        private ?string $phone = null    // Doit être après les paramètres obligatoires
-    ) {
-        $this->db = Database::getConnection();
+    public function __construct(?int $id, ?string $email, ?string $password, ?string $firstName, ?string $lastName, ?string $phoneNumber, ?string $address, ?int $id_Role)
+    {
+        $this->id = $id;
+        $this->email = $email;
+        $this->password = $password;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->phoneNumber = $phoneNumber;
+        $this->address = $address;
+        $this->id_Role = $id_Role;
     }
 
-    // ✅ Authentification utilisateur
-    public static function authenticate(string $email, string $password): ?User
+    public function save(): bool
     {
-        $user = self::getUserByEmail($email);
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "INSERT INTO user (email, password, firstName, lastName, phoneNumber, address, id_Role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->email, $this->password, $this->firstName, $this->lastName, $this->phoneNumber, $this->address, $this->id_Role]);
+    }
 
-        if ($user && password_verify($password, $user->password)) {
-            return $user;
+    public static function authenticate($email, $password): ?User
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$email]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($row && password_verify($password, $row['password'])) {
+            return new User(
+                $row['id'],
+                $row['email'],
+                $row['password'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['phoneNumber'],
+                $row['address'],
+                $row['id_Role']
+            );
         }
         return null;
     }
 
-    // ✅ Récupérer un utilisateur par email
-    public static function getUserByEmail(string $email): ?User
+    public static function getUserById($id): ?User
     {
-        try {
-            $db = Database::getConnection();
-            $query = "SELECT email, password, firstName, lastName, id_Role, id, 
-                            COALESCE(address, '') as address, COALESCE(phone, '') as phone
-                    FROM users WHERE email = :email";
-            $stmt = $db->prepare($query);
-            $stmt->execute(['email' => $email]);
-            $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$id]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-            if ($userData) {
-                return new User(
-                    $userData['email'],
-                    $userData['password'],
-                    $userData['firstName'],
-                    $userData['lastName'],
-                    $userData['id_Role'],
-                    $userData['id'],
-                    $userData['address'] ?: null, // Convertit '' en NULL
-                    $userData['phone'] ?: null    // Convertit '' en NULL
-                );
-            }
-            return null;
-        } catch (PDOException $e) {
-            die("Erreur de connexion : " . $e->getMessage());
+        if ($row) {
+            return new User(
+                $row['id'],
+                $row['email'],
+                $row['password'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['phoneNumber'],
+                $row['address'],
+                $row['id_Role']
+            );
         }
+        return null;
     }
 
-    // ✅ Récupérer tous les utilisateurs
-    public function getAll(): array
+    public static function getAllUsers(): array
     {
-        $query = "SELECT * FROM users";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Getters
+    public function getId(): ?int { return $this->id; }
+    public function getEmail(): ?string { return $this->email; }
+    public function getPassword(): ?string { return $this->password; }
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function getLastName(): ?string { return $this->lastName; }
+    public function getPhoneNumber(): ?string { return $this->phoneNumber; }
+    public function getAddress(): ?string { return $this->address; }
+    public function getIdRole(): ?int { return $this->id_Role; }
+
+    // Setters
+    public function setId(int $id): static { $this->id = $id; return $this; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
+    public function setFirstName(string $firstName): static { $this->firstName = $firstName; return $this; }
+    public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
+    public function setPhoneNumber(string $phoneNumber): static { $this->phoneNumber = $phoneNumber; return $this; }
+    public function setAddress(string $address): static { $this->address = $address; return $this; }
+    public function setIdRole(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
 }
-    require_once __DIR__ . '/../Config/Database.php';
-
-
+require_once __DIR__ . '/../../config/Database.php';
