@@ -13,7 +13,7 @@ class AdminController extends AbstractController
             session_start();
         }
         // Vérifier si l'utilisateur est un admin
-        if (!isset($_SESSION['user']) || $_SESSION['user']['id_role'] != 1) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
             die("Accès refusé.");
         }
 
@@ -25,9 +25,11 @@ class AdminController extends AbstractController
 
     public function updateRole()
     {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
-
-        if (!isset($_SESSION['user']) || $_SESSION['user']['id_role'] != 1) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
             die("Accès refusé.");
         }
 

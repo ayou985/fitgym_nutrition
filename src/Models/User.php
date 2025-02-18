@@ -82,13 +82,21 @@ class User
         return null;
     }
 
-    public static function getAllUsers(): array
+    public static function getAll(): array
     {
         $pdo = Database::getInstance()->getConnection();
         $sql = "SELECT * FROM user";
         $statement = $pdo->prepare($sql);
         $statement->execute();
         return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function updateRole(int $userId, int $newRole): bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "UPDATE user SET id_Role = ? WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$newRole, $userId]);
     }
 
     // Getters
@@ -111,4 +119,5 @@ class User
     public function setAddress(string $address): static { $this->address = $address; return $this; }
     public function setIdRole(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
 }
-require_once __DIR__ . '/../../config/Database.php';
+
+require_once(__DIR__ . "/../../config/Database.php");

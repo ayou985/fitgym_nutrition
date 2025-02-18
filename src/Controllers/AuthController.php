@@ -1,79 +1,144 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
-use App\Models\User;
-use Config\DataBase;
+use PDO;
+use App\Config\Database;
 
-class AuthController
+class User
 {
+    protected ?int $id;
+    protected ?string $email;
+    protected ?string $password;
+    protected ?string $firstName;
+    protected ?string $lastName;
+    protected ?string $phoneNumber;
+    protected ?string $address;
+    protected ?int $id_Role;
 
-    public function login()
+    public function __construct(?int $id, ?string $email, ?string $password, ?string $firstName, ?string $lastName, ?string $phoneNumber, ?string $address, ?int $id_Role)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['mail']);
-            $password = trim($_POST['password']);
+        $this->id = $id;
+        $this->email = $email;
+        $this->password = $password;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+        $this->phoneNumber = $phoneNumber;
+        $this->address = $address;
+        $this->id_Role = $id_Role;
+    }
 
-            // Récupérer l'utilisateur par son email
-            $userModel = new User(null, null, null, null, null, null, null, null);
-            $user = $userModel->getUserByEmail($email);
+    public function save(): bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "INSERT INTO user (email, password, firstName, lastName, phoneNumber, address, id_Role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->email, $this->password, $this->firstName, $this->lastName, $this->phoneNumber, $this->address, $this->id_Role]);
+    }
 
-            if ($user && password_verify($password, $user->getPassword())) {
-                // Démarrer la session et enregistrer les informations utilisateur
-                $_SESSION['username'] = $user->getName(); // Assurez-vous que getName() récupère bien le nom de l'utilisateur
+    public static function authenticate($email, $password): ?User
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$email]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                $_SESSION['user_id'] = $user->getId();
-                $_SESSION['username'] = $user->getFirstName() . ' ' . $user->getLastName();
-                $_SESSION['role'] = $user->getIdRole();
-
-                // Redirection vers le tableau de bord selon le rôle
-                if ($user['id_role'] == 1) {
-                    header('Location: /'); // Redirige vers l'accueil pour les admins
-                } else {
-                    header('Location: /profile'); // Redirige vers une page profil utilisateur
-                }
-                exit;
-            } else {
-                // Identifiants incorrects
-                $error = "Email ou mot de passe incorrect.";
-                require_once __DIR__ . '/../Views/login.view.php';
-            }
-        } else {
-            // Afficher la vue de connexion
-            require_once __DIR__ . '/../Views/login.view.php';
+        if ($row && password_verify($password, $row['password'])) {
+            return new User(
+                $row['id'],
+                $row['email'],
+                $row['password'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['phoneNumber'],
+                $row['address'],
+                $row['id_Role']
+            );
         }
+        return null;
     }
 
-    public function suggestPassword()
+    public static function getUserByEmail($email): ?User
     {
-        if (isset($_COOKIE['remembered_email'])) {
-            $email = $_COOKIE['remembered_email'];
-        } else {
-            $email = '';
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user WHERE email = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$email]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new User(
+                $row['id'],
+                $row['email'],
+                $row['password'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['phoneNumber'],
+                $row['address'],
+                $row['id_Role']
+            );
         }
-
-        require_once __DIR__ . '/../../views/auth/suggest_password.php';
+        return null;
     }
 
-    public function verifyAuth()
+    public static function getUserById($id): ?User
     {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$id]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (isset($_SESSION['user_id'])) {
-            echo json_encode(['authenticated' => true]);
-        } else {
-            echo json_encode(['authenticated' => false]);
+        if ($row) {
+            return new User(
+                $row['id'],
+                $row['email'],
+                $row['password'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['phoneNumber'],
+                $row['address'],
+                $row['id_Role']
+            );
         }
+        return null;
     }
 
-    public function logout()
+    public static function getAll(): array
     {
-
-        session_destroy();
-        header('Location: /login');
-        exit;
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM user";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
-    
+
+    public static function updateRole(int $userId, int $newRole): bool
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "UPDATE user SET id_Role = ? WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$newRole, $userId]);
+    }
+
+    // Getters
+    public function getId(): ?int { return $this->id; }
+    public function getEmail(): ?string { return $this->email; }
+    public function getPassword(): ?string { return $this->password; }
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function getLastName(): ?string { return $this->lastName; }
+    public function getPhoneNumber(): ?string { return $this->phoneNumber; }
+    public function getAddress(): ?string { return $this->address; }
+    public function getIdRole(): ?int { return $this->id_Role; }
+
+    // Setters
+    public function setId(int $id): static { $this->id = $id; return $this; }
+    public function setEmail(string $email): static { $this->email = $email; return $this; }
+    public function setPassword(string $password): static { $this->password = $password; return $this; }
+    public function setFirstName(string $firstName): static { $this->firstName = $firstName; return $this; }
+    public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
+    public function setPhoneNumber(string $phoneNumber): static { $this->phoneNumber = $phoneNumber; return $this; }
+    public function setAddress(string $address): static { $this->address = $address; return $this; }
+    public function setIdRole(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
 }
