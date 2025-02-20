@@ -26,13 +26,10 @@ $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword')
 $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth');
 
 // 📝 Routes pour le CRUD AllArticle
-$router->addRoute('/articles', 'AllArticlesController', 'index'); // Afficher tous les articles
-$router->addRoute('/articles/show/{id}', 'AllArticlesController', 'show'); // Afficher un article par ID
-$router->addRoute('/articles/create', 'AllArticlesController', 'create'); // Afficher le formulaire de création
-$router->addRoute('/articles/store', 'AllArticlesController', 'store'); // Ajouter un article (POST)
-$router->addRoute('/articles/edit/{id}', 'AllArticlesController', 'edit'); // Afficher le formulaire d'édition
-$router->addRoute('/articles/update/{id}', 'AllArticlesController', 'update'); // Mettre à jour un article (POST)
-$router->addRoute('/articles/delete/{id}', 'AllArticlesController', 'delete'); // Supprimer un article
+$router->addRoute('/create', 'AllArticlesController', 'create');
+$router->addRoute('/edit', 'AllArticlesController', 'edit');
+$router->addRoute('/delete', 'AllArticlesController', 'delete');
+
 
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();

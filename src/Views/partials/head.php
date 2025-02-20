@@ -1,3 +1,10 @@
+<?php
+// Démarrer la session si elle n'est pas déjà active
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -30,28 +37,43 @@
         <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
         <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
 
-        <?php if (!isset($_SESSION['user'])): ?>
+        <?php if (!isset($_SESSION['user'])) : ?>
           <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user-plus"></i> S'inscrire</a></li>
           <li><a class="nav-icon" href="/login"><i class="fa-solid fa-user"></i> Se connecter</a></li>
-        <?php else: ?>
+        <?php else : ?>
           <?php
           $prenom = $_SESSION['user']['prenom'] ?? 'Utilisateur';
           $idRole = $_SESSION['user']['idRole'] ?? null;
           ?>
-          <?php if (isset($_SESSION['user']) && !empty($_SESSION['user']['firstName'])): ?>
-            <li><span class="nav-text">Bienvenue <?= htmlspecialchars($_SESSION['user']['firstName']); ?></span></li>
-          <?php endif; ?>
 
-          <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
+          <li><span class="nav-text">Bienvenue <?= htmlspecialchars($prenom); ?></span></li>
 
-          <?php if ($idRole == 1): ?>
-            <li><a class="nav-icon" href="/admin"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
-            <li><a class="nav-icon" href="/manage-users"><i class="fa-solid fa-users"></i> Gérer Utilisateurs</a></li>
+          <?php if ($idRole == 1) : ?>
+            <li><a class="nav-icon" href="/admin"><i class="fa-solid fa-chart-line"></i>Admin (Gérer Utilisateurs)</a></li>
+            <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
           <?php endif; ?>
         <?php endif; ?>
       </ul>
     </div>
   </nav>
+
+  <?php if (isset($_SESSION['user']) && $idRole == 1) : ?>
+    <nav class="admin-menu">
+      <ul>
+        <?php if (isset($_SESSION['user']) && $idRole == 1) : ?>
+          <nav class="admin-menu">
+            <ul class="nav-icons">
+              <li><a class="nav-icon" href="/create"><i class="fa-solid fa-plus"></i> Créer un article</a></li>
+              <li><a class="nav-icon" href="/edit"><i class="fa-solid fa-pen"></i> Modifier un article</a></li>
+              <li><a class="nav-icon" href="/delete"><i class="fa-solid fa-trash"></i> Supprimer un article</a></li>
+            </ul>
+          </nav>
+        <?php endif; ?>
+
+      </ul>
+    </nav>
+  <?php endif; ?>
+
 </body>
 
 </html>

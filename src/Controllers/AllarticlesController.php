@@ -2,59 +2,64 @@
 
 namespace App\Controllers;
 
-use App\Utils\AbstractController;
-use App\Models\AllArticle;
+use App\Models\AllArticles;
+use App\Config\Database;
 
-class AllArticleController extends AbstractController
+
+class AllArticlesController
 {
+
     public function index()
     {
-        $articles = (new AllArticle())->getAllArticles();
-        require_once(__DIR__ . "/../Views/allarticle/index.view.php");
+        $articlesModel = new AllArticles(Database::getInstance());
+        $articles = $articlesModel->getAllArticles();
+
+        require_once 'views/allarticles.view.php';
     }
 
-    public function show()
-    {
-        if (isset($_GET['id'])) {
-            $article = (new AllArticle($_GET['id']))->getArticleById();
-            require_once(__DIR__ . "/../Views/allarticle/show.view.php");
-        } else {
-            $this->redirectToRoute('/allarticle');
-        }
-    }
-
+    // Afficher le formulaire de création
     public function create()
     {
-        if (isset($_POST['name'])) {
-            $article = new AllArticle(null, $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
-            $article->addArticle();
-            $this->redirectToRoute('/allarticle');
-        }
-        require_once(__DIR__ . "/../Views/allarticle/create.view.php");
+        require_once __DIR__ . "/../Views/articles.create.view.php";
     }
 
+    // Ajouter un article en base de données
+    public function store()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $article = new AllArticles(null, $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
+            $article->addArticle();
+            header("Location: /admin/article"); // Redirection après ajout
+            exit();
+        }
+    }
+
+    // Afficher le formulaire d'édition
     public function edit()
     {
-        if (isset($_GET['id'])) {
-            $article = (new AllArticle($_GET['id']))->getArticleById();
+        $id = $_GET['id'];
+        $article = (new AllArticles())->getArticleById($id);
+        require_once __DIR__ . "/../Views/articles.edit.view.php";
+    }
 
-            if (isset($_POST['name'])) {
-                $updatedArticle = new AllArticle($_GET['id'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
-                $updatedArticle->updateArticle();
-                $this->redirectToRoute('/allarticle');
-            }
-
-            require_once(__DIR__ . "/../Views/allarticle/edit.view.php");
-        } else {
-            $this->redirectToRoute('/allarticle');
+    // Mettre à jour un article
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $article = new AllArticles($_POST['id'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
+            $article->updateArticle();
+            header("Location: /admin/article");
+            exit();
         }
     }
 
+    // Supprimer un article
     public function delete()
     {
-        if (isset($_POST['id'])) {
-            (new AllArticle($_POST['id']))->deleteArticle();
-            $this->redirectToRoute('/allarticle');
-        }
+        $id = $_GET['id'];
+        $article = new AllArticles($id);
+        $article->deleteArticle();
+        header("Location: /admin/article");
+        exit();
     }
 }

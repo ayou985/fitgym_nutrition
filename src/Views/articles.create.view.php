@@ -1,8 +1,7 @@
-<h1>Ajouter un article</h1>
-<form method="post">
+<form action="/admin/article/store" method="post">
     <label>Nom :</label>
     <input type="text" name="name" required>
-    
+
     <label>Description :</label>
     <textarea name="description" required></textarea>
 
@@ -14,4 +13,3 @@
 
     <button type="submit">Ajouter</button>
 </form>
-<a href="/allarticle">Annuler</a>
