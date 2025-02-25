@@ -1,65 +1,57 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Models;
 
-use App\Models\AllArticles;
-use App\Config\Database;
+use PDO;
 
-
-class AllArticlesController
+class AllArticles
 {
+    private $db;
 
-    public function index()
+    public function __construct($db)
     {
-        $articlesModel = new AllArticles(Database::getInstance());
-        $articles = $articlesModel->getAllArticles();
-
-        require_once 'views/allarticles.view.php';
+        $this->db = $db;
     }
 
-    // Afficher le formulaire de création
-    public function create()
+    public function getAllArticles()
     {
-        require_once __DIR__ . "/../Views/articles.create.view.php";
+        $stmt = $this->db->query("SELECT * FROM articles");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Ajouter un article en base de données
-    public function store()
+    public function getArticleById($id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $article = new AllArticles(null, $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
-            $article->addArticle();
-            header("Location: /admin/article"); // Redirection après ajout
-            exit();
-        }
+        $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Afficher le formulaire d'édition
-    public function edit()
+    public function addArticle($name, $description, $price, $category_id)
     {
-        $id = $_GET['id'];
-        $article = (new AllArticles())->getArticleById($id);
-        require_once __DIR__ . "/../Views/articles.edit.view.php";
+        $stmt = $this->db->prepare("INSERT INTO articles (name, description, price, category_id) VALUES (:name, :description, :price, :category_id)");
+        $stmt->execute([
+            'name' => $name,
+            'description' => $description,
+            'price' => $price,
+            'category_id' => $category_id
+        ]);
     }
 
-    // Mettre à jour un article
-    public function update()
+    public function updateArticle($id, $name, $description, $price, $category_id)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $article = new AllArticles($_POST['id'], $_POST['name'], $_POST['description'], $_POST['price'], $_POST['category_id']);
-            $article->updateArticle();
-            header("Location: /admin/article");
-            exit();
-        }
+        $stmt = $this->db->prepare("UPDATE articles SET name = :name, description = :description, price = :price, category_id = :category_id WHERE id = :id");
+        $stmt->execute([
+            'id' => $id,
+            'name' => $name,
+            'description' => $description,
+            'price' => $price,
+            'category_id' => $category_id
+        ]);
     }
 
-    // Supprimer un article
-    public function delete()
+    public function deleteArticle($id)
     {
-        $id = $_GET['id'];
-        $article = new AllArticles($id);
-        $article->deleteArticle();
-        header("Location: /admin/article");
-        exit();
+        $stmt = $this->db->prepare("DELETE FROM articles WHERE id = :id");
+        $stmt->execute(['id' => $id]);
     }
 }

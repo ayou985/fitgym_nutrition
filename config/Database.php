@@ -13,7 +13,7 @@ class Database
     private function __construct()
     {
         $host = 'localhost';
-        $db = 'fitgym__nutrition';
+        $db = 'fitgym_nutrition';
         $user = 'root';
         $pass = '';
         $charset = 'utf8mb4';

@@ -3,58 +3,61 @@
 namespace App\Models;
 
 use PDO;
-use App\Config\Database;
+use PDOException;
 
-class AllArticles
-{
-    private $id;
-    private $name;
-    private $description;
-    private $price;
-    private $category_id;
+class AllArticle {
+    private $pdo;
 
-    public function __construct($id = null, $name = "", $description = "", $price = 0, $category_id = null)
-    {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->price = $price;
-        $this->category_id = $category_id;
+    public function __construct() {
+        try {
+            $this->pdo = new PDO("mysql:host=localhost;dbname=fitgym_nutrition", "root", "");
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die("Erreur de connexion : " . $e->getMessage());
+        }
     }
 
-    public function getAllArticles()
-    {
-        $db = Database::getInstance()->getConnection();
-        $query = $db->query("SELECT * FROM product");
-        return $query->fetchAll(PDO::FETCH_ASSOC);
-    }
+    // 🔹 Ajout d'un article
+    public function store() {
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            if (!isset($_POST["titre"]) || !isset($_POST["contenu"])) {
+                die("Erreur : Données manquantes !");
+            }
 
-    public function getArticleById()
-    {
-        $db = Database::getInstance()->getConnection();
-        $query = $db->prepare("SELECT * FROM product WHERE id = ?");
-        $query->execute([$this->id]);
-        return $query->fetch(PDO::FETCH_ASSOC);
-    }
+            $titre = trim($_POST["titre"]);
+            $contenu = trim($_POST["contenu"]);
 
-    public function addArticle()
-    {
-        $db = Database::getInstance()->getConnection();
-        $query = $db->prepare("INSERT INTO product (name, description, price, category_id) VALUES (?, ?, ?, ?)");
-        return $query->execute([$this->name, $this->description, $this->price, $this->category_id]);
-    }
+            if (empty($titre) || empty($contenu)) {
+                die("Erreur : Tous les champs doivent être remplis !");
+            }
 
-    public function updateArticle()
-    {
-        $db = Database::getInstance()->getConnection();
-        $query = $db->prepare("UPDATE product SET name = ?, description = ?, price = ?, category_id = ? WHERE id = ?");
-        return $query->execute([$this->name, $this->description, $this->price, $this->category_id, $this->id]);
-    }
+            try {
+                // Vérifier si la table existe avant d'insérer
+                $checkTable = $this->pdo->query("SHOW TABLES LIKE 'articles'");
+                if ($checkTable->rowCount() == 0) {
+                    die("Erreur : La table 'articles' n'existe pas !");
+                }
 
-    public function deleteArticle()
-    {
-        $db = Database::getInstance()->getConnection();
-        $query = $db->prepare("DELETE FROM product WHERE id = ?");
-        return $query->execute([$this->id]);
+                // Requête d'insertion
+                $sql = "INSERT INTO articles (titre, contenu) VALUES (:titre, :contenu)";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(":titre", $titre);
+                $stmt->bindParam(":contenu", $contenu);
+
+                if ($stmt->execute()) {
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    die("Erreur lors de l'ajout !");
+                }
+            } catch (PDOException $e) {
+                die("Erreur SQL : " . $e->getMessage());
+            }
+        }
     }
 }
+
+// Instancier et exécuter la méthode store()
+$article = new AllArticle();
+$article->store();
+?>
