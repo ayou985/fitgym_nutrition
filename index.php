@@ -2,9 +2,9 @@
 
 require "vendor/autoload.php";
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+
+session_start();
+
 
 use Config\Router;
 
@@ -29,7 +29,6 @@ $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth');
 $router->addRoute('/create', 'AllArticlesController', 'create');
 $router->addRoute('/edit', 'AllArticlesController', 'edit');
 $router->addRoute('/delete', 'AllArticlesController', 'delete');
-
 
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();

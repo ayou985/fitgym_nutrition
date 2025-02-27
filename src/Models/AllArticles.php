@@ -5,59 +5,68 @@ namespace App\Models;
 use PDO;
 use PDOException;
 
-class AllArticle {
-    private $pdo;
+class Allarticles
+{
+    private $db;
 
-    public function __construct() {
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
+    }
+
+    public function getAllArticles()
+    {
         try {
-            $this->pdo = new PDO("mysql:host=localhost;dbname=fitgym_nutrition", "root", "");
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $stmt = $this->db->query("SELECT * FROM articles");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            die("Erreur de connexion : " . $e->getMessage());
+            error_log("Erreur lors de la récupération des articles : " . $e->getMessage());
+            return [];
         }
     }
 
-    // 🔹 Ajout d'un article
-    public function store() {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            if (!isset($_POST["titre"]) || !isset($_POST["contenu"])) {
-                die("Erreur : Données manquantes !");
-            }
+    public function getArticleById($id)
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = ?");
+            $stmt->execute([$id]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération de l'article avec l'ID $id : " . $e->getMessage());
+            return null;
+        }
+    }
 
-            $titre = trim($_POST["titre"]);
-            $contenu = trim($_POST["contenu"]);
+    public function createArticle($titre, $contenu, $date_creation)
+    {
+        try {
+            $stmt = $this->db->prepare("INSERT INTO articles (titre, contenu, date_creation) VALUES (?, ?, ?)");
+            return $stmt->execute([$titre, $contenu, $date_creation]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la création de l'article : " . $e->getMessage());
+            return false;
+        }
+    }
 
-            if (empty($titre) || empty($contenu)) {
-                die("Erreur : Tous les champs doivent être remplis !");
-            }
+    public function updateArticle($id, $titre, $contenu, $date_creation)
+    {
+        try {
+            $stmt = $this->db->prepare("UPDATE articles SET titre = ?, contenu = ?, date_creation = ? WHERE id = ?");
+            return $stmt->execute([$titre, $contenu, $date_creation, $id]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la mise à jour de l'article avec l'ID $id : " . $e->getMessage());
+            return false;
+        }
+    }
 
-            try {
-                // Vérifier si la table existe avant d'insérer
-                $checkTable = $this->pdo->query("SHOW TABLES LIKE 'articles'");
-                if ($checkTable->rowCount() == 0) {
-                    die("Erreur : La table 'articles' n'existe pas !");
-                }
-
-                // Requête d'insertion
-                $sql = "INSERT INTO articles (titre, contenu) VALUES (:titre, :contenu)";
-                $stmt = $this->pdo->prepare($sql);
-                $stmt->bindParam(":titre", $titre);
-                $stmt->bindParam(":contenu", $contenu);
-
-                if ($stmt->execute()) {
-                    header("Location: index.php");
-                    exit();
-                } else {
-                    die("Erreur lors de l'ajout !");
-                }
-            } catch (PDOException $e) {
-                die("Erreur SQL : " . $e->getMessage());
-            }
+    public function deleteArticle($id)
+    {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM articles WHERE id = ?");
+            return $stmt->execute([$id]);
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la suppression de l'article avec l'ID $id : " . $e->getMessage());
+            return false;
         }
     }
 }
-
-// Instancier et exécuter la méthode store()
-$article = new AllArticle();
-$article->store();
-?>
