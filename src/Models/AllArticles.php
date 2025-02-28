@@ -3,70 +3,101 @@
 namespace App\Models;
 
 use PDO;
-use PDOException;
+use App\Config\Database;
 
-class Allarticles
+class AllArticles
 {
-    private $db;
+    protected ?int $id;
+    protected ?string $name;
+    protected ?string $description;
+    protected ?float $price;
+    protected ?int $stock;
+    protected ?string $category;
+    protected ?string $image; // Ajout de l'attribut image
 
-    public function __construct(PDO $db)
+    public function __construct(?int $id, ?string $name, ?string $description, ?float $price, ?int $stock, ?string $category, ?string $image = null)
     {
-        $this->db = $db;
+        $this->id = $id;
+        $this->name = $name;
+        $this->description = $description;
+        $this->price = $price;
+        $this->stock = $stock;
+        $this->category = $category;
+        $this->image = $image; // Initialisation de l'image
     }
 
-    public function getAllArticles()
+    public function save(): bool
     {
-        try {
-            $stmt = $this->db->query("SELECT * FROM articles");
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la récupération des articles : " . $e->getMessage());
-            return [];
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "INSERT INTO articles (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->name, $this->description, $this->price, $this->stock, $this->category, $this->image]);
+    }
+
+    public static function getById($id): ?AllArticles
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM articles WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute([$id]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($row) {
+            return new AllArticles(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['stock'],
+                $row['category'],
+                $row['image'] // Récupération de l'image
+            );
         }
+        return null;
     }
 
-    public function getArticleById($id)
+    public static function getAll(): array
     {
-        try {
-            $stmt = $this->db->prepare("SELECT * FROM articles WHERE id = ?");
-            $stmt->execute([$id]);
-            return $stmt->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la récupération de l'article avec l'ID $id : " . $e->getMessage());
-            return null;
-        }
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM articles";
+        $statement = $pdo->prepare($sql);
+        $statement->execute();
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function createArticle($titre, $contenu, $date_creation)
+    public function update(): bool
     {
-        try {
-            $stmt = $this->db->prepare("INSERT INTO articles (titre, contenu, date_creation) VALUES (?, ?, ?)");
-            return $stmt->execute([$titre, $contenu, $date_creation]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la création de l'article : " . $e->getMessage());
-            return false;
-        }
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "UPDATE articles SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ? WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$this->name, $this->description, $this->price, $this->stock, $this->category, $this->image, $this->id]);
     }
 
-    public function updateArticle($id, $titre, $contenu, $date_creation)
+    public static function delete($id): bool
     {
-        try {
-            $stmt = $this->db->prepare("UPDATE articles SET titre = ?, contenu = ?, date_creation = ? WHERE id = ?");
-            return $stmt->execute([$titre, $contenu, $date_creation, $id]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la mise à jour de l'article avec l'ID $id : " . $e->getMessage());
-            return false;
-        }
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "DELETE FROM articles WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([$id]);
     }
 
-    public function deleteArticle($id)
-    {
-        try {
-            $stmt = $this->db->prepare("DELETE FROM articles WHERE id = ?");
-            return $stmt->execute([$id]);
-        } catch (PDOException $e) {
-            error_log("Erreur lors de la suppression de l'article avec l'ID $id : " . $e->getMessage());
-            return false;
-        }
-    }
+    // Getters
+    public function getId(): ?int { return $this->id; }
+    public function getName(): ?string { return $this->name; }
+    public function getDescription(): ?string { return $this->description; }
+    public function getPrice(): ?float { return $this->price; }
+    public function getStock(): ?int { return $this->stock; }
+    public function getCategory(): ?string { return $this->category; }
+    public function getImage(): ?string { return $this->image; } // Getter pour l'image
+
+    // Setters
+    public function setId(int $id): static { $this->id = $id; return $this; }
+    public function setName(string $name): static { $this->name = $name; return $this; }
+    public function setDescription(string $description): static { $this->description = $description; return $this; }
+    public function setPrice(float $price): static { $this->price = $price; return $this; }
+    public function setStock(int $stock): static { $this->stock = $stock; return $this; }
+    public function setCategory(string $category): static { $this->category = $category; return $this; }
+    public function setImage(string $image): static { $this->image = $image; return $this; } // Setter pour l'image
 }
+
+require_once(__DIR__ . "/../../config/Database.php");

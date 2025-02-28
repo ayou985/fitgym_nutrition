@@ -3,6 +3,7 @@
 require "vendor/autoload.php";
 
 
+
 session_start();
 
 
@@ -26,9 +27,12 @@ $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword')
 $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth');
 
 // 📝 Routes pour le CRUD AllArticle
-$router->addRoute('/create', 'AllArticlesController', 'create');
-$router->addRoute('/edit', 'AllArticlesController', 'edit');
-$router->addRoute('/delete', 'AllArticlesController', 'delete');
+$router->addRoute('/create', 'AllArticlesController', 'createArticle');
+$router->addRoute('/edit', 'AllArticlesController', 'editArticle');
+$router->addRoute('/delete', 'AllArticlesController', 'deleteArticle');
+$router->addRoute('/admin/article/store', 'AllArticlesController', 'store');
+$router->addRoute('/articles', 'AllArticlesController', 'index');
+
 
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();

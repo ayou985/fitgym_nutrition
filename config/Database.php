@@ -13,7 +13,7 @@ class Database
     private function __construct()
     {
         $host = 'localhost';
-        $db = 'fitgym_nutrition';
+        $db = 'fitgym__nutrition';
         $user = 'root';
         $pass = '';
         $charset = 'utf8mb4';
@@ -28,9 +28,8 @@ class Database
         try {
             $this->connection = new PDO($dsn, $user, $pass, $options);
         } catch (PDOException $e) {
-            // Gestion d'erreur plus explicite
-            error_log("Erreur de connexion à la base de données : " . $e->getMessage());
-            die("Erreur de connexion à la base de données. Veuillez vérifier vos paramètres de connexion.");
+            // Affichez l'erreur PDO pour plus de détails
+            die("Erreur de connexion à la base de données : " . $e->getMessage());
         }
     }
 
