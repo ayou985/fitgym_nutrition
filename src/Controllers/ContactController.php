@@ -1,10 +1,12 @@
 <?php
+namespace App\Controllers;
+
 class ContactController {
-    public function index() {
+    public function contact() {
         include_once __DIR__ . '/../Views/contact.view.php';
     }
 
-    public function sendMessage() {
+    public function index() {
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $name = htmlspecialchars($_POST['name']);
             $email = htmlspecialchars($_POST['email']);

@@ -2,7 +2,8 @@
 require_once(__DIR__ . '/../Views/partials/head.php');
 ?>
 <h1>Création d'un article</h1>
-<form method='POST' action="/admin/article/store" enctype="multipart/form-data">
+<form method='POST' action="/admin/product
+/store" enctype="multipart/form-data">
     <div class="col-md-4 mx-auto d-block mt-5">
         <div class="mb-3">
             <label for="name">Nom de l'article</label>

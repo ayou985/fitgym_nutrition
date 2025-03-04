@@ -1,9 +1,10 @@
 <?php
 
-
 namespace App\Models;
 
 use PDO;
+use Config\Database;
+
 
 class Product
 {
@@ -16,6 +17,7 @@ class Product
 
     public function createProduct($name, $description, $price, $image)
     {
+        $pdo = Database::getConnection();   
         $sql = "INSERT INTO products (name, description, price, image) VALUES (:name, :description, :price, :image)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -26,20 +28,8 @@ class Product
         ]);
     }
 
-    public function getAllProducts()
+    public function create($name, $description, $price, $stock, $category, $image)
     {
-        $sql = "SELECT * FROM products";
-        return $this->pdo->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    public function readOne($id)
-    {
-        $sql = "SELECT * FROM products WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        return $stmt->fetch(\PDO::FETCH_ASSOC);
-    }
-
-    public function create($name, $description, $price, $stock, $category, $image) {
         $sql = "INSERT INTO products (name, description, price, stock, category, image) 
                 VALUES (:name, :description, :price, :stock, :category, :image)";
         $stmt = $this->pdo->prepare($sql);
@@ -53,9 +43,18 @@ class Product
         ]);
     }
 
-    public function readAll()
+    public function getAllProducts()
     {
-        return $this->getAllProducts();
+        $sql = "SELECT * FROM products";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function readOne($id)
+    {
+        $sql = "SELECT * FROM products WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function update($id, $name, $description, $price, $image)

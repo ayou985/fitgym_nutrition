@@ -2,10 +2,7 @@
 
 require "vendor/autoload.php";
 
-
-
 session_start();
-
 
 use Config\Router;
 
@@ -13,9 +10,9 @@ $router = new Router();
 
 // 🌍 Routes principales
 $router->addRoute('/', 'HomeController', 'index');
-$router->addRoute('/product', 'PageController', 'product');
-$router->addRoute('/about', 'PageController', 'about');
-$router->addRoute('/contact', 'PageController', 'contact');
+$router->addRoute('/product', 'ProductController', 'product');
+$router->addRoute('/about', 'AboutController', 'about');
+$router->addRoute('/contact', 'ContactController', 'contact');
 
 // 🔐 Routes d'inscription et de connexion
 $router->addRoute('/register', 'RegisterController', 'index');
@@ -26,13 +23,12 @@ $router->addRoute('/logout', 'LogoutController', 'logout');
 $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword');
 $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth');
 
-// 📝 Routes pour le CRUD AllArticle
-$router->addRoute('/create', 'AllArticlesController', 'createArticle');
-$router->addRoute('/edit', 'AllArticlesController', 'editArticle');
-$router->addRoute('/delete', 'AllArticlesController', 'deleteArticle');
-$router->addRoute('/admin/article/store', 'AllArticlesController', 'store');
-$router->addRoute('/articles', 'AllArticlesController', 'index');
-
+// 🛒 Routes pour le CRUD AllProduct (Produits)
+$router->addRoute('/create', 'AllProductController', 'createProduct'); // Formulaire de création
+$router->addRoute('/edit', 'AllProductController', 'updateProduct'); // Modifier un produit
+$router->addRoute('/delete', 'AllProductController', 'deleteProduct'); // Suppression
+$router->addRoute('/store', 'AllProductController', 'store'); // Enregistrement du produit
+$router->addRoute('/admin/products', 'AllProductController', 'index'); // Affichage de tous les produits
 
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();

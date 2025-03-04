@@ -28,7 +28,7 @@ class Router
     public function handleRequest()
     {
         // Récupère l'URI de la requête actuelle
-        $uri = $this->getUri();
+        $uri = $this->getURI();
 
         // Indicateur pour savoir si une route correspondante a été trouvée
         $routeFound = false;
@@ -52,12 +52,6 @@ class Router
 
                 // Appelle la méthode associée de ce contrôleur
                 $controller->$method();
-                if (method_exists($controller, $method)) {
-                    $controller->$method();
-                } else {
-                    echo "Erreur : La méthode $method n'existe pas dans le contrôleur " . get_class($controller);
-                }
-                
 
                 // Sort de la boucle car la route a été trouvée
                 break;
