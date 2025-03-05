@@ -1,4 +1,6 @@
-<a href="/admin/product/create" class="btn btn-success">➕ Ajouter</a>
+<a href="/create" class="btn btn-success">➕ Ajouter</a>
+<a href="/edit?id=<?= $product['id'] ?>" class="btn btn-warning">✏️ Modifier</a>
+<a href="/delete?id=<?= $product['id'] ?>" class="btn btn-danger">🗑️ Supprimer</a>
 
 <table class="table">
     <thead>
@@ -18,9 +20,9 @@
                 <td><?= htmlspecialchars($product['description']) ?></td>
                 <td><?= htmlspecialchars($product['price']) ?> €</td>
                 <td>
-                    <a href="/admin/product/create" class="btn btn-primary">Créer un product</a>
-                    <a href="/admin/product/edit?id=1" class="btn btn-warning">Modifier</a>
-                    <a href="/admin/product/delete?id=1" class="btn btn-danger">Supprimer</a>
+                    <a href="/create" class="btn btn-primary">Créer un product</a>
+                    <a href="/edit?id=" class="btn btn-warning">Modifier</a>
+                    <a href="/delete?id=" class="btn btn-danger">Supprimer</a>
 
                 </td>
             </tr>

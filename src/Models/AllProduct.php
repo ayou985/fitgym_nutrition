@@ -96,7 +96,7 @@ class AllProduct
     public function save(): bool
     {
         $pdo = Database::getConnection();
-        $sql = "INSERT INTO products (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
         $statement = $pdo->prepare($sql);
         return $statement->execute([$this->name, $this->description, $this->price, $this->stock, $this->category, $this->image]);
     }
@@ -136,7 +136,7 @@ class AllProduct
     public function update(): bool
     {
         $pdo = Database::getConnection();
-        $sql = "UPDATE products SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ? WHERE id = ?";
+        $sql = "UPDATE product SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ? WHERE id = ?";
         $statement = $pdo->prepare($sql);
         return $statement->execute([$this->name, $this->description, $this->price, $this->stock, $this->category, $this->image, $this->id]);
     }
@@ -144,7 +144,7 @@ class AllProduct
     public static function delete($id): bool
     {
         $pdo = Database::getConnection();
-        $sql = "DELETE FROM products WHERE id = ?";
+        $sql = "DELETE FROM product WHERE id = ?";
         $statement = $pdo->prepare($sql);
         return $statement->execute([$id]);
     }

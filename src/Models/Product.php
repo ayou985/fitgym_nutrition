@@ -18,7 +18,7 @@ class Product
     public function createProduct($name, $description, $price, $image)
     {
         $pdo = Database::getConnection();   
-        $sql = "INSERT INTO products (name, description, price, image) VALUES (:name, :description, :price, :image)";
+        $sql = "INSERT INTO product (name, description, price, image) VALUES (:name, :description, :price, :image)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':name' => $name,
@@ -30,7 +30,7 @@ class Product
 
     public function create($name, $description, $price, $stock, $category, $image)
     {
-        $sql = "INSERT INTO products (name, description, price, stock, category, image) 
+        $sql = "INSERT INTO product (name, description, price, stock, category, image) 
                 VALUES (:name, :description, :price, :stock, :category, :image)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -43,15 +43,15 @@ class Product
         ]);
     }
 
-    public function getAllProducts()
+    public function getAllProduct()
     {
-        $sql = "SELECT * FROM products";
+        $sql = "SELECT * FROM product";
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function readOne($id)
     {
-        $sql = "SELECT * FROM products WHERE id = :id";
+        $sql = "SELECT * FROM product WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -59,7 +59,7 @@ class Product
 
     public function update($id, $name, $description, $price, $image)
     {
-        $sql = "UPDATE products SET name = :name, description = :description, price = :price, image = :image WHERE id = :id";
+        $sql = "UPDATE product SET name = :name, description = :description, price = :price, image = :image WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
             ':id' => $id,
@@ -72,7 +72,7 @@ class Product
 
     public function delete($id)
     {
-        $sql = "DELETE FROM products WHERE id = :id";
+        $sql = "DELETE FROM product WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }

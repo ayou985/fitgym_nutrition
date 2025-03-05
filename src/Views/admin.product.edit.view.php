@@ -1,18 +1,23 @@
-<form action="/edit?id=<?= htmlspecialchars($product->getId()) ?>" method="POST">
-    <label for="name">Nom :</label>
-    <input type="text" name="name" id="name" value="<?= htmlspecialchars($product->getName()) ?>" required>
+<form action="/edit?id=<?= $product->getId(); ?>" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="id" value="<?= $product->getId(); ?>">
 
-    <label for="description">Description :</label>
-    <textarea name="description" id="description"><?= htmlspecialchars($product->getDescription()) ?></textarea>
+    <label>Nom :</label>
+    <input type="text" name="name" value="<?= htmlspecialchars($product->getName()); ?>" required>
 
-    <label for="price">Prix :</label>
-    <input type="number" step="0.01" name="price" id="price" value="<?= htmlspecialchars($product->getPrice()) ?>" required>
+    <label>Description :</label>
+    <textarea name="description"><?= htmlspecialchars($product->getDescription()); ?></textarea>
 
-    <label for="stock">Stock :</label>
-    <input type="number" name="stock" id="stock" value="<?= htmlspecialchars($product->getStock()) ?>" required>
+    <label>Prix :</label>
+    <input type="number" name="price" value="<?= $product->getPrice(); ?>" step="0.01" required>
 
-    <label for="category">Catégorie :</label>
-    <input type="text" name="category" id="category" value="<?= htmlspecialchars($product->getCategory()) ?>" required>
+    <label>Stock :</label>
+    <input type="number" name="stock" value="<?= $product->getStock(); ?>" required>
+
+    <label>Catégorie :</label>
+    <input type="text" name="category" value="<?= htmlspecialchars($product->getCategory()); ?>" required>
+
+    <label>Image :</label>
+    <input type="file" name="image">
 
     <button type="submit">Modifier</button>
 </form>
