@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/head.php");
+require_once(__DIR__ . "../partials/head.php");
 ?>
 
 <h1>Liste des articles</h1>
@@ -45,5 +45,5 @@ require_once(__DIR__ . "/head.php");
 </div>
 
 <?php
-require_once(__DIR__ . "/footer.php");
+require_once(__DIR__ . "../partials/footer.php");
 ?>

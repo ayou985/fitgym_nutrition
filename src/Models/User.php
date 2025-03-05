@@ -30,7 +30,7 @@ class User
 
     public function save(): bool
     {
-        $pdo = Database::getConnection();
+        $pdo = Database::getInstance();
         $sql = "INSERT INTO user (email, password, firstName, lastName, phoneNumber, address, id_Role) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $statement = $pdo->prepare($sql);
         return $statement->execute([$this->email, $this->password, $this->firstName, $this->lastName, $this->phoneNumber, $this->address, $this->id_Role]);
@@ -38,7 +38,7 @@ class User
 
     public static function authenticate($email, $password): ?User
     {
-        $pdo = Database::getConnection();
+        $pdo = Database::getInstance();
         $sql = "SELECT * FROM user WHERE email = ?";
         $statement = $pdo->prepare($sql);
         $statement->execute([$email]);
@@ -61,7 +61,7 @@ class User
 
     public static function getUserById($id): ?User
     {
-        $pdo = Database::getConnection();
+        $pdo = Database::getInstance();
         $sql = "SELECT * FROM user WHERE id = ?";
         $statement = $pdo->prepare($sql);
         $statement->execute([$id]);
@@ -84,7 +84,7 @@ class User
 
     public static function getAll(): array
     {
-        $pdo = Database::getConnection();
+        $pdo = Database::getInstance();
         $sql = "SELECT * FROM user";
         $statement = $pdo->prepare($sql);
         $statement->execute();
@@ -93,7 +93,7 @@ class User
 
     public static function updateRole(int $userId, int $newRole): bool
     {
-        $pdo = Database::getConnection();
+        $pdo = Database::getInstance();
         $sql = "UPDATE user SET id_Role = ? WHERE id = ?";
         $statement = $pdo->prepare($sql);
         return $statement->execute([$newRole, $userId]);

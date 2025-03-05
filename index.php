@@ -25,12 +25,12 @@ $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword')
 $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth'); // Vérification d'authentification
 
 // 🛒 Routes pour le CRUD AllProduct (Produits)
-$router->addRoute('/create', 'AllProductController', 'createProduct');  // Formulaire de création de produit
-$router->addRoute('/edit', 'AllProductController', 'updateProduct');    // Modifier un produit spécifique
-$router->addRoute('/delete', 'AllProductController', 'deleteProduct');  // Supprimer un produit spécifique
-$router->addRoute('/store', 'AllProductController', 'store');           // Enregistrement du produit
-$router->addRoute('/admin/product', 'AllProductController', 'index');         // Affichage de tous les produits
-$router->addRoute('/product', 'AllProductController', 'viewProduct');   // Afficher un produit spécifique (par ID)
+$router->addRoute('/create', 'AllProductController', 'createProduct');
+$router->addRoute('/edit', 'AllProductController', 'updateProduct');
+$router->addRoute('/delete', 'AllProductController', 'deleteProduct');
+$router->addRoute('/store', 'AllProductController', 'store');
+$router->addRoute('/read', 'AllProductController', 'index');
+
 
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();

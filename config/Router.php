@@ -10,11 +10,10 @@ class Router
 
     public function getUri()
     {
-        // Récupère l'URI de la requête en cours et retourne seulement le chemin
         return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
     }
 
-    public function addRoute($pattern, $controllerClass, $method)
+    public function addRoute(string $pattern, string $controllerClass, string $method)
     {
         $this->routes[$pattern] = [
             'controller' => $controllerClass,
@@ -22,46 +21,49 @@ class Router
         ];
     }
 
-    /**
-     * Gère la requête HTTP en fonction de l'URI
-     */
     public function handleRequest()
     {
-        // Récupère l'URI de la requête actuelle
-        $uri = $this->getURI();
-
-        // Indicateur pour savoir si une route correspondante a été trouvée
+        $uri = $this->getUri();
         $routeFound = false;
 
-        // Parcourt toutes les routes définies
+        // 🔹 Vérifier si c'est une requête POST pour "/edit"
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && $uri === '/edit') {
+            $controllerClass = "App\\Controllers\\AllProductController";
+            $controller = new $controllerClass();
+
+            $controller->updateProduct(
+                $_POST['id'] ?? null,
+                $_POST['name'] ?? '',
+                $_POST['price'] ?? 0,
+                $_POST['description'] ?? '',
+                $_POST['category'] ?? '',
+                $_POST['stock'] ?? 0,
+                $_FILES['image']['name'] ?? ''
+            );
+            return; // Arrête l'exécution ici après avoir appelé la méthode
+        }
+
+        // 🔹 Parcourir les routes définies
         foreach ($this->routes as $pattern => $routeInfo) {
-            // Si l'URI correspond à une route définie
-            if ($uri === $pattern) {
-                // Route trouvée, on met l'indicateur à vrai
+            if (preg_match("#^" . $pattern . "$#", $uri, $matches)) {
                 $routeFound = true;
 
-                // Récupère la classe et la méthode du contrôleur associées à cette route
                 $controllerClass = $routeInfo['controller'];
                 $method = $routeInfo['method'];
 
-                // Construit le nom complet de la classe avec son espace de noms
                 $controllerClass = "App\\Controllers\\" . $controllerClass;
-
-                // Crée une nouvelle instance du contrôleur
                 $controller = new $controllerClass();
 
-                // Appelle la méthode associée de ce contrôleur
-                $controller->$method();
+                // Ignorer la première correspondance et appeler la méthode avec les arguments trouvés
+                array_shift($matches);
+                call_user_func_array([$controller, $method], $matches);
 
-                // Sort de la boucle car la route a été trouvée
                 break;
             }
         }
-        // Si aucune route n'a été trouvée, affiche une page d'erreur 404
+
         if (!$routeFound) {
-            echo ErrorController::notFound(); // Affiche la page d'erreur via le contrôleur d'erreurs
-            // Option alternative : inclure un fichier PHP pour la page 404
-            //require_once(__DIR__ . '/../app/Controllers/404.php');
+            echo ErrorController::notFound();
         }
     }
 }

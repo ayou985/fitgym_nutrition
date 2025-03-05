@@ -11,6 +11,6 @@ class ProductController
     {
         $product = new AllProduct(null, null, null, null, null, null, null);
         $products = $product->getAll();
-        require_once(__DIR__ . "/../Views/partials/product.view.php");
+        require_once(__DIR__ . "/../Views/product.view.php");
     }
 }

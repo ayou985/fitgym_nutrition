@@ -17,7 +17,7 @@ class Product
 
     public function createProduct($name, $description, $price, $image)
     {
-        $pdo = Database::getConnection();   
+        $pdo = Database::getInstance();   
         $sql = "INSERT INTO product (name, description, price, image) VALUES (:name, :description, :price, :image)";
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([

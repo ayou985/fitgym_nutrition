@@ -4,28 +4,16 @@ namespace App\Controllers;
 
 use App\Utils\AbstractController;
 use App\Models\AllProduct;
-use App\Models\Product;
 
 class AllProductController extends AbstractController
 {
     // Afficher un produit (Read)
     public function index()
     {
-        if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
-            $this->redirectToRoute('/product');
-            exit;
-        }
-
-        $idProduct = intval($_GET['id']);
-        $product = AllProduct::getById($idProduct);
-
-        if (!$product) {
-            $this->redirectToRoute('/product');
-            exit;
-        }
-
-        require_once(__DIR__ . '/../Views/admin.product.view.php');
+        // ... (votre code pour afficher tous les produits)
+        require_once(__DIR__ . '/../Views/product.view.php');
     }
+
     public function viewProduct($id)
     {
         // Vérifie si l'ID est bien reçu
@@ -33,25 +21,22 @@ class AllProductController extends AbstractController
             die("Erreur : ID manquant !");
         }
 
-        // Crée une instance du modèle ProductModel
-        $product = new Product();
-
-        // Récupère le produit par son ID
-        $product = $product->getProductById($id);
+        // Récupère le produit par son ID avec AllProduct
+        $product = AllProduct::getById($id);
 
         if (!$product) {
             die("Erreur : Produit introuvable !");
         }
 
         // Inclut la vue pour afficher les détails du produit
-        require_once __DIR__ . '/../Views/admin/product/view.php';
+        require_once __DIR__ . '/../Views/admin.product.view.php';
     }
 
     // Créer un produit (Create)
     public function createProduct()
     {
         if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
-            $this->redirectToRoute('/product/create');
+            $this->redirectToRoute('/create');
             exit;
         }
 
@@ -66,7 +51,7 @@ class AllProductController extends AbstractController
 
             $product = new AllProduct(null, $name, $description, $price, $stock, $category, $image);
             if ($product->save()) {
-                $this->redirectToRoute('/product/create');
+                $this->redirectToRoute('/create');
                 exit;
             }
         }
@@ -75,46 +60,35 @@ class AllProductController extends AbstractController
     }
 
     // Supprimer un produit (Delete)
-    public function deleteProduct()
+    public function deleteProduct($id)
     {
         if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
-            $this->redirectToRoute('/product/delete');
+            $this->redirectToRoute('/delete' . $id);
             exit;
         }
 
-        if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id']) && ctype_digit($_POST['id'])) {
-            $idProduct = intval($_POST['id']);
-            if (AllProduct::delete($idProduct)) {
-                $this->redirectToRoute('/product/delete');
-                exit;
-            }
+        $product = new AllProduct();
+        if ($product->delete($id)) {
+            $this->redirectToRoute('/delete' . $id);
+            exit;
         }
 
-        $this->redirectToRoute('/product/list');
+        $this->redirectToRoute('/list');
         exit;
-
-        require_once(__DIR__ . '/../Views/admin.product.delete.view.php');
     }
 
-
     // Modifier un produit (Update)
-    public function updateProduct()
+    public function updateProduct($id, $name, $description, $price, $stock, $category, $image)
     {
         if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
-            $this->redirectToRoute('/product/edit');
+            $this->redirectToRoute('/edit' . $id);
             exit;
         }
 
-        if (!isset($_GET['id']) || !ctype_digit($_GET['id'])) {
-            $this->redirectToRoute('/product/edit');
-            exit;
-        }
-
-        $idProduct = intval($_GET['id']);
-        $product = AllProduct::getById($idProduct);
+        $product = AllProduct::getById($id);
 
         if (!$product) {
-            $this->redirectToRoute('/product/edit');
+            $this->redirectToRoute('/edit' . $id);
             exit;
         }
 
@@ -127,9 +101,9 @@ class AllProductController extends AbstractController
 
             $image = $product->getImage();
 
-            $updatedProduct = new AllProduct($idProduct, $name, $description, $price, $stock, $category, $image);
+            $updatedProduct = new AllProduct($id, $name, $description, $price, $stock, $category, $image);
             if ($updatedProduct->update()) {
-                $this->redirectToRoute('/product/edit');
+                $this->redirectToRoute('/edit' . $id);
                 exit;
             }
         }
