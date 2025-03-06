@@ -34,10 +34,10 @@ class Router
             $controller->updateProduct(
                 $_POST['id'] ?? null,
                 $_POST['name'] ?? '',
-                $_POST['price'] ?? 0,
                 $_POST['description'] ?? '',
-                $_POST['category'] ?? '',
+                $_POST['price'] ?? 0,
                 $_POST['stock'] ?? 0,
+                $_POST['category'] ?? '',
                 $_FILES['image']['name'] ?? ''
             );
             return; // Arrête l'exécution ici après avoir appelé la méthode

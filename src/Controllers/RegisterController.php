@@ -5,7 +5,7 @@ use App\Utils\AbstractController;
 use App\Models\User;
 
 class RegisterController extends AbstractController {
-    public function index() {
+    public function register() {
         if (isset($_POST['email'], $_POST['password'], $_POST['firstName'], $_POST['lastName'])) {
             if (empty($this->arrayError)) {
                 $email = htmlspecialchars($_POST['email']);

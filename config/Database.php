@@ -5,30 +5,27 @@ namespace Config;
 use PDO;
 use Exception;
 
-class Database
-{
-    private static $instance = null;
-    private $pdo;
+class Database {
+    private static ?Database $instance = null;
+    private PDO $connection;
 
-    private function __construct()
-    {
+    private function __construct() {
         try {
-            $this->pdo = new PDO('mysql:host=localhost;dbname=fitgym__nutrition;charset=utf8', 'root');
+            $this->connection = new PDO("mysql:host=localhost;dbname=fitgym__nutrition", "root");
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $e) {
-            die('Erreur :' . $e->getMessage());
+            die("Erreur de connexion : " . $e->getMessage());
         }
     }
 
-    public static function getInstance()
-    {
+    public static function getInstance(): Database {
         if (self::$instance === null) {
             self::$instance = new Database();
         }
         return self::$instance;
     }
 
-    public function getConnection()
-    {
-        return $this->pdo;
+    public function getConnection(): PDO {
+        return $this->connection;
     }
 }

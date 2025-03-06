@@ -14,8 +14,7 @@ class AllProduct
     public $stock;
     public $category;
     public $image;
-    public $createdAt;
-    public $updatedAt;
+    
 
     public function __construct(
         $id = null,
@@ -25,8 +24,7 @@ class AllProduct
         $stock = null,
         $category = null,
         $image = null,
-        $createdAt = null,
-        $updatedAt = null
+        
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -35,8 +33,7 @@ class AllProduct
         $this->stock = $stock;
         $this->category = $category;
         $this->image = $image;
-        $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt;
+        
     }
 
     // Méthodes pour définir les propriétés
@@ -106,6 +103,30 @@ class AllProduct
         return $this->image;
     }
 
+    public function update(): bool
+    {
+        if (!$this->id) {
+            return false;
+        }
+
+        $db = Database::getInstance();
+        $pdo = $db->getConnection();
+
+        $sql = "UPDATE product SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ?, updatedAt = NOW() WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+
+        return $statement->execute([
+            $this->name,
+            $this->description,
+            $this->price,
+            $this->stock,
+            $this->category,
+            $this->image,
+            $this->id
+        ]);
+    }
+
+
     // Méthodes pour la base de données
     public function save(): bool
     {
@@ -144,8 +165,7 @@ class AllProduct
                 $row['stock'],
                 $row['category'],
                 $row['image'],
-                $row['createdAt'],
-                $row['updatedAt']
+                
             );
         }
 
@@ -170,15 +190,13 @@ class AllProduct
                 $row['stock'],
                 $row['category'],
                 $row['image'],
-                $row['createdAt'],
-                $row['updatedAt']
             );
         }
 
         return $products;
     }
 
-    public function delete(): bool
+    public function delete($id): bool
     {
         if (!$this->id) {
             return false;

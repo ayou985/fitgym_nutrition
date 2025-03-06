@@ -16,7 +16,7 @@ $router->addRoute('/about', 'AboutController', 'about'); // Page à propos
 $router->addRoute('/contact', 'ContactController', 'contact'); // Page de contact
 
 // 🔐 Routes d'inscription et de connexion
-$router->addRoute('/register', 'RegisterController', 'index'); // Inscription
+$router->addRoute('/register', 'RegisterController', 'register'); // Inscription
 $router->addRoute('/login', 'LoginController', 'login'); // Connexion
 $router->addRoute('/logout', 'LogoutController', 'logout'); // Déconnexion
 
@@ -25,9 +25,9 @@ $router->addRoute('/auth/suggest-password', 'AuthController', 'suggestPassword')
 $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth'); // Vérification d'authentification
 
 // 🛒 Routes pour le CRUD AllProduct (Produits)
-$router->addRoute('/create', 'AllProductController', 'createProduct');
-$router->addRoute('/edit', 'AllProductController', 'updateProduct');
-$router->addRoute('/delete', 'AllProductController', 'deleteProduct');
+$router->addRoute('/createProduct', 'AllProductController', 'createProduct');
+$router->addRoute('/updateProduct', 'AllProductController', 'updateProduct');
+$router->addRoute('/deleteProduct', 'AllProductController', 'deleteProduct');
 $router->addRoute('/store', 'AllProductController', 'store');
 $router->addRoute('/read', 'AllProductController', 'index');
 
