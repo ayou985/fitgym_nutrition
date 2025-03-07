@@ -53,8 +53,6 @@ if (session_status() == PHP_SESSION_NONE) session_start();
     <nav class="admin-menu">
       <ul class="nav-icons">
         <li><a class="nav-icon" href="/createProduct"><i class="fa-solid fa-plus"></i> Créer un article</a></li>
-        <li><a class="nav-icon" href="/updateProduct?id="><i class="fa-solid fa-pen"></i> Modifier un article</a></li>
-        <li><a class="nav-icon" href="/delete"><i class="fa-solid fa-trash"></i> Supprimer un article</a></li>
       </ul>
     </nav>
   <?php endif; ?>

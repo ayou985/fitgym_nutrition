@@ -36,7 +36,7 @@ class AllProductController extends AbstractController
     public function createProduct()
     {
         if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
-            $this->redirectToRoute('/ createProduct');
+            $this->redirectToRoute('/createProduct');
             exit;
         }
 
@@ -50,8 +50,8 @@ class AllProductController extends AbstractController
             $image = $this->handleImageUpload();
 
             $product = new AllProduct();
-            if ($product->save()) {
-                $this->redirectToRoute('/ createProduct');
+            if ($product->update()) {
+                $this->redirectToRoute('/createProduct');
                 exit;
             }
         }
@@ -60,19 +60,25 @@ class AllProductController extends AbstractController
     }
 
     // Modifier un produit (Update)
-    public function updateProduct($id)
+    public function updateProduct()
     {
         if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
-            $this->redirectToRoute('/updateProduct?id=' . $id);
+            $this->redirectToRoute('/admin.product.edit');
             exit;
         }
 
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+        if ($id <= 0) {
+            die("<p class='text-danger'>Erreur : ID de produit invalide.</p>");
+        }
         $product = AllProduct::getById($id);
 
         if (!$product) {
-            $this->redirectToRoute('/updateProduct?id=' . $id);
+            $this->redirectToRoute('/admin.product.edit');
             exit;
         }
+
+    
 
         if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $name = htmlspecialchars($_POST['name']);
@@ -82,10 +88,34 @@ class AllProductController extends AbstractController
             $category = htmlspecialchars($_POST['category']);
 
             $image = $product->getImage();
+            $image = $product->getImage(); // Conserve l'ancienne image par défaut
+            if (!empty($_FILES['image']['name'])) {
+                $targetDir = __DIR__ . "/../../public/uploads/";
+                $imageName = time() . "_" . basename($_FILES["image"]["name"]);
+                $targetFilePath = $targetDir . $imageName;
+                $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+                // Vérifier si c'est une image valide
+                $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+                if (in_array($imageFileType, $allowedExtensions)) {
+                    if (move_uploaded_file($_FILES["image"]["tmp_name"], $targetFilePath)) {
+                        $image = "/uploads/" . $imageName;
+                    }
+                }
+            }
+
+            // Mise à jour du produit
+            $updatedProduct = new AllProduct();
+            $updatedProduct->setName($name);
+            $updatedProduct->setDescription($description);
+            $updatedProduct->setPrice($price);
+            $updatedProduct->setStock($stock);
+            $updatedProduct->setCategory($category);
+            $updatedProduct->setImage($image);
 
             $updatedProduct = new AllProduct();
             if ($updatedProduct->update()) {
-                $this->redirectToRoute('/updateProduct?id=' . $id);
+                $this->redirectToRoute('/admin.product.edit');
                 exit;
             }
         }

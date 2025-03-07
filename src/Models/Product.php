@@ -46,6 +46,7 @@ class Product
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
     // Mettre à jour un produit
     public function updateProduct($id, $name, $description, $price, $stock, $category, $image)
     {
