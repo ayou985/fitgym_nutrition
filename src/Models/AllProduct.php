@@ -8,11 +8,11 @@ use PDO;
 class AllProduct
 {
     private ?int $id;
-    private string $name;
-    private string $description;
-    private float $price;
-    private int $stock;
-    private string $category;
+    private ?string $name;
+    private ?string $description;
+    private ?float $price;
+    private ?int $stock;
+    private ?string $category;
     private ?string $image;
 
     public function __construct(
@@ -33,25 +33,86 @@ class AllProduct
         $this->image = $image;
     }
 
-    // Getters
-    public function getId(): ?int { return $this->id; }
-    public function getName(): string { return $this->name; }
-    public function getDescription(): string { return $this->description; }
-    public function getPrice(): float { return $this->price; }
-    public function getStock(): int { return $this->stock; }
-    public function getCategory(): string { return $this->category; }
-    public function getImage(): ?string { return $this->image; }
+    // 🔹 **Getters**
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-    // Setters
-    public function setId(int $id): void { $this->id = $id; }
-    public function setName(string $name): void { $this->name = $name; }
-    public function setDescription(string $description): void { $this->description = $description; }
-    public function setPrice(float $price): void { $this->price = $price; }
-    public function setStock(int $stock): void { $this->stock = $stock; }
-    public function setCategory(string $category): void { $this->category = $category; }
-    public function setImage(?string $image): void { $this->image = $image; }
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-    // Récupérer un produit par son ID
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    // 🔹 **Setters**
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
+        return $this;
+    }
+
+    public function setStock(?int $stock): static
+    {
+        $this->stock = $stock;
+        return $this;
+    }
+
+    public function setCategory(?string $category): static
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+        return $this;
+    }
+
+    // 🔹 **Récupérer un produit par son ID**
     public static function getById(int $id): ?AllProduct
     {
         $db = Database::getInstance();
@@ -66,20 +127,18 @@ class AllProduct
             return null;
         }
 
-        // Création d'un objet AllProduct
-        $product = new AllProduct();
-        $product->setId($row['id']);
-        $product->setName($row['name']);
-        $product->setDescription($row['description']);
-        $product->setPrice($row['price']);
-        $product->setStock($row['stock']);
-        $product->setCategory($row['category']);
-        $product->setImage($row['image']);
-
-        return $product;
+        return new AllProduct(
+            $row['id'],
+            $row['name'],
+            $row['description'],
+            $row['price'],
+            $row['stock'],
+            $row['category'],
+            $row['image']
+        );
     }
 
-    // Récupérer tous les produits
+    // 🔹 **Récupérer tous les produits**
     public static function getAll(): array
     {
         $db = Database::getInstance();
@@ -91,29 +150,28 @@ class AllProduct
 
         $products = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $product = new AllProduct();  // Initialisation d'un nouveau produit pour chaque ligne
-            $product->setId($row['id']);
-            $product->setName($row['name']);
-            $product->setDescription($row['description']);
-            $product->setPrice($row['price']);
-            $product->setStock($row['stock']);
-            $product->setCategory($row['category']);
-            $product->setImage($row['image']);
-            $products[] = $product;  // Ajout du produit dans le tableau
+            $products[] = new AllProduct(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['stock'],
+                $row['category'],
+                $row['image']
+            );
         }
 
         return $products;
     }
 
-    // Enregistrer ou mettre à jour un produit
-    public function update(): bool
+    // 🔹 **Mettre à jour un produit**
+    public function edit(): bool
     {
         $db = Database::getInstance();
         $pdo = $db->getConnection();
 
         if ($this->id) {
-            // Mise à jour d'un produit existant
-            $sql = "UPDATE product SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ?, updatedAt = NOW() WHERE id = ?";
+            $sql = "UPDATE product SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ? WHERE id = ?";
             $statement = $pdo->prepare($sql);
             return $statement->execute([
                 $this->name,
@@ -125,7 +183,6 @@ class AllProduct
                 $this->id
             ]);
         } else {
-            // Création d'un nouveau produit
             $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
             $statement = $pdo->prepare($sql);
             return $statement->execute([
@@ -139,7 +196,7 @@ class AllProduct
         }
     }
 
-    // Supprimer un produit
+    // 🔹 **Supprimer un produit**
     public function delete(): bool
     {
         if (!$this->id) {

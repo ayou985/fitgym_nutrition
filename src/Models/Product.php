@@ -48,7 +48,7 @@ class Product
 
 
     // Mettre à jour un produit
-    public function updateProduct($id, $name, $description, $price, $stock, $category, $image)
+    public function editProduct($id, $name, $description, $price, $stock, $category, $image)
     {
         $sql = "UPDATE product SET 
                 name = :name, 

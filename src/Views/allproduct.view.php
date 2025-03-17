@@ -1,5 +1,5 @@
 <a href="/createProduct" class="btn btn-success">➕ Ajouter</a>
-<a href="/updateProduct?id=<?= $product['id'] ?>" class="btn btn-warning">✏️ Modifier</a>
+<a href="/editProduct?id=<?= $product['id'] ?>" class="btn btn-warning">✏️ Modifier</a>
 <a href="/delete?id=<?= $product['id'] ?>" class="btn btn-danger">🗑️ Supprimer</a>
 
 <table class="table">
@@ -21,7 +21,7 @@
                 <td><?= htmlspecialchars($product['price']) ?> €</td>
                 <td>
                     <a href="/createProduct" class="btn btn-primary">Créer un product</a>
-                    <a href="/updateProduct?id=" class="btn btn-warning">Modifier</a>
+                    <a href="/editProduct?id=" class="btn btn-warning">Modifier</a>
                     <a href="/delete" class="btn btn-danger">Supprimer</a>
 
                 </td>

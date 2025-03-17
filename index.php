@@ -11,7 +11,7 @@ $router = new Router();
 
 // 🌍 Routes principales
 $router->addRoute('/', 'HomeController', 'index'); // Page d'accueil
-$router->addRoute('/product', 'ProductController', 'product'); // Page des produits
+$router->addRoute('/products', 'ProductController', 'product'); // Page des produits
 $router->addRoute('/about', 'AboutController', 'about'); // Page à propos
 $router->addRoute('/contact', 'ContactController', 'contact'); // Page de contact
 
@@ -26,7 +26,7 @@ $router->addRoute('/auth/verify', 'AuthController', 'verifyAuth'); // Vérificat
 
 // 🛒 Routes pour le CRUD AllProduct (Produits)
 $router->addRoute('/createProduct', 'AllProductController', 'createProduct');
-$router->addRoute('/updateProduct', 'AllProductController', 'updateProduct');
+$router->addRoute('/editProduct', 'AllProductController', 'editProduct');
 $router->addRoute('/deleteProduct', 'AllProductController', 'deleteProduct');
 $router->addRoute('/store', 'AllProductController', 'store');
 $router->addRoute('/read', 'AllProductController', 'index');

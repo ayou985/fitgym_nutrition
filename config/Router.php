@@ -8,12 +8,13 @@ class Router
 {
     private array $routes = [];
 
-    public function getUri()
+    public function getUri(): string
     {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        return $uri ?? '/'; // Éviter un retour null
     }
 
-    public function addRoute(string $pattern, string $controllerClass, string $method)
+    public function addRoute(string $pattern, string $controllerClass, string $method): void
     {
         $this->routes[$pattern] = [
             'controller' => $controllerClass,
@@ -21,7 +22,7 @@ class Router
         ];
     }
 
-    public function handleRequest()
+    public function handleRequest(): void
     {
         $uri = $this->getUri();
         $routeFound = false;
@@ -31,7 +32,7 @@ class Router
             $controllerClass = "App\\Controllers\\AllProductController";
             $controller = new $controllerClass();
 
-            $controller->updateProduct(
+            $controller->editProduct(
                 $_POST['id'] ?? null,
                 $_POST['name'] ?? '',
                 $_POST['description'] ?? '',
@@ -45,19 +46,36 @@ class Router
 
         // 🔹 Parcourir les routes définies
         foreach ($this->routes as $pattern => $routeInfo) {
-            if (preg_match("#^" . $pattern . "$#", $uri, $matches)) {
+            if (!is_string($uri)) {
+                $uri = ''; // Assurer que $uri est toujours une chaîne
+            }
+
+            if (!is_string($pattern)) {
+                continue; // Passer les routes non valides
+            }
+
+            if (preg_match("#^" . preg_quote($pattern, '#') . "$#", $uri, $matches)) {
                 $routeFound = true;
 
-                $controllerClass = $routeInfo['controller'];
+                $controllerClass = "App\\Controllers\\" . $routeInfo['controller'];
                 $method = $routeInfo['method'];
 
-                $controllerClass = "App\\Controllers\\" . $controllerClass;
+                if (!class_exists($controllerClass)) {
+                    echo "Erreur : Contrôleur `$controllerClass` introuvable.";
+                    return;
+                }
+
                 $controller = new $controllerClass();
 
                 // Ignorer la première correspondance et appeler la méthode avec les arguments trouvés
                 array_shift($matches);
-                call_user_func_array([$controller, $method], $matches);
 
+                if (!method_exists($controller, $method)) {
+                    echo "Erreur : Méthode `$method` introuvable dans `$controllerClass`.";
+                    return;
+                }
+
+                call_user_func_array([$controller, $method], $matches);
                 break;
             }
         }

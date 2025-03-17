@@ -42,15 +42,15 @@ require_once(__DIR__ . "/partials/head.php");
                 <?php foreach ($products as $product) : ?>
                     <div class="col-md-4 mb-4">
                         <div class="card">
-                            <img src="/uploads/<?= htmlspecialchars($product->image) ?>" class="card-img-top" alt="<?= htmlspecialchars($product->name) ?>">
+                            <img src="/public/uploads/<?= $product->getImage() ?>" class="card-img-top" alt="<?= htmlspecialchars($product->getName()) ?>">
                             <div class="card-body text-center">
-                                <h5 class="card-title"><?= htmlspecialchars($product->name) ?></h5>
-                                <p class="card-text"><?= htmlspecialchars($product->price) ?> €</p>
-                                <a href="/product<?= $product->id ?>" class="btn btn-primary">Voir le produit</a>
+                                <h5 class="card-title"><?= htmlspecialchars($product->getName()) ?></h5>
+                                <p class="card-text"><?= htmlspecialchars($product->getPrice()) ?> €</p>
+                                <a href="/product?id=<?= $product->getId() ?>" class="btn btn-primary">Voir le produit</a>
 
                                 <?php if (isset($_SESSION['user']) && $_SESSION['user']['idRole'] == 1) : ?>
-                                    <a href="/updateProduct?id=<?= $product->id ?>" class="btn btn-warning">Modifier</a>
-                                    <a href="/deleteProduct?id=<?= $product->id ?>" class="btn btn-danger"
+                                    <a href="/editProduct?id=<?= $product->getId() ?>" class="btn btn-warning">Modifier</a>
+                                    <a href="/deleteProduct?id=<?= $product->getId() ?>" class="btn btn-danger"
                                         onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
                                         Supprimer
                                     </a>
