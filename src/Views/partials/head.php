@@ -23,7 +23,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
       </div>
       <ul class="nav-links">
         <li><a class="nav-link" href="/">Accueil</a></li>
-        <li><a class="nav-link" href="/product">Produits</a></li>
+        <li><a class="nav-link" href="/products">Produits</a></li>
         <li><a class="nav-link" href="/about">À propos</a></li>
         <li><a class="nav-link" href="/contact">Contact</a></li>
       </ul>

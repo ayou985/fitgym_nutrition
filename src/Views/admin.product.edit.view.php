@@ -32,20 +32,11 @@ require_once(__DIR__ . '/../Views/partials/head.php');
             <input type="text" name="category" value="<?= htmlspecialchars($product->getCategory()); ?>" required>
         </div>
 
-        <div class="mb-3">
-            <label for="image">Image actuelle :</label>
-            <br>
-            <?php if (!empty($product->getImage())): ?>
-                <img src="/public/uploads/ <?= htmlspecialchars($product->getImage()); ?>" alt="Image du produit" style="width: 150px;">
-            <?php else: ?>
-                <p>Aucune image disponible</p>
-            <?php endif; ?>
-        </div>
-
-        <div class="mb-3">
+        
+        <!-- <div class="mb-3">
             <label for="image">Changer l'image</label>
             <input type="file" name="image" accept="image/*">
-        </div>
+        </div> -->
 
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </div>

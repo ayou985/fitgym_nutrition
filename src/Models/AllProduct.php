@@ -164,11 +164,15 @@ class AllProduct
         return $products;
     }
 
-    // 🔹 **Mettre à jour un produit**
-    public function edit(): bool
+    public function edit()
     {
         $db = Database::getInstance();
         $pdo = $db->getConnection();
+
+        // Vérifier si une image est bien fournie
+        if (empty($this->image)) {
+            $this->image = 'default.jpg'; // Mettre une image par défaut
+        }
 
         if ($this->id) {
             $sql = "UPDATE product SET name = ?, description = ?, price = ?, stock = ?, category = ?, image = ? WHERE id = ?";
@@ -182,32 +186,37 @@ class AllProduct
                 $this->image,
                 $this->id
             ]);
-        } else {
-            $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
-            $statement = $pdo->prepare($sql);
-            return $statement->execute([
-                $this->name,
-                $this->description,
-                $this->price,
-                $this->stock,
-                $this->category,
-                $this->image
-            ]);
         }
     }
 
-    // 🔹 **Supprimer un produit**
-    public function delete(): bool
-    {
-        if (!$this->id) {
-            return false;
-        }
-
+    public function createProduct(){
         $db = Database::getInstance();
         $pdo = $db->getConnection();
-
-        $sql = "DELETE FROM product WHERE id = ?";
+        $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
         $statement = $pdo->prepare($sql);
-        return $statement->execute([$this->id]);
+        return $statement->execute([
+            $this->name,
+            $this->description,
+            $this->price,
+            $this->stock,
+            $this->category,
+            $this->image
+        ]);
     }
+    public function delete(): bool
+{
+    $db = Database::getInstance();
+    $pdo = $db->getConnection();
+
+    $sql = "DELETE FROM product WHERE id = ?";
+    $statement = $pdo->prepare($sql);
+
+    if ($statement->execute([$this->id])) {
+        return true;
+    } else {
+        error_log("Erreur SQL : " . implode(" | ", $statement->errorInfo()));
+        return false;
+    }
+}
+
 }

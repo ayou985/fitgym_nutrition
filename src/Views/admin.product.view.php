@@ -53,7 +53,10 @@ if (!isset($products) || !is_array($products)) {
         <?php foreach ($products as $product) {
         ?>
             <div class="product-card">
-                <img src="/uploads/<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+                <img src=public/uploads<?= str_replace('/public', '', htmlspecialchars($product['image'])); ?>"
+                    alt="<?= htmlspecialchars($product['name']); ?>"
+                    style="max-width: 150px; height: auto; border: 1px solid #ddd;">
+
                 <h3><?= htmlspecialchars($product['name']) ?></h3>
                 <p><?= htmlspecialchars($product['description']) ?></p>
                 <p class="price"><?= htmlspecialchars($product['price']) ?> €</p>
