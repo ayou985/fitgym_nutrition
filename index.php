@@ -13,7 +13,12 @@ $router = new Router();
 $router->addRoute('/', 'HomeController', 'index'); // Page d'accueil
 $router->addRoute('/products', 'ProductController', 'product'); // Page des produits
 $router->addRoute('/about', 'AboutController', 'about'); // Page à propos
+$router->addRoute('/services', 'ServicesController', 'services'); // Page de services
+$router->addRoute('/pourquoinous', 'PourquoinousController', 'pourquoinous'); // Page de pourquoi nous
 $router->addRoute('/contact', 'ContactController', 'contact'); // Page de contact
+$router->addRoute('/mentionlegale', 'MentionlegaleController', 'mentionlegale'); // Page des mentions légales
+$router->addRoute('/cgv', 'CGVController', 'cgv'); // Page de CGV
+
 
 // 🔐 Routes d'inscription et de connexion
 $router->addRoute('/register', 'RegisterController', 'register'); // Inscription
@@ -30,6 +35,11 @@ $router->addRoute('/editProduct', 'AllProductController', 'editProduct');
 $router->addRoute('/deleteProduct', 'AllProductController', 'deleteProduct');
 $router->addRoute('/store', 'AllProductController', 'store');
 $router->addRoute('/read', 'AllProductController', 'index');
+$router->addRoute('/produitdetail', 'ProduitdetailController', 'produitdetail');
+$router->addRoute('/cart', 'CartController', 'showCart');
+$router->addRoute('/cart/add', 'CartController', 'addToCart');
+$router->addRoute('/cart/update', 'CartController', 'updateCart');
+$router->addRoute('/cart/remove', 'CartController', 'removeFromCart');
 
 
 // 🚀 Gérer la requête actuelle

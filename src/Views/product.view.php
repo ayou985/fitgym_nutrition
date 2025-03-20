@@ -46,7 +46,7 @@ require_once(__DIR__ . "/partials/head.php");
                             <div class="card-body text-center">
                                 <h5 class="card-title"><?= htmlspecialchars($product->getName()) ?></h5>
                                 <p class="card-text"><?= htmlspecialchars($product->getPrice()) ?> €</p>
-                                <a href="/product?id=<?= $product->getId() ?>" class="btn btn-primary">Voir le produit</a>
+                                <a href="/produitdetail?id=<?= $product->getId() ?>" class="btn btn-primary">Voir le produit</a>
 
                                 <?php if (isset($_SESSION['user']) && $_SESSION['user']['idRole'] == 1) : ?>
                                     <a href="/editProduct?id=<?= $product->getId() ?>" class="btn btn-warning">Modifier</a>

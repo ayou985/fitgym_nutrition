@@ -29,7 +29,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
       </ul>
       <ul class="nav-icons">
         <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
-        <li><a class="nav-icon" href="/shopping"><i class="fa-solid fa-cart-shopping"></i></a></li>
+        <li><a class="nav-icon" href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
 
         <?php if (!isset($_SESSION['user'])) : ?>
           <li><a class="nav-icon" href="/register"><i class="fa-solid fa-user-plus"></i> S'inscrire</a></li>

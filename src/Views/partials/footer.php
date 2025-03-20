@@ -1,6 +1,6 @@
 <footer class="footer">
   <div class="footer-left">
-    <a href="/"><img src="public/img/logo.png" alt="logo-footer"></a>
+    <a href="/"><img src="/public/img/logo.png" alt="logo-footer"></a>
   </div>
   <div class="footer-top">
     <p>
@@ -13,8 +13,11 @@
     <nav class="footer-nav">
       <a href="/about">À propos</a>
       <a href="/services">Services</a>
-      <a href="/why-us">Pourquoi nous</a>
+      <a href="/pourquoinous">Pourquoi nous</a>
       <a href="/contact">Contact</a>
+      <a href="/mentionlegale">Mentions légales</a>
+      <a href="/cgv">CGV</a>
+
     </nav>
     <div class="social-icons">
       <a href="#"><i class="icon-facebook"></i></a>
