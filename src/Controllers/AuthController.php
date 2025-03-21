@@ -130,7 +130,7 @@ class User
     public function getLastName(): ?string { return $this->lastName; }
     public function getPhoneNumber(): ?string { return $this->phoneNumber; }
     public function getAddress(): ?string { return $this->address; }
-    public function getIdRole(): ?int { return $this->id_Role; }
+    public function getId_Role(): ?int { return $this->id_Role; }
 
     // Setters
     public function setId(int $id): static { $this->id = $id; return $this; }
@@ -140,5 +140,5 @@ class User
     public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
     public function setPhoneNumber(string $phoneNumber): static { $this->phoneNumber = $phoneNumber; return $this; }
     public function setAddress(string $address): static { $this->address = $address; return $this; }
-    public function setIdRole(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
+    public function setId_Role(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
 }

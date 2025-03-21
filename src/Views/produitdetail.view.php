@@ -6,7 +6,7 @@ require_once(__DIR__ . "/partials/head.php");
     <div class="row">
         <!-- Image du produit -->
         <div class="col-md-6">
-            <img src="/public/uploads/<?= htmlspecialchars($produit->getImage() ?? 'default.jpg') ?>"
+            <img src="/public/uploads/<?= htmlspecialchars($produit->getImage() ?? 'default.jpg') ?>" 
                 class="img-fluid product-image"
                 alt="<?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?>">
         </div>
@@ -14,19 +14,24 @@ require_once(__DIR__ . "/partials/head.php");
         <!-- Infos du produit -->
         <div class="col-md-6">
             <h1><?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?></h1>
-            <p class="product-category">Catégorie : <?= htmlspecialchars($produit->getCategory() ?? 'Non classé') ?></p>
-            <p class="product-stock">Stock : <?= htmlspecialchars($produit->getStock() ?? 0) ?> unités disponibles</p>
+            <p class="product-category"><strong>Catégorie :</strong> <?= htmlspecialchars($produit->getCategory() ?? 'Non classé') ?></p>
+            <p class="product-stock"><strong>Stock :</strong> <?= htmlspecialchars($produit->getStock() ?? 0) ?> unités disponibles</p>
             <p class="product-description"><?= nl2br(htmlspecialchars($produit->getDescription() ?? 'Description non disponible')) ?></p>
-            <p class="product-price"><?= number_format($produit->getPrice() ?? 0.00, 2, ',', ' ') ?> €</p>
+            <p class="product-price"><strong>Prix :</strong> <?= number_format($produit->getPrice() ?? 0.00, 2, ',', ' ') ?> €</p>
 
-            <label for="quantity">Quantité :</label>
-            <div class="quantity-control">
-                <button onclick="decreaseQuantity()">-</button>
-                <input type="number" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?? 1 ?>">
-                <button onclick="increaseQuantity()">+</button>
-            </div>
+            <!-- Formulaire d'ajout au panier -->
+            <form action="/cart/add" method="POST">
+                <input type="hidden" name="id" value="<?= $produit->getId() ?>">
 
-            <button class="btn-add-cart">Ajouter au panier</button>
+                <label for="quantity"><strong>Quantité :</strong></label>
+                <div class="quantity-control">
+                    <button type="button" onclick="changeQuantity(-1)">-</button>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?? 1 ?>">
+                    <button type="button" onclick="changeQuantity(1)">+</button>
+                </div>
+
+                <button type="submit" class="btn-add-cart">🛒 Ajouter au panier</button>
+            </form>
         </div>
     </div>
 
@@ -58,17 +63,14 @@ require_once(__DIR__ . "/partials/head.php");
     </div>
 </div>
 
-
-
+<!-- Script JS pour gérer la quantité -->
 <script>
-    function decreaseQuantity() {
-        let qty = document.getElementById("quantity");
-        if (qty.value > 1) qty.value--;
-    }
-
-    function increaseQuantity() {
-        let qty = document.getElementById("quantity");
-        if (qty.value < <?= $produit->getStock() ?? 1 ?>) qty.value++;
+    function changeQuantity(amount) {
+        let qtyInput = document.getElementById("quantity");
+        let newValue = parseInt(qtyInput.value) + amount;
+        if (newValue >= 1 && newValue <= <?= $produit->getStock() ?? 1 ?>) {
+            qtyInput.value = newValue;
+        }
     }
 </script>
 

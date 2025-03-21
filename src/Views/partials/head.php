@@ -37,11 +37,11 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         <?php else : ?>
           <?php
           $prenom = $_SESSION['user']['firstName'] ?? 'Utilisateur';
-          $idRole = $_SESSION['user']['idRole'] ?? null;
+          $id_Role = $_SESSION['user']['id_Role'] ?? null;
           ?>
           <li><span class="nav-text">Bienvenue <?= htmlspecialchars($prenom); ?></span></li>
-          <?php if ($idRole == 1) : ?>
-            <li><a class="nav-icon" href="/admin"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
+          <?php if ($id_Role == 1) : ?>
+            <li><a class="nav-icon" href="/profile"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
           <?php endif; ?>
           <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
         <?php endif; ?>
@@ -49,7 +49,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
     </div>
   </nav>
 
-  <?php if (isset($_SESSION['user']) && $idRole == 1) : ?>
+  <?php if (isset($_SESSION['user']) && $id_Role == 1) : ?>
     <nav class="admin-menu">
       <ul class="nav-icons">
         <li><a class="nav-icon" href="/createProduct"><i class="fa-solid fa-plus"></i> Créer un article</a></li>

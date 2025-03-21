@@ -66,9 +66,9 @@ abstract class AbstractController
                     $this->arrayError['content'] = 'Merci de renseigner un contenu correcte!';
                 }
                 break;
-            case 'idRole':
+            case 'id_Role':
                 if (!preg_match($regexRole, $value)) {
-                    $this->arrayError['idRole'] = 'Merci de renseigner un rôle correct!';
+                    $this->arrayError[''] = 'Merci de renseigner un rôle correct!';
                 }
                 break;
             case 'start_task':

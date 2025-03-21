@@ -42,6 +42,18 @@ $router->addRoute('/cart/update', 'CartController', 'updateCart');
 $router->addRoute('/cart/remove', 'CartController', 'removeFromCart');
 
 
+// 🧑‍💼 Routes pour la gestion du profil utilisateur
+$router->addRoute('/profile', 'UserController', 'profile'); // Voir le profil
+$router->addRoute('/profile/update', 'UserController', 'updateProfile'); // Modifier les infos
+$router->addRoute('/profile/change-password', 'UserController', 'changePassword'); // Modifier le mot de passe
+$router->addRoute('/profile/delete', 'UserController', 'deleteAccount'); // Supprimer le compte
+
+
+$router->addRoute('/listUsers', 'UserController', 'listUsers');  // Liste des utilisateurs
+$router->addRoute('/editUser', 'UserController', 'editUser'); // Modifier un utilisateur
+$router->addRoute('/deleteUser', 'UserController', 'deleteUser'); // Supprimer un utilisateur
+
+
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();
 

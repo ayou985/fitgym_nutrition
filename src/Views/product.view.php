@@ -48,7 +48,7 @@ require_once(__DIR__ . "/partials/head.php");
                                 <p class="card-text"><?= htmlspecialchars($product->getPrice()) ?> €</p>
                                 <a href="/produitdetail?id=<?= $product->getId() ?>" class="btn btn-primary">Voir le produit</a>
 
-                                <?php if (isset($_SESSION['user']) && $_SESSION['user']['idRole'] == 1) : ?>
+                                <?php if (isset($_SESSION['user']) && $_SESSION['user']['id_Role'] == 1) : ?>
                                     <a href="/editProduct?id=<?= $product->getId() ?>" class="btn btn-warning">Modifier</a>
                                     <a href="/deleteProduct?id=<?= $product->getId() ?>" class="btn btn-danger"
                                         onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">

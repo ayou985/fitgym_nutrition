@@ -32,7 +32,7 @@ class LoginController extends AbstractController
                     'lastName'    => $user->getLastName(),
                     'phoneNumber' => $user->getPhoneNumber(),
                     'address'     => $user->getAddress(),
-                    'idRole'      => $user->getIdRole()
+                    'id_Role'      => $user->getId_Role()
                 ];
 
                 // Redirection après connexion

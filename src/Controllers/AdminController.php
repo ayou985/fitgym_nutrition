@@ -13,7 +13,7 @@ class AdminController extends AbstractController
             session_start();
         }
         // Vérifier si l'utilisateur est un admin
-        if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] != 1) {
             die("Accès refusé.");
         }
 
@@ -29,7 +29,7 @@ class AdminController extends AbstractController
             session_start();
         }
 
-        if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
+        if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] != 1) {
             die("Accès refusé.");
         }
 
@@ -40,6 +40,6 @@ class AdminController extends AbstractController
             User::updateRole($userId, $newRole);
         }
 
-        $this->redirectToRoute('/admin');
+        $this->redirectToRoute('/profile');
     }
 }

@@ -40,7 +40,7 @@
     <?php if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    if (!isset($_SESSION['user']) || $_SESSION['user']['idRole'] != 1) {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] != 1) {
         header("Location: user_dashboard.php"); // Redirige les non-admins
         exit;
     }

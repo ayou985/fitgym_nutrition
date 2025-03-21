@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/../Views/partials/head.php"); 
 ?>
 
-<h1 class="cart-title">🛒 Mon Panier</h1>
+<h1 class="cart-title">Mon Panier</h1>
 
 <div class="cart-container">
     <?php if (!empty($cartItems)) : ?>
