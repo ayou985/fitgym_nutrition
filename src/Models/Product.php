@@ -77,4 +77,33 @@ class Product
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([':id' => $id]);
     }
+
+    // Filtrer les produits
+    public static function filter(array $categories = [], array $flavors = [], ?float $maxPrice = null): array {
+        $pdo = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM product WHERE 1=1";
+        $params = [];
+    
+        if (!empty($categories)) {
+            $placeholders = implode(',', array_fill(0, count($categories), '?'));
+            $sql .= " AND category IN ($placeholders)";
+            $params = array_merge($params, $categories);
+        }
+    
+        if (!empty($flavors)) {
+            $placeholders = implode(',', array_fill(0, count($flavors), '?'));
+            $sql .= " AND flavor IN ($placeholders)";
+            $params = array_merge($params, $flavors);
+        }
+    
+        if ($maxPrice !== null) {
+            $sql .= " AND price <= ?";
+            $params[] = $maxPrice;
+        }
+    
+        $statement = $pdo->prepare($sql);
+        $statement->execute($params);
+    
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

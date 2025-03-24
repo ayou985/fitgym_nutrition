@@ -52,6 +52,11 @@ $router->addRoute('/profile/delete', 'UserController', 'deleteAccount'); // Supp
 $router->addRoute('/listUsers', 'UserController', 'listUsers');  // Liste des utilisateurs
 $router->addRoute('/editUser', 'UserController', 'editUser'); // Modifier un utilisateur
 $router->addRoute('/deleteUser', 'UserController', 'deleteUser'); // Supprimer un utilisateur
+$router->addRoute('/updateUser', 'UserController', 'updateUser'); // Traiter la mise à jour d'un utilisateur
+
+
+$router->addRoute('/paiement', 'PaiementController', 'showPaiement'); // Affichage
+$router->addRoute('/paiement/process', 'PaiementController', 'processPaiement'); // Traitement
 
 
 // 🚀 Gérer la requête actuelle

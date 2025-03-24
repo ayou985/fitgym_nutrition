@@ -25,7 +25,7 @@
                         style="max-width: 80px; height: auto; border: 1px solid #ddd;">
                 </td>
 
-                <td><?= htmlspecialchars($product['name']) ?></td>
+                <td><?= ($product['name']) ?></td>
                 <td><?= htmlspecialchars($product['description']) ?></td>
                 <td><?= htmlspecialchars($product['price']) ?> €</td>
                 <td>

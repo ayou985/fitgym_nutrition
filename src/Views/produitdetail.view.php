@@ -16,7 +16,7 @@ require_once(__DIR__ . "/partials/head.php");
             <h1><?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?></h1>
             <p class="product-category"><strong>Catégorie :</strong> <?= htmlspecialchars($produit->getCategory() ?? 'Non classé') ?></p>
             <p class="product-stock"><strong>Stock :</strong> <?= htmlspecialchars($produit->getStock() ?? 0) ?> unités disponibles</p>
-            <p class="product-description"><?= nl2br(htmlspecialchars($produit->getDescription() ?? 'Description non disponible')) ?></p>
+            <p class="product-description"><?= nl2br(html_entity_decode($produit->getDescription() ?? 'Description non disponible')) ?></p>
             <p class="product-price"><strong>Prix :</strong> <?= number_format($produit->getPrice() ?? 0.00, 2, ',', ' ') ?> €</p>
 
             <!-- Formulaire d'ajout au panier -->

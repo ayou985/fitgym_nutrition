@@ -144,7 +144,8 @@ class User
         $statement = $pdo->prepare($sql);
         return $statement->execute([$newRole, $userId]);
     }
-
+    
+    // ✅ CHANGER LE MOT DE PASSE D'UN UTILISATEUR
 
     public static function updatePassword($id, $hashedPassword)
     {
@@ -185,7 +186,7 @@ class User
     {
         return $this->address;
     }
-    public function getId_Role(): ?int
+    public function getIdRole(): ?int
     {
         return $this->id_Role;
     }

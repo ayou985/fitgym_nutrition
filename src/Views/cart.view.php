@@ -44,8 +44,8 @@ require_once(__DIR__ . "/../Views/partials/head.php");
             <button type="submit" class="btn-update">Mettre à jour</button>
         </form>
         
-        <a href="/checkout" class="btn-checkout">Passer la commande</a>
-    <?php else : ?>
+        <a href="/paiement" class="btn btn-link">Passer la commande</a>
+        <?php else : ?>
         <p class="cart-empty">Votre panier est vide.</p>
     <?php endif; ?>
 </div>

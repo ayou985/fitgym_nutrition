@@ -68,9 +68,43 @@ class UserController
         exit();
     }
 
+
+    public function updateUser()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $firstName = $_POST['firstName'];
+            $lastName = $_POST['lastName'];
+            $email = $_POST['email'];
+            $phone = $_POST['phoneNumber'];
+            $address = $_POST['address'];
+            $idRole = $_POST['idRole'];
+
+            $user = new \App\Models\User(
+                $id,
+                $email,
+                null, // mot de passe non modifié ici
+                $firstName,
+                $lastName,
+                $phone,
+                $address,
+                $idRole
+            );
+
+            if ($user->updateUser()) {
+                header("Location: /listUsers");
+                exit;
+            } else {
+                echo "Erreur lors de la mise à jour.";
+            }
+        } else {
+            echo "Méthode non autorisée.";
+        }
+    }
+
     public function editUser()
     {
-        
+
 
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] != 1) {
             header("Location: /editUser");
@@ -83,7 +117,7 @@ class UserController
         }
         $id = intval($_GET['id']);
         $user = User::getUserById($id);
-    
+
 
         $user = User::getUserById($id);
 
