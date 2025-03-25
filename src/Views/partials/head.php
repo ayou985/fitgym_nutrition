@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +29,19 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         <li><a class="nav-link" href="/contact">Contact</a></li>
       </ul>
       <ul class="nav-icons">
-        <li><a class="nav-icon" href="/search"><i class="fa-solid fa-search"></i></a></li>
+        <li>
+          <form action="/products" method="GET" style="display: flex; align-items: center;" id="search-form">
+            <input
+              type="text"
+              name="search"
+              placeholder="Rechercher..."
+              id="search-input"
+              style="display: none; padding: 5px; border-radius: 5px;" />
+            <button type="button" class="nav-icon" id="search-icon" style="all: unset; cursor: pointer;">
+              <i class="fa-solid fa-search"></i>
+            </button>
+          </form>
+        </li>
         <li><a class="nav-icon" href="/cart"><i class="fa-solid fa-cart-shopping"></i></a></li>
 
         <?php if (!isset($_SESSION['user'])) : ?>
@@ -56,5 +69,22 @@ if (session_status() == PHP_SESSION_NONE) session_start();
       </ul>
     </nav>
   <?php endif; ?>
+
+  <script>
+    const searchIcon = document.getElementById('search-icon');
+    const searchInput = document.getElementById('search-input');
+    const searchForm = document.getElementById('search-form');
+
+    searchIcon.addEventListener('click', () => {
+      if (searchInput.style.display === 'none') {
+        searchInput.style.display = 'inline-block';
+        searchInput.focus();
+      } else if (searchInput.value !== '') {
+        searchForm.submit();
+      }
+    });
+  </script>
+
 </body>
+
 </html>

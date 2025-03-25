@@ -78,32 +78,37 @@ class Product
         return $stmt->execute([':id' => $id]);
     }
 
-    // Filtrer les produits
-    public static function filter(array $categories = [], array $flavors = [], ?float $maxPrice = null): array {
-        $pdo = Database::getInstance()->getConnection();
-        $sql = "SELECT * FROM product WHERE 1=1";
-        $params = [];
-    
+    public function getFilteredProducts(array $categories, array $flavors, $maxPrice)
+    {
+        $sql = "SELECT * FROM produits WHERE price <= ?";
+        $params = [$maxPrice];
+
         if (!empty($categories)) {
-            $placeholders = implode(',', array_fill(0, count($categories), '?'));
-            $sql .= " AND category IN ($placeholders)";
-            $params = array_merge($params, $categories);
+            // Si UNE SEULE catégorie, on fait une égalité stricte
+            if (count($categories) === 1) {
+                $sql .= " AND categorie = ?";
+                $params[] = $categories[0];
+            } else {
+                // Sinon, on garde le IN pour plusieurs
+                $placeholders = implode(',', array_fill(0, count($categories), '?'));
+                $sql .= " AND categorie IN ($placeholders)";
+                $params = array_merge($params, $categories);
+            }
         }
-    
+
         if (!empty($flavors)) {
-            $placeholders = implode(',', array_fill(0, count($flavors), '?'));
-            $sql .= " AND flavor IN ($placeholders)";
-            $params = array_merge($params, $flavors);
+            if (count($flavors) === 1) {
+                $sql .= " AND saveur = ?";
+                $params[] = $flavors[0];
+            } else {
+                $placeholders = implode(',', array_fill(0, count($flavors), '?'));
+                $sql .= " AND saveur IN ($placeholders)";
+                $params = array_merge($params, $flavors);
+            }
         }
-    
-        if ($maxPrice !== null) {
-            $sql .= " AND price <= ?";
-            $params[] = $maxPrice;
-        }
-    
-        $statement = $pdo->prepare($sql);
-        $statement->execute($params);
-    
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 }
