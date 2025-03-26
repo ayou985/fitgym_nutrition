@@ -189,7 +189,8 @@ class AllProduct
         }
     }
 
-    public function createProduct(){
+    public function createProduct()
+    {
         $db = Database::getInstance();
         $pdo = $db->getConnection();
         $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
@@ -204,19 +205,46 @@ class AllProduct
         ]);
     }
     public function delete(): bool
-{
-    $db = Database::getInstance();
-    $pdo = $db->getConnection();
+    {
+        $db = Database::getInstance();
+        $pdo = $db->getConnection();
 
-    $sql = "DELETE FROM product WHERE id = ?";
-    $statement = $pdo->prepare($sql);
+        $sql = "DELETE FROM product WHERE id = ?";
+        $statement = $pdo->prepare($sql);
 
-    if ($statement->execute([$this->id])) {
-        return true;
-    } else {
-        error_log("Erreur SQL : " . implode(" | ", $statement->errorInfo()));
-        return false;
+        if ($statement->execute([$this->id])) {
+            return true;
+        } else {
+            error_log("Erreur SQL : " . implode(" | ", $statement->errorInfo()));
+            return false;
+        }
     }
-}
 
+    public static function userHasReviewed($userId, $productId)
+    {
+        $db = Database::getInstance()->getConnection(); // Ensure $db is a PDO instance
+        $query = $db->prepare("SELECT COUNT(*) FROM reviews WHERE user_id = ? AND product_id = ?");
+        $query->execute([$userId, $productId]);
+        return $query->fetchColumn() > 0;
+    }
+
+    public static function createReview($comment, $rating, $userId, $productId)
+    {
+        $db = Database::getInstance()->getConnection();
+        $query = $db->prepare("INSERT INTO reviews (comment, rating, user_id, product_id, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $query->execute([$comment, $rating, $userId, $productId]);
+    }
+
+    public static function getReviewsByProductId($productId) {
+        $db = Database::getInstance()->getConnection();
+        $query = $db->prepare("
+            SELECT r.comment, r.rating, r.created_at, u.firstname, u.lastname
+            FROM reviews r
+            JOIN users u ON r.user_id = u.id
+            WHERE r.product_id = ?
+            ORDER BY r.created_at DESC
+        ");
+        $query->execute([$productId]);
+        return $query->fetchAll();
+    }
 }

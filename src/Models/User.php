@@ -17,6 +17,7 @@ class User
     protected ?string $phoneNumber;
     protected ?string $address;
     protected ?int $id_Role;
+    protected ?string $profile_image = null;
 
     public function __construct(?int $id, ?string $email, ?string $password, ?string $firstName, ?string $lastName, ?string $phoneNumber, ?string $address, ?int $id_Role)
     {
@@ -77,43 +78,58 @@ class User
 
     // ✅ RÉCUPÉRER UN UTILISATEUR PAR ID
     public static function getUserById($id): ?User
-    {
-        $pdo = Database::getInstance()->getConnection();
-        $sql = "SELECT * FROM user WHERE id = ?";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$id]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
+{
+    $pdo = Database::getInstance()->getConnection();
+    $sql = "SELECT * FROM user WHERE id = ?";
+    $statement = $pdo->prepare($sql);
+    $statement->execute([$id]);
+    $row = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if ($row) {
-            return new User(
-                $row['id'],
-                $row['email'],
-                $row['password'],
-                $row['firstName'],
-                $row['lastName'],
-                $row['phoneNumber'],
-                $row['address'],
-                $row['id_Role']
-            );
-        }
-        return null;
+    if ($row) {
+        $user = new User(
+            $row['id'],
+            $row['email'],
+            $row['password'],
+            $row['firstName'],
+            $row['lastName'],
+            $row['phoneNumber'],
+            $row['address'],
+            $row['id_Role']
+        );
+
+        // On hydrate aussi l'image ici !
+        $user->setProfileImage($row['profile_image'] ?? null);
+
+        return $user;
+    }
+    return null;
     }
 
     // ✅ MISE À JOUR DU PROFIL
     public function updateUser(): bool
-    {
-        $pdo = Database::getInstance()->getConnection();
-        $sql = "UPDATE user SET email = ?, firstName = ?, lastName = ?, phoneNumber = ?, address = ? WHERE id = ?";
-        $statement = $pdo->prepare($sql);
+{
+    $pdo = Database::getInstance()->getConnection();
 
-        return $statement->execute([
-            $this->email,
-            $this->firstName,
-            $this->lastName,
-            $this->phoneNumber,
-            $this->address,
-            $this->id
-        ]);
+    $sql = "UPDATE user 
+            SET email = ?, 
+                firstName = ?, 
+                lastName = ?, 
+                phoneNumber = ?, 
+                address = ?, 
+                profile_image = ?
+            WHERE id = ?";
+
+    $statement = $pdo->prepare($sql);
+
+    return $statement->execute([
+        $this->email,
+        $this->firstName,
+        $this->lastName,
+        $this->phoneNumber,
+        $this->address,
+        $this->profile_image,
+        $this->id
+    ]);
     }
 
     // ✅ SUPPRESSION D'UN UTILISATEUR
@@ -144,7 +160,7 @@ class User
         $statement = $pdo->prepare($sql);
         return $statement->execute([$newRole, $userId]);
     }
-    
+
     // ✅ CHANGER LE MOT DE PASSE D'UN UTILISATEUR
 
     public static function updatePassword($id, $hashedPassword)
@@ -157,6 +173,21 @@ class User
         $stmt->execute();
     }
 
+    public static function userHasReviewed($userId, $productId): bool
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM review WHERE id_User = ? AND id_Product = ?");
+        $stmt->execute([$userId, $productId]);
+        return $stmt->fetchColumn() > 0;
+    }
+    public static function getByProductId($productId): array
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare("SELECT r.*, u.firstName, u.lastName FROM review r JOIN user u ON r.id_User = u.id WHERE id_Product = ? ORDER BY created_at DESC");
+        $stmt->execute([$productId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     // 🔹 Getters
     public function getId(): ?int
     {
@@ -231,5 +262,13 @@ class User
     {
         $this->id_Role = $id_Role;
         return $this;
+    }
+    public function getProfileImage()
+    {
+        return $this->profile_image ?? null;
+    }
+    public function setProfileImage($filename)
+    {
+        $this->profile_image = $filename;
     }
 }

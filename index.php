@@ -59,6 +59,12 @@ $router->addRoute('/paiement', 'PaiementController', 'showPaiement'); // Afficha
 $router->addRoute('/paiement/process', 'PaiementController', 'processPaiement'); // Traitement
 
 
+$router->addRoute('/submit-review', 'ProductController', 'submitReview');
+$router->addRoute('/delete-review', 'ProductController', 'deleteReview');
+$router->addRoute('/update-review', 'ProductController', 'updateReview');
+
+
+
 // 🚀 Gérer la requête actuelle
 $router->handleRequest();
 

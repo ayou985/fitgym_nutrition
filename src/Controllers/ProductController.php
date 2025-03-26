@@ -1,8 +1,11 @@
 <?php
-
 namespace App\Controllers;
 
+
+
+
 use App\Models\AllProduct;
+
 
 class ProductController
 {
@@ -14,23 +17,70 @@ class ProductController
         // Récupération des produits
         $products = $productModel->getAll();
 
-        // Exemple de filtres (vous pouvez les adapter selon vos besoins)
-        $categories = $_GET['categories'] ?? []; // Récupère les catégories depuis les paramètres GET
-        $flavors = $_GET['flavors'] ?? [];       // Récupère les saveurs depuis les paramètres GET
-        $maxPrice = $_GET['maxPrice'] ?? null;   // Récupère le prix maximum depuis les paramètres GET
+        // Récupération des filtres depuis les paramètres GET
+        $categories = $_GET['category'] ?? []; // Récupère les catégories sélectionnées
+        $flavors = $_GET['flavor'] ?? [];      // Récupère les saveurs sélectionnées
+        $maxPrice = $_GET['max_price'] ?? null; // Récupère le prix maximum sélectionné
 
-        if (!empty($categories) || !empty($flavors) || $maxPrice !== null) {
-            $filteredProducts = array_filter($products, function ($product) use ($categories, $flavors, $maxPrice) {
-                $matchCategory = empty($categories) || in_array(strtolower($product->getCategory()), array_map('strtolower', $categories));
-                $matchFlavor = empty($flavors) || in_array(strtolower($product->getDescription()), array_map('strtolower', $flavors));
-                $matchPrice = $maxPrice === null || $product->getPrice() <= $maxPrice;
-                return $matchCategory && $matchFlavor && $matchPrice;
-            });
-        } else {
-            $filteredProducts = $products;
-        }
+        // Filtrage des produits
+        $filteredProducts = array_filter($products, function ($product) use ($categories, $flavors, $maxPrice) {
+            $matchesCategory = empty($categories) || in_array($product->getCategory(), $categories);
+            $matchesFlavor = empty($flavors) || array_intersect($flavors, $product->getFlavors());
+            $matchesPrice = is_null($maxPrice) || $product->getPrice() <= $maxPrice;
+
+            return $matchesCategory && $matchesFlavor && $matchesPrice;
+        });
 
         // Inclure la vue pour afficher les produits
         require_once(__DIR__ . '/../Views/product.view.php');
     }
+
+    public function submitReview()
+{
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (!isset($_SESSION['user'])) {
+        header("Location: /login");
+        exit();
+    }
+
+    $userId = $_SESSION['user']['id'];
+    $productId = $_POST['product_id'] ?? null;
+    $comment = $_POST['comment'] ?? '';
+    $rating = (int) ($_POST['rating'] ?? 0);
+
+    // Sécurité : un seul avis par utilisateur et par produit
+    $existing = \App\Models\AllProduct::userHasReviewed($userId, $productId);
+
+    if ($existing) {
+        header("Location: /product?id=$productId");
+        exit();
+    }
+
+    if ($comment && $rating >= 1 && $rating <= 5 && $productId) {
+        \App\Models\AllProduct::createReview($comment, $rating, $userId, $productId);
+    }
+
+    header("Location: /product?id=$productId");
+    exit();
+}
+
+public function show()
+{
+    $productId = $_GET['id'] ?? null;
+
+    if (!$productId) {
+        header("Location: /products");
+        exit();
+    }
+
+    $productModel = new AllProduct();
+    $product = $productModel->getById($productId); // méthode existante dans ton modèle j’imagine
+    $reviews = $productModel::getReviewsByProductId($productId);
+    $reviews = AllProduct::getReviewsByProductId($productId);
+
+    // Affiche la vue du produit
+    require_once(__DIR__ . '/../Views/product.show.view.php');
+}
+
 }

@@ -6,7 +6,7 @@ require_once(__DIR__ . "/partials/head.php");
     <div class="row">
         <!-- Image du produit -->
         <div class="col-md-6">
-            <img src="/public/uploads/<?= htmlspecialchars($produit->getImage() ?? 'default.jpg') ?>" 
+            <img src="/public/uploads/<?= htmlspecialchars($produit->getImage() ?? 'default.jpg') ?>"
                 class="img-fluid product-image"
                 alt="<?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?>">
         </div>
@@ -62,6 +62,47 @@ require_once(__DIR__ . "/partials/head.php");
         </table>
     </div>
 </div>
+<hr>
+<h2>Avis des clients</h2>
+
+<?php if (!empty($reviews)): ?>
+    <?php foreach ($reviews as $review): ?>
+        <div style="border:1px solid #ddd; padding:10px; margin-bottom:10px;">
+            <strong><?= htmlspecialchars($review['firstname'] . ' ' . strtoupper(substr($review['lastname'], 0, 1))) ?>.</strong><br>
+            <span>Note : <?= str_repeat('⭐', $review['rating']) ?> (<?= $review['rating'] ?>/5)</span><br>
+            <p><?= nl2br(htmlspecialchars($review['comment'])) ?></p>
+            <small>Posté le <?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
+        </div>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p>Aucun avis pour ce produit. Soyez le premier à en laisser un !</p>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['user'])): ?>
+    <hr>
+    <h3>Laisser un avis</h3>
+    <form action="/submit-review" method="POST">
+        <input type="hidden" name="product_id" value="<?= $productId ?>">
+
+        <label for="rating">Note (1 à 5) :</label>
+        <select name="rating" id="rating" required>
+            <option value="">Choisir une note</option>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <option value="<?= $i ?>"><?= $i ?></option>
+            <?php endfor; ?>
+        </select>
+
+        <br><br>
+
+        <label for="comment">Commentaire :</label><br>
+        <textarea name="comment" id="comment" rows="4" cols="50" required></textarea>
+
+        <br><br>
+        <button type="submit">Envoyer</button>
+    </form>
+<?php else: ?>
+    <p><a href="/login">Connectez-vous</a> pour laisser un avis.</p>
+<?php endif; ?>
 
 <!-- Script JS pour gérer la quantité -->
 <script>

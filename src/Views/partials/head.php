@@ -27,7 +27,11 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         <li><a class="nav-link" href="/products">Produits</a></li>
         <li><a class="nav-link" href="/about">À propos</a></li>
         <li><a class="nav-link" href="/contact">Contact</a></li>
-      </ul>
+      <?php if (isset($_SESSION['user'])): ?>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i> Mon Profil</a>
+        </li>
+      <?php endif; ?>
       <ul class="nav-icons">
         <li>
           <form action="/products" method="GET" style="display: flex; align-items: center;" id="search-form">

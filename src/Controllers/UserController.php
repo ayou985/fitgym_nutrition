@@ -53,21 +53,36 @@ class UserController
                 $user->setPhoneNumber($phoneNumber);
                 $user->setAddress($address);
 
-                // Correction : Utiliser `updateUser()` au lieu de `update()`
-                $user->updateUser();
+                // ✅ TRAITEMENT DE L'IMAGE
+                if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === 0) {
+                    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+                    $ext = strtolower(pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION));
 
-                $_SESSION['user']['email'] = $email;
-                $_SESSION['user']['firstName'] = $firstName;
-                $_SESSION['user']['lastName'] = $lastName;
-                $_SESSION['user']['phoneNumber'] = $phoneNumber;
-                $_SESSION['user']['address'] = $address;
+                    if (in_array($ext, $allowed)) {
+                        $newName = uniqid() . '.' . $ext;
+                        move_uploaded_file($_FILES['profile_image']['tmp_name'], 'public/uploads/' . $newName);
+                        $user->setProfileImage($newName);
+
+                        // MAJ session pour l'affichage immédiat
+                        $_SESSION['user']['profile_image'] = $newName;
+                    }
+
+
+                    // Correction : Utiliser `updateUser()` au lieu de `update()`
+                    $user->updateUser();
+
+                    $_SESSION['user']['email'] = $email;
+                    $_SESSION['user']['firstName'] = $firstName;
+                    $_SESSION['user']['lastName'] = $lastName;
+                    $_SESSION['user']['phoneNumber'] = $phoneNumber;
+                    $_SESSION['user']['address'] = $address;
+                }
+
+                header("Location: /profile");
+                exit();
             }
         }
-
-        header("Location: /profile");
-        exit();
     }
-
 
     public function updateUser()
     {
