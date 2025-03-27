@@ -67,13 +67,14 @@ require_once(__DIR__ . "/partials/head.php");
 
 <?php if (!empty($reviews)): ?>
     <?php foreach ($reviews as $review): ?>
-        <div style="border:1px solid #ddd; padding:10px; margin-bottom:10px;">
-            <strong><?= htmlspecialchars($review['firstname'] . ' ' . strtoupper(substr($review['lastname'], 0, 1))) ?>.</strong><br>
-            <span>Note : <?= str_repeat('⭐', $review['rating']) ?> (<?= $review['rating'] ?>/5)</span><br>
-            <p><?= nl2br(htmlspecialchars($review['comment'])) ?></p>
-            <small>Posté le <?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
-        </div>
-    <?php endforeach; ?>
+    <div style="border:1px solid #ddd; padding:10px; margin-bottom:10px;">
+        <strong><?= htmlspecialchars($review['firstname'] . ' ' . strtoupper(substr($review['lastname'], 0, 1))) ?>.</strong><br>
+        <span>Note : <?= str_repeat('⭐', $review['rating']) ?> (<?= $review['rating'] ?>/5)</span><br>
+        <p><?= nl2br(htmlspecialchars($review['comment'])) ?></p>
+        <small>Posté le <?= date('d/m/Y', strtotime($review['created_at'])) ?></small>
+    </div>
+<?php endforeach; ?>
+
 <?php else: ?>
     <p>Aucun avis pour ce produit. Soyez le premier à en laisser un !</p>
 <?php endif; ?>
@@ -81,25 +82,25 @@ require_once(__DIR__ . "/partials/head.php");
 <?php if (isset($_SESSION['user'])): ?>
     <hr>
     <h3>Laisser un avis</h3>
-    <form action="/submit-review" method="POST">
-        <input type="hidden" name="product_id" value="<?= $productId ?>">
+        <form  method="POST">
+            <input type="hidden" name="product_id" value="<?= $produit->getId() ?>">
 
-        <label for="rating">Note (1 à 5) :</label>
-        <select name="rating" id="rating" required>
-            <option value="">Choisir une note</option>
-            <?php for ($i = 1; $i <= 5; $i++): ?>
-                <option value="<?= $i ?>"><?= $i ?></option>
-            <?php endfor; ?>
-        </select>
+            <label for="rating">Note (1 à 5) :</label>
+            <select name="rating" id="rating" required>
+                <option value="">Choisir une note</option>
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <option value="<?= $i ?>"><?= $i ?></option>
+                <?php endfor; ?>
+            </select>
 
-        <br><br>
+            <br><br>
 
-        <label for="comment">Commentaire :</label><br>
-        <textarea name="comment" id="comment" rows="4" cols="50" required></textarea>
+            <label for="comment">Commentaire :</label><br>
+            <textarea name="comment" id="comment" rows="4" cols="50" required></textarea>
 
-        <br><br>
-        <button type="submit">Envoyer</button>
-    </form>
+            <br><br>
+            <button type="submit">Envoyer</button>
+        </form>
 <?php else: ?>
     <p><a href="/login">Connectez-vous</a> pour laisser un avis.</p>
 <?php endif; ?>

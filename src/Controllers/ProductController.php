@@ -1,28 +1,20 @@
 <?php
+
 namespace App\Controllers;
 
-
-
-
 use App\Models\AllProduct;
-
 
 class ProductController
 {
     public function product()
     {
-        // Création de l'instance du modèle AllProduct
         $productModel = new AllProduct();
-
-        // Récupération des produits
         $products = $productModel->getAll();
 
-        // Récupération des filtres depuis les paramètres GET
-        $categories = $_GET['category'] ?? []; // Récupère les catégories sélectionnées
-        $flavors = $_GET['flavor'] ?? [];      // Récupère les saveurs sélectionnées
-        $maxPrice = $_GET['max_price'] ?? null; // Récupère le prix maximum sélectionné
+        $categories = $_GET['category'] ?? [];
+        $flavors = $_GET['flavor'] ?? [];
+        $maxPrice = $_GET['max_price'] ?? null;
 
-        // Filtrage des produits
         $filteredProducts = array_filter($products, function ($product) use ($categories, $flavors, $maxPrice) {
             $matchesCategory = empty($categories) || in_array($product->getCategory(), $categories);
             $matchesFlavor = empty($flavors) || array_intersect($flavors, $product->getFlavors());
@@ -31,56 +23,83 @@ class ProductController
             return $matchesCategory && $matchesFlavor && $matchesPrice;
         });
 
-        // Inclure la vue pour afficher les produits
         require_once(__DIR__ . '/../Views/product.view.php');
     }
 
-    public function submitReview()
-{
-    if (session_status() === PHP_SESSION_NONE) session_start();
+    public function submitReviews()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $comment = htmlspecialchars($_POST['comment'] ?? '');
+            $rating = intval($_POST['rating'] ?? 0);
+            $userId = $_SESSION['user']['id'] ?? null;
+            $productId = intval($_POST['product_id'] ?? 0);
 
-    if (!isset($_SESSION['user'])) {
-        header("Location: /login");
-        exit();
+            if (empty($comment) || $rating < 1 || $rating > 5 || empty($userId) || empty($productId)) {
+                echo "Erreur : Paramètres invalides pour l'ajout d'un avis.";
+                return;
+            }
+
+            try {
+                $created_at = date('Y-m-d H:i:s');
+                AllProduct::createReviews($comment, $rating, $created_at, $userId, $productId);
+
+                // ✅ Redirection vers la fiche produit avec l'ID
+                header("Location: /produitdetail?id=" . $productId);
+                exit;
+
+            } catch (\Exception $e) {
+                echo "Erreur : " . $e->getMessage();
+            }
+        }
     }
 
-    $userId = $_SESSION['user']['id'];
-    $productId = $_POST['product_id'] ?? null;
-    $comment = $_POST['comment'] ?? '';
-    $rating = (int) ($_POST['rating'] ?? 0);
+    public function show()
+    {
+        $product_id = $_GET['id'] ?? null;
 
-    // Sécurité : un seul avis par utilisateur et par produit
-    $existing = \App\Models\AllProduct::userHasReviewed($userId, $productId);
+        if (!$product_id) {
+            echo "Produit introuvable";
+            exit;
+        }
 
-    if ($existing) {
-        header("Location: /product?id=$productId");
-        exit();
+        $product = \App\Models\AllProduct::getById($product_id);
+        $reviews = \App\Models\AllProduct::getReviewsByProductId($product_id);
+
+        require_once(__DIR__ . '/../Views/product.show.view.php');
     }
 
-    if ($comment && $rating >= 1 && $rating <= 5 && $productId) {
-        \App\Models\AllProduct::createReview($comment, $rating, $userId, $productId);
+    public function updateReviews()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $reviewId = intval($_POST['review_id'] ?? 0);
+            $comment = htmlspecialchars($_POST['comment'] ?? '');
+            $rating = intval($_POST['rating'] ?? 0);
+            $productId = intval($_POST['product_id'] ?? 0);
+    
+            if (!$reviewId || !$comment || $rating < 1 || $rating > 5 || !$productId) {
+                echo "Données invalides";
+                return;
+            }
+    
+            \App\Models\AllProduct::updateReviews($reviewId, $comment, $rating);
+            header("Location: /produitdetail?id=$productId");
+            exit;
+        }
     }
-
-    header("Location: /product?id=$productId");
-    exit();
-}
-
-public function show()
-{
-    $productId = $_GET['id'] ?? null;
-
-    if (!$productId) {
-        header("Location: /products");
-        exit();
+    public function deleteReviews()
+    {
+        if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['product_id'])) {
+            $reviewId = intval($_GET['id']);
+            $productId = intval($_GET['product_id']);
+    
+            \App\Models\AllProduct::deleteReviews($reviewId);
+    
+            header("Location: /produitdetail?id=$productId");
+            exit;
+        } else {
+            echo "Paramètres manquants";
+        }
     }
-
-    $productModel = new AllProduct();
-    $product = $productModel->getById($productId); // méthode existante dans ton modèle j’imagine
-    $reviews = $productModel::getReviewsByProductId($productId);
-    $reviews = AllProduct::getReviewsByProductId($productId);
-
-    // Affiche la vue du produit
-    require_once(__DIR__ . '/../Views/product.show.view.php');
-}
-
+    
+    
 }

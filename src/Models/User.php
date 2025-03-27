@@ -173,18 +173,18 @@ class User
         $stmt->execute();
     }
 
-    public static function userHasReviewed($userId, $productId): bool
+    public static function userHasReviewed($userId, $product_id): bool
     {
         $pdo = \Config\Database::getInstance()->getConnection();
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM review WHERE id_User = ? AND id_Product = ?");
-        $stmt->execute([$userId, $productId]);
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM reviews WHERE id_User = ? AND id_Product = ?");
+        $stmt->execute([$userId, $product_id]);
         return $stmt->fetchColumn() > 0;
     }
-    public static function getByProductId($productId): array
+    public static function getByProductId($product_id): array
     {
         $pdo = \Config\Database::getInstance()->getConnection();
-        $stmt = $pdo->prepare("SELECT r.*, u.firstName, u.lastName FROM review r JOIN user u ON r.id_User = u.id WHERE id_Product = ? ORDER BY created_at DESC");
-        $stmt->execute([$productId]);
+        $stmt = $pdo->prepare("SELECT r.*, u.firstName, u.lastName FROM reviews r JOIN user u ON r.id_User = u.id WHERE id_Product = ? ORDER BY created_at DESC");
+        $stmt->execute([$product_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     

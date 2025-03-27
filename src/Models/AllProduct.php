@@ -14,6 +14,9 @@ class AllProduct
     private ?int $stock;
     private ?string $category;
     private ?string $image;
+    private ?string $comment;
+    private ?int $rating;
+    private ?int $user_id;
 
     public function __construct(
         ?int $id = null,
@@ -22,7 +25,10 @@ class AllProduct
         ?float $price = null,
         ?int $stock = null,
         ?string $category = null,
-        ?string $image = null
+        ?string $image = null,
+        ?string $comment = null,
+        ?int $rating= null,
+        ?int $user_id= null
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -31,6 +37,9 @@ class AllProduct
         $this->stock = $stock;
         $this->category = $category;
         $this->image = $image;
+        $this->comment = $comment;
+        $this->rating = $rating;
+        $this->user_id = $user_id;
     }
 
     // 🔹 **Getters**
@@ -204,6 +213,21 @@ class AllProduct
             $this->image
         ]);
     }
+
+    public function addComment()
+    {
+        $db = Database::getInstance();
+        $pdo = $db->getConnection();
+        $sql = "INSERT INTO reviews (id,comment, rating, user_id,product_id) VALUES ( ?,?, ?, ?, ?)";
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([
+            null,
+            $this->comment,
+            $this->rating,
+            $this->user_id,
+            $this->id
+        ]);
+    }
     public function delete(): bool
     {
         $db = Database::getInstance();
@@ -220,31 +244,65 @@ class AllProduct
         }
     }
 
-    public static function userHasReviewed($userId, $productId)
+    public static function userHasReviewed($userId, $product_id)
     {
         $db = Database::getInstance()->getConnection(); // Ensure $db is a PDO instance
         $query = $db->prepare("SELECT COUNT(*) FROM reviews WHERE user_id = ? AND product_id = ?");
-        $query->execute([$userId, $productId]);
+        $query->execute([$userId, $product_id]);
         return $query->fetchColumn() > 0;
     }
 
-    public static function createReview($comment, $rating, $userId, $productId)
+    public static function createReviews($comment, $rating, $created_at, $user_id, $product_id)
     {
         $db = Database::getInstance()->getConnection();
-        $query = $db->prepare("INSERT INTO reviews (comment, rating, user_id, product_id, created_at) VALUES (?, ?, ?, ?, NOW())");
-        $query->execute([$comment, $rating, $userId, $productId]);
+    
+        // Vérification des paramètres avant d'exécuter la requête
+        if (empty($user_id) || empty($product_id) || empty($comment) || $rating < 1 || $rating > 5) {
+            throw new \Exception("Paramètres invalides pour createReviews");
+        }
+    
+        // Si la date n’est pas passée en paramètre, utilisez la date actuelle
+        if (empty($created_at)) {
+            $created_at = date('Y-m-d H:i:s');
+        }
+    
+        // Préparation de la requête SQL
+        $sql = "INSERT INTO reviews (comment, rating, user_id, created_at, product_id) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $db->prepare($sql);
+    
+        // Exécution de la requête avec les paramètres
+        $stmt->execute([$comment, $rating, $user_id, $created_at, $product_id]);
     }
+
+
 
     public static function getReviewsByProductId($productId) {
         $db = Database::getInstance()->getConnection();
         $query = $db->prepare("
             SELECT r.comment, r.rating, r.created_at, u.firstname, u.lastname
             FROM reviews r
-            JOIN users u ON r.user_id = u.id
+            JOIN user u ON r.user_id = u.id
             WHERE r.product_id = ?
             ORDER BY r.created_at DESC
         ");
         $query->execute([$productId]);
         return $query->fetchAll();
     }
+
+    public static function updateReviews($id, $comment, $rating)
+    {
+        $db = Database::getInstance()->getConnection();
+        $sql = "UPDATE reviews SET comment = ?, rating = ? WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$comment, $rating, $id]);
+    }
+    
+    public static function deleteReviews($id)
+    {
+        $db = Database::getInstance()->getConnection();
+        $sql = "DELETE FROM reviews WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$id]);
+    }
+    
 }

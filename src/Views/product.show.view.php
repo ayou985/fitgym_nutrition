@@ -1,6 +1,6 @@
 <?php if (isset($_SESSION['user'])): ?>
     <?php if (!$hasAlreadyReviewed): ?>
-        <form action="/product/review" method="POST" class="mt-4">
+        <form action="/product/reviews" method="POST" class="mt-4">
             <input type="hidden" name="product_id" value="<?= $product->getId() ?>">
 
             <div class="form-group">
@@ -34,14 +34,14 @@
 <?php if (!empty($reviews)): ?>
     <?php foreach ($reviews as $review): ?>
         <div class="border p-3 mb-3">
-            <strong><?= htmlspecialchars($review['firstName']) ?> <?= htmlspecialchars($review['lastName']) ?></strong>
+            <strong><?= htmlspecialchars($reviews['firstName']) ?> <?= htmlspecialchars($reviews['lastName']) ?></strong>
             <div>
-                <?php for ($i = 0; $i < $review['rating']; $i++): ?>
+                <?php for ($i = 0; $i < $reviews['rating']; $i++): ?>
                     ⭐
                 <?php endfor; ?>
             </div>
-            <p><?= htmlspecialchars($review['comment']) ?></p>
-            <small class="text-muted"><?= date('d/m/Y à H:i', strtotime($review['created_at'])) ?></small>
+            <p><?= htmlspecialchars($reviews['comment']) ?></p>
+            <small class="text-muted"><?= date('d/m/Y à H:i', strtotime($reviews['created_at'])) ?></small>
         </div>
     <?php endforeach; ?>
 <?php else: ?>
