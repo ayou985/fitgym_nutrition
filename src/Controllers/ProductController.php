@@ -82,7 +82,7 @@ class ProductController
             }
     
             \App\Models\AllProduct::updateReviews($reviewId, $comment, $rating);
-            header("Location: /produitdetail?id=$productId");
+            header("Location: /produitdetail?id=" . $productId);
             exit;
         }
     }
@@ -94,7 +94,7 @@ class ProductController
     
             \App\Models\AllProduct::deleteReviews($reviewId);
     
-            header("Location: /produitdetail?id=$productId");
+            header("Location: /produitdetail?id=" . $productId);
             exit;
         } else {
             echo "Paramètres manquants";

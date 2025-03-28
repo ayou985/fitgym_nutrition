@@ -278,17 +278,19 @@ class AllProduct
 
     public static function getReviewsByProductId($productId) {
         $db = Database::getInstance()->getConnection();
+    
         $query = $db->prepare("
-            SELECT r.comment, r.rating, r.created_at, u.firstname, u.lastname
+            SELECT r.id, r.comment, r.rating, r.created_at, r.user_id, u.firstname, u.lastname
             FROM reviews r
             JOIN user u ON r.user_id = u.id
             WHERE r.product_id = ?
             ORDER BY r.created_at DESC
         ");
+    
         $query->execute([$productId]);
-        return $query->fetchAll();
+        return $query->fetchAll(PDO::FETCH_ASSOC); // ✅ important pour avoir les clés associatives comme 'user_id'
     }
-
+    
     public static function updateReviews($id, $comment, $rating)
     {
         $db = Database::getInstance()->getConnection();
