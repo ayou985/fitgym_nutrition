@@ -2,31 +2,40 @@
 
 namespace App\Controllers;
 
-class PaiementController {
+class PaiementController
+{
+    public function debugCart()
+    {
+        echo '<pre>';
+        print_r($_SESSION['cart']);
+        echo '</pre>';
+    }
 
     public function showPaiement() {
         if (session_status() === PHP_SESSION_NONE) session_start();
-
+    
         $cart = $_SESSION['cart'] ?? [];
-
+    
         require_once(__DIR__ . "/../Views/paiement.view.php");
     }
 
     public function processPaiement() {
         if (session_status() === PHP_SESSION_NONE) session_start();
-
-        // On peut simuler un traitement ici
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Simuler un "paiement"
-            $_SESSION['cart'] = []; // Vider le panier
-
-            // Message ou redirection
-            $_SESSION['success'] = "Merci pour votre commande ! Paiement simulé avec succès.";
-            header("Location: /paiement");
-            exit();
+            $name = htmlspecialchars($_POST['name'] ?? '');
+            $card = htmlspecialchars($_POST['card'] ?? '');
+            $address = htmlspecialchars($_POST['address'] ?? '');
+    
+            // Simuler le traitement du paiement
+            $_SESSION['success'] = "Paiement réussi pour $name. Détails de la carte : $card. Adresse : $address.";
+    
+            // Vider le panier après le paiement
+            unset($_SESSION['cart']);
+    
+            header('Location: /paiement');
+            exit;
         }
 
-        header("Location: /paiement");
-        exit();
     }
 }

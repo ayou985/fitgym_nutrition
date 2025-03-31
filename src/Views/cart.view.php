@@ -30,10 +30,7 @@ require_once(__DIR__ . "/../Views/partials/head.php");
                             </td>
                             <td><?= number_format($item['product']->getPrice() * $item['quantity'], 2, ',', ' ') ?> €</td>
                             <td>
-                                <form action="/cart/remove" method="POST">
-                                    <input type="hidden" name="id" value="<?= $id ?>">
-                                    <button type="submit" class="btn-remove">🗑</button>
-                                </form>
+                                <a href="/cart/remove?id=<?= $id ?>" class="btn-remove" onclick="return confirm('Supprimer ce produit du panier ?')">🗑</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -45,7 +42,7 @@ require_once(__DIR__ . "/../Views/partials/head.php");
         </form>
         
         <a href="/paiement" class="btn btn-link">Passer la commande</a>
-        <?php else : ?>
+    <?php else : ?>
         <p class="cart-empty">Votre panier est vide.</p>
     <?php endif; ?>
 </div>
@@ -53,4 +50,3 @@ require_once(__DIR__ . "/../Views/partials/head.php");
 <?php 
 require_once(__DIR__ . "/../Views/partials/footer.php"); 
 ?>
-

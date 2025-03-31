@@ -1,4 +1,12 @@
-<?php require_once(__DIR__ . "/partials/head.php"); ?>
+<?php 
+require_once(__DIR__ . "/partials/head.php"); 
+use App\Controllers\CartController;
+
+// Récupération des articles et du total depuis CartController
+$cartData = CartController::getCartItems();
+$cartItems = $cartData['items'];
+$total = $cartData['total'];
+?>
 
 <div class="container mt-5">
     <h2>Paiement</h2>
@@ -10,45 +18,48 @@
         </div>
     <?php endif; ?>
 
-    <ul>
-        <?php
-        $total = 0;
-        foreach ($cart as $item):
-            if (!is_array($item)) continue; // 🔥 sécurité
-            $name = htmlspecialchars($item['name'] ?? 'Nom inconnu');
-            $quantity = $item['quantity'] ?? 1;
-            $price = $item['price'] ?? 0.00;
-            $total += $quantity * $price;
-        ?>
-            <li><?= $name ?> - <?= $quantity ?> x <?= number_format($price, 2) ?> €</li>
-        <?php endforeach; ?>
-    </ul>
-    <p><strong>Total :</strong> <?= number_format($total, 2, ',', ' ') ?> €</p>
+    <?php if (!empty($cartItems)): ?>
+        <ul>
+            <?php foreach ($cartItems as $item): 
+                $product = $item['product'];
+                $name = htmlspecialchars($product->getName());
+                $quantity = $item['quantity'];
+                $price = $product->getPrice();
+                $subtotal = $item['subtotal'];
+            ?>
+                <li><?= $name ?> - <?= $quantity ?> x <?= number_format($price, 2, ',', ' ') ?> € 
+                    = <strong><?= number_format($subtotal, 2, ',', ' ') ?> €</strong>
+                </li>
+            <?php endforeach; ?>
+        </ul>
 
+        <p class="mt-3">Total à payer : 
+            <strong><?= number_format($total, 2, ',', ' ') ?> €</strong>
+        </p>
 
-    <hr>
-    <h5>Formulaire de paiement</h5>
-    <form action="/paiement/process" method="POST">
-        <div class="mb-3">
-            <label for="name">Nom complet</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
+        <hr>
+        <h5>Formulaire de paiement</h5>
+        <form action="/paiement/process" method="POST">
+            <div class="mb-3">
+                <label for="name">Nom complet</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="card">Numéro de carte</label>
-            <input type="text" name="card" class="form-control" maxlength="16" required>
-        </div>
+            <div class="mb-3">
+                <label for="card">Numéro de carte</label>
+                <input type="text" name="card" class="form-control" maxlength="16" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="address">Adresse de livraison</label>
-            <input type="text" name="address" class="form-control" required>
-        </div>
+            <div class="mb-3">
+                <label for="address">Adresse de livraison</label>
+                <input type="text" name="address" class="form-control" required>
+            </div>
 
-        <button type="submit" class="btn btn-success">Valider le paiement</button>
-    </form>
-
-    <p>Votre panier est vide.</p>
-
+            <button type="submit" class="btn btn-success">Valider le paiement</button>
+        </form>
+    <?php else: ?>
+        <p class="text-muted">Votre panier est vide.</p>
+    <?php endif; ?>
 </div>
 
 <?php require_once(__DIR__ . "/partials/footer.php"); ?>

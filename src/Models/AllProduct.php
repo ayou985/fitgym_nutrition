@@ -199,20 +199,29 @@ class AllProduct
     }
 
     public function createProduct()
-    {
-        $db = Database::getInstance();
-        $pdo = $db->getConnection();
-        $sql = "INSERT INTO product (name, description, price, stock, category, image) VALUES (?, ?, ?, ?, ?, ?)";
-        $statement = $pdo->prepare($sql);
-        return $statement->execute([
-            $this->name,
-            $this->description,
-            $this->price,
-            $this->stock,
-            $this->category,
-            $this->image
-        ]);
+{
+    $db = Database::getInstance();
+    $pdo = $db->getConnection();
+
+    // Si aucun stock défini, on initialise à 1
+    if ($this->stock === null || $this->stock < 0) {
+        $this->stock = 1;
     }
+
+    $sql = "INSERT INTO product (name, description, price, stock, category, image) 
+            VALUES (?, ?, ?, ?, ?, ?)";
+    $statement = $pdo->prepare($sql);
+
+    return $statement->execute([
+        $this->name,
+        $this->description,
+        $this->price,
+        $this->stock,
+        $this->category,
+        $this->image
+    ]);
+}
+
 
     public function addComment()
     {
@@ -306,5 +315,18 @@ class AllProduct
         $stmt = $db->prepare($sql);
         $stmt->execute([$id]);
     }
+
+        // Dans AllProduct.php
+private $quantity;
+
+public function setQuantity($qte) {
+    $this->quantity = $qte;
+    return $this;
+}
+
+public function getQuantity() {
+    return $this->quantity ?? 1;
+}
+
     
 }

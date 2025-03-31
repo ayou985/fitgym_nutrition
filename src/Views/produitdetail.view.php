@@ -19,19 +19,26 @@ require_once(__DIR__ . "/partials/head.php");
             <p class="product-description"><?= nl2br(html_entity_decode($produit->getDescription() ?? 'Description non disponible')) ?></p>
             <p class="product-price"><strong>Prix :</strong> <?= number_format($produit->getPrice() ?? 0.00, 2, ',', ' ') ?> €</p>
 
-            <!-- Formulaire d'ajout au panier -->
-            <form action="/cart/add" method="POST">
-                <input type="hidden" name="id" value="<?= $produit->getId() ?>">
+            <?php if (isset($_SESSION['user'])): ?>
+                <form action="/cart/add" method="POST">
+                    <input type="hidden" name="id" value="<?= $produit->getId() ?>">
 
-                <label for="quantity"><strong>Quantité :</strong></label>
-                <div class="quantity-control">
-                    <button type="button" onclick="changeQuantity(-1)">-</button>
-                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?? 1 ?>">
-                    <button type="button" onclick="changeQuantity(1)">+</button>
+                    <label for="quantity"><strong>Quantité :</strong></label>
+                    <div class="quantity-control">
+                        <button type="button" onclick="changeQuantity(-1)">-</button>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?>">
+                        <button type="button" onclick="changeQuantity(1)">+</button>
+                    </div>
+
+                    <button type="submit" class="btn-add-cart">🛒 Ajouter au panier</button>
+                </form>
+            <?php else: ?>
+                <div class="not-logged-message">
+                    <p>🔒 Connectez-vous pour ajouter ce produit au panier.</p>
+                    <a href="/login" class="btn">Se connecter</a>
                 </div>
+            <?php endif; ?>
 
-                <button type="submit" class="btn-add-cart">🛒 Ajouter au panier</button>
-            </form>
         </div>
     </div>
 

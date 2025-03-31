@@ -6,59 +6,91 @@ use App\Models\AllProduct;
 
 class CartController {
     public function showCart() {
-        
-        
-        // Vérifier si le panier existe
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-
-        // Récupérer les produits du panier
+        $cart = $_SESSION['cart'] ?? [];
+    
         $cartItems = [];
         $total = 0;
-
-        foreach ($_SESSION['cart'] as $id => $quantity) {
-            $product = AllProduct::getById($id);
+    
+        foreach ($cart as $productId => $quantity) {
+            $product = \App\Models\AllProduct::getById($productId);
             if ($product) {
-                $cartItems[$id] = [
+                $lineTotal = $product->getPrice() * $quantity;
+                $total += $lineTotal;
+                $cartItems[$productId] = [
                     'product' => $product,
                     'quantity' => $quantity
                 ];
-                $total += $product->getPrice() * $quantity;
             }
         }
-
-        // Charger la vue avec les données du panier
-        require_once(__DIR__ . "/../Views/cart.view.php");
+    
+        require_once(__DIR__ . '/../Views/cart.view.php');
     }
+    
 
-    public function addToCart() {
+    public function addToCart()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $productId = $_POST['id'] ?? null;
+        $quantity = $_POST['quantity'] ?? 1;
 
-        $id = isset($_POST['id']) ? intval($_POST['id']) : null;
-        $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
-
-        if ($id) {
-            if (!isset($_SESSION['cart'][$id])) {
-                $_SESSION['cart'][$id] = 0;
-            }
-            $_SESSION['cart'][$id] += $quantity;
+        // Sécurité : Vérifie que l'utilisateur est connecté
+        if (!isset($_SESSION['user'])) {
+            header('Location: /login');
+            exit;
         }
 
-        header("Location: /cart");
-        exit();
+        // Récupère le produit
+        $product = AllProduct::getById($productId);
+
+        // 🟡 AJOUTE CE BLOC ICI 👇
+        if ($product && $product->getStock() >= $quantity) {
+            $newStock = $product->getStock() - $quantity;
+            $product->setStock($newStock)->edit(); // maj BDD
+        } else {
+            echo 'Stock insuffisant pour ce produit.'; // Ensure proper syntax
+            exit;
+        }
+
+        // Ajoute au panier (en session ou BDD selon ton code)
+        $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?? 0) + $quantity;
+
+        header('Location: /cart');
+        exit;
     }
+}
 
     public function removeFromCart() {
-
-        $id = isset($_POST['id']) ? intval($_POST['id']) : null;
-
-        if ($id && isset($_SESSION['cart'][$id])) {
+        if (isset($_GET['id'])) {
+            $id = $_GET['id'];
             unset($_SESSION['cart'][$id]);
         }
 
         header("Location: /cart");
         exit();
+    }public static function getCartItems()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+    
+        $cart = $_SESSION['cart'] ?? [];
+        $items = [];
+        $total = 0;
+    
+        foreach ($cart as $productId => $quantity) {
+            $product = AllProduct::getById($productId);
+            if ($product) {
+                $subtotal = $product->getPrice() * $quantity;
+                $items[] = [
+                    'product' => $product,
+                    'quantity' => $quantity,
+                    'subtotal' => $subtotal
+                ];
+                $total += $subtotal;
+            }
+        }
+    
+        return ['items' => $items, 'total' => $total];
     }
+
 
     public function updateCart() {
 
@@ -71,4 +103,26 @@ class CartController {
         header("Location: /cart");
         exit();
     }
+
+    public function showPaiement() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+    
+        $cart = $_SESSION['cart'] ?? [];
+        $cartItems = [];
+        $total = 0;
+    
+        foreach ($cart as $productId => $quantity) {
+            $product = \App\Models\AllProduct::getById($productId);
+            if ($product) {
+                $lineTotal = $product->getPrice() * $quantity;
+                $total += $lineTotal;
+    
+                $product->setQuantity($quantity);
+                $cartItems[] = $product;
+            }
+        }
+    
+        require_once(__DIR__ . '/../Views/paiement.view.php');
+    }
+    
 }

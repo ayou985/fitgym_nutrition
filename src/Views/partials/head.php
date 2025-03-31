@@ -58,7 +58,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
           ?>
           <li><span class="nav-text">Bienvenue <?= htmlspecialchars($prenom); ?></span></li>
           <?php if ($id_Role == 1) : ?>
-            <li><a class="nav-icon" href="/profile"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
+            <li><a class="nav-icon" href="/listUsers"><i class="fa-solid fa-chart-line"></i> Admin</a></li>
           <?php endif; ?>
           <li><a class="nav-icon" href="/logout"><i class="fa-solid fa-sign-out-alt"></i> Se déconnecter</a></li>
         <?php endif; ?>
