@@ -1,26 +1,31 @@
-<?php 
-include (__DIR__ . '/partials/head.php');
-?>  
-<main class="content">
-    <section class="why-us">
-        <img src="/public/img/qualite-premium.jpg" alt="Qualité premium">
-        <h2>Qualité premium</h2>
-        <p>Nos produits sont testés et approuvés pour garantir une efficacité maximale.</p>
-    </section>
+<?php require_once(__DIR__ . "/partials/head.php"); ?>
 
-    <section class="why-us">
-        <img src="/public/img/satisfaction-client.jpg" alt="Satisfaction client">
-        <h2>Satisfaction client</h2>
-        <p>Un service client réactif et à votre écoute pour répondre à toutes vos questions.</p>
-    </section>
+<section class="container section">
+    <h1 class="section-title">Pourquoi choisir FitGym Nutrition ?</h1>
 
-    <section class="why-us">
-        <img src="/public/img/experts-nutrition.jpg" alt="Experts en nutrition">
-        <h2>Experts en nutrition</h2>
-        <p>Des conseils personnalisés pour adapter votre alimentation à vos objectifs sportifs.</p>
-    </section>
-</main>
+    <div class="reasons-grid">
+        <div class="reason">
+            <h3>Qualité pharmaceutique</h3>
+            <p>Des compléments fabriqués en France, testés cliniquement, sans substances interdites.</p>
+        </div>
+        <div class="reason">
+            <h3>Écoresponsabilité</h3>
+            <p>Nous limitons les plastiques, utilisons des encres végétales et plantons un arbre par commande.</p>
+        </div>
+        <div class="reason">
+            <h3>4.8/5 sur Trustpilot</h3>
+            <p>Plus de 3 000 avis clients vérifiés. Une satisfaction qui parle d’elle-même.</p>
+        </div>
+        <div class="reason">
+            <h3>Expédition en 24h</h3>
+            <p>Stock local, envoi express, suivi en temps réel et service client réactif.</p>
+        </div>
+    </div>
 
-<?php 
-include (__DIR__ . '/partials/footer.php');
-?>  
+    <div class="cta-box">
+        <h2>Rejoignez les milliers d'athlètes qui nous font confiance 💪</h2>
+        <a href="/products" class="btn">Découvrir nos produits</a>
+    </div>
+</section>
+
+<?php require_once(__DIR__ . "/partials/footer.php"); ?>

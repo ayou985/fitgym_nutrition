@@ -1,5 +1,6 @@
-<?php 
-require_once(__DIR__ . "/partials/head.php"); 
+<?php
+require_once(__DIR__ . "/partials/head.php");
+
 use App\Controllers\CartController;
 
 // Récupération des articles et du total depuis CartController
@@ -19,21 +20,9 @@ $total = $cartData['total'];
     <?php endif; ?>
 
     <?php if (!empty($cartItems)): ?>
-        <ul>
-            <?php foreach ($cartItems as $item): 
-                $product = $item['product'];
-                $name = htmlspecialchars($product->getName());
-                $quantity = $item['quantity'];
-                $price = $product->getPrice();
-                $subtotal = $item['subtotal'];
-            ?>
-                <li><?= $name ?> - <?= $quantity ?> x <?= number_format($price, 2, ',', ' ') ?> € 
-                    = <strong><?= number_format($subtotal, 2, ',', ' ') ?> €</strong>
-                </li>
-            <?php endforeach; ?>
-        </ul>
 
-        <p class="mt-3">Total à payer : 
+
+        <p class="mt-3">Total à payer :
             <strong><?= number_format($total, 2, ',', ' ') ?> €</strong>
         </p>
 
