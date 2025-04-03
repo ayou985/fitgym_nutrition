@@ -38,10 +38,9 @@ require_once(__DIR__ . "/../Views/partials/head.php");
             </table>
 
             <p class="cart-total">Total : <strong><?= number_format($total, 2, ',', ' ') ?> €</strong></p>
-            <button type="submit" class="btn-update">Mettre à jour</button>
+            <a href="/paiement" class="btn btn-link">Passer la commande</a>
         </form>
         
-        <a href="/paiement" class="btn btn-link">Passer la commande</a>
     <?php else : ?>
         <p class="cart-empty">Votre panier est vide.</p>
     <?php endif; ?>

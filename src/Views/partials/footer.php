@@ -2,14 +2,16 @@
   <div class="footer-left">
     <a href="/"><img src="/public/img/logo.png" alt="logo-footer"></a>
   </div>
+
   <div class="footer-top">
     <p>
-      Boostez votre performance dès aujourd’hui avec nos compléments de qualité supérieure, conçus pour atteindre vos objectifs sportifs – commandez maintenant et faites la différence !
+      Boostez votre performance avec nos compléments de qualité, conçus pour atteindre vos objectifs sportifs – commandez maintenant et faites la différence !
     </p>
     <a href="/contact" class="footer-button">Contactez-nous</a>
   </div>
+
   <div class="footer-middle">
-    <h1 class="logo">FitGym nutrition</h1>
+    <h1 class="logo">FitGym Nutrition</h1>
     <nav class="footer-nav">
       <a href="/about">À propos</a>
       <a href="/services">Services</a>
@@ -17,20 +19,10 @@
       <a href="/contact">Contact</a>
       <a href="/mentionlegale">Mentions légales</a>
       <a href="/cgv">CGV</a>
-
     </nav>
-    <div class="social-icons">
-      <a href="#"><i class="icon-facebook"></i></a>
-      <a href="#"><i class="icon-instagram"></i></a>
-      <a href="#"><i class="icon-youtube"></i></a>
-    </div>
   </div>
+
   <div class="footer-bottom">
-    <p>&copy; FitGym nutrition. Tous droits réservés.</p>
+    <p>&copy; <?= date('Y'); ?> FitGym Nutrition. Tous droits réservés.</p>
   </div>
 </footer>
-
-<script src="/public/js/script.js"></script>
-</body>
-
-</html>

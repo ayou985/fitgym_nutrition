@@ -23,7 +23,7 @@ if (!isset($products) || !is_array($products)) {
             <li><input type="checkbox"> Barres protéinées</li>
             <li><input type="checkbox"> Multivitamines</li>
             <li><input type="checkbox"> Whey isolate</li>
-            <li><input type="checkbox"> Zinc & magnésium</li>
+            <li><input type="checkbox"> Pre-workout</li>
         </ul>
     </div>
     <div class="filter-category">

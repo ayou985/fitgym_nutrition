@@ -34,11 +34,11 @@ require_once(__DIR__ . "/partials/head.php");
     </div>
 
     <div class="home-recommended-image">
-        <img src="public/img/produit_whey.png" alt="produit recommandé">
+        <img src="public/img/img-acc.png" alt="produit recommandé">
         <img src="public/img/produit_gainer.png" alt="produit recommandé">
         <img src="public/img/bcaa.png" alt="produit recommandé">
         <img src="public/img/produit-accueil.png" alt="produit recommandé">
-        <img src="public/img/image-accueil2.png" alt="produit recommandé">
+        <img src="public/img/barre-proteine.png" alt="produit recommandé">
     </div>
 </section>
 
@@ -54,9 +54,9 @@ require_once(__DIR__ . "/partials/head.php");
     <div class="home-pack">
         <img src="public/img/pack6.png" alt="découvrir les packs">
         <img src="public/img/pack7.png" alt="découvrir les packs">
-        <img src="public/img/pack3.png" alt="découvrir les packs">
         <img src="public/img/pack4.png" alt="découvrir les packs">
         <img src="public/img/pack5.png" alt="découvrir les packs">
+        <img src="public/img/pack8.png" alt="découvrir les packs">
     </div>
 
 </section>

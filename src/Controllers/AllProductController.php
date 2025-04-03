@@ -41,7 +41,7 @@ class AllProductController extends AbstractController
                 // Création du produit
                 $product = new AllProduct(null, $name, $description, $price, $stock, $category, $img);
                 $product->createProduct();
-            }
+            } 
         }
         require_once(__DIR__ . '/../Views/admin.product.create.view.php');
     }

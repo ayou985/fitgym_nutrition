@@ -6,8 +6,9 @@ require_once(__DIR__ . "/partials/head.php");
 
 
 <div class="container">
-    <h1>Inscription</h1>
-    <form method="POST" class="formulaire-inscription">
+    <form method="POST" class="register-form">
+
+        <h1>Inscription</h1>
 
         <p>Veuillez remplir les champs indiqués ci-dessous afin de créer votre compte.</p>
 
@@ -26,16 +27,16 @@ require_once(__DIR__ . "/partials/head.php");
         <label for="confirm-password">Confirmer le mot de passe :</label>
         <input type="password" id="confirm-password" name="confirm-password" required>
 
-        
+
 
 
         <button type="submit">S'inscrire</button>
 
     </form>
+</div>
 
+<?php
 
-    <?php
+require_once(__DIR__ . "/partials/footer.php");
 
-    require_once(__DIR__ . "/partials/footer.php");
-
-    ?>
+?>
