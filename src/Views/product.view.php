@@ -18,7 +18,7 @@ require_once(__DIR__ . "/partials/head.php");
             <form method="GET" action="/products">
                 <h6>Catégorie</h6>
                 <?php
-                $categories = ["BCAA", "Barres protéinées", "Multivitamines", "Whey isolate", "Zinc & magnésium"];
+                $categories = ["BCAA", "Barres protéinées", "Multivitamines", "Whey isolate", "Pre-workout"];
                 foreach ($categories as $cat) {
                     $checked = isset($_GET['category']) && in_array($cat, $_GET['category']) ? 'checked' : '';
                     echo "<div><input type='checkbox' name='category[]' value=\"$cat\" $checked> $cat</div>";
