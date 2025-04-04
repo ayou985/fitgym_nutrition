@@ -283,7 +283,18 @@ class AllProduct
         $stmt->execute([$comment, $rating, $user_id, $created_at, $product_id]);
     }
 
-
+    public function getFlavors()
+    {
+        // Connexion PDO
+        $pdo = \Config\Database::getInstance()->getConnection(); // à adapter si ton accès DB est différent
+    
+        $stmt = $pdo->prepare("SELECT flavour FROM flavour WHERE id_Product = ?");
+        $stmt->execute([$this->id]); // Assure-toi que $this->id existe bien
+    
+        $flavors = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        return array_map('trim', $flavors); // Nettoie les espaces éventuels
+    }
+    
 
     public static function getReviewsByProductId($productId) {
         $db = Database::getInstance()->getConnection();

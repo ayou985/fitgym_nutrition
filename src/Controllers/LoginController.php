@@ -9,22 +9,28 @@ class LoginController extends AbstractController
 {
     public function login()
     {
+        // ⚙️ Démarrage de session
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        $error = null;
+        $this->arrayError = [];
 
+        // ✅ Si l'utilisateur est déjà connecté, on redirige
+        if (isset($_SESSION['user'])) {
+            $this->redirectToRoute('/');
+            exit;
+        }
+
+        // 📥 Traitement du formulaire de connexion
         if (!empty($_POST['mail']) && !empty($_POST['password'])) {
-            $mail = htmlspecialchars($_POST['mail']);
-            $password = htmlspecialchars($_POST['password']);
+            $email = htmlspecialchars($_POST['mail']);
+            $password = $_POST['password']; // NE PAS utiliser htmlspecialchars ici !
 
-            // Vérification de l'utilisateur en base de données
-            $user = User::authenticate($mail, $password);
+            $user = User::authenticate($email, $password);
 
-            
             if ($user) {
-                // Stocker les infos de l'utilisateur en session
+                // ✅ Création de la session utilisateur
                 $_SESSION['user'] = [
                     'id'          => $user->getId(),
                     'email'       => $user->getEmail(),
@@ -32,23 +38,23 @@ class LoginController extends AbstractController
                     'lastName'    => $user->getLastName(),
                     'phoneNumber' => $user->getPhoneNumber(),
                     'address'     => $user->getAddress(),
-                    'id_Role'      => $user->getIdRole()
+                    'id_Role'     => $user->getIdRole()
                 ];
 
-                // Redirection après connexion
+                // 📌 Gérer le cookie "se souvenir de moi"
+                if (!empty($_POST['remember_me'])) {
+                    setcookie('remembered_email', $email, time() + (86400 * 30), "/"); // 30 jours
+                }
+
+                // 🔁 Redirection après succès
                 $this->redirectToRoute('/');
                 exit;
             } else {
-                $error = "Email ou mot de passe incorrect.";
+                $this->arrayError['global'] = "❌ Email ou mot de passe incorrect.";
             }
         }
 
-        // Redirection si l'utilisateur est déjà connecté
-        if (isset($_SESSION['user'])) {
-            $this->redirectToRoute('/');
-            exit();
-        }
-
-        require_once(__DIR__ . "/../Views/login.view.php");
+        // 📄 Affichage du formulaire
+        require_once(__DIR__ . '/../Views/login.view.php');
     }
 }

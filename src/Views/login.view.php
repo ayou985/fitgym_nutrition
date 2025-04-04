@@ -1,9 +1,8 @@
 <?php
 require_once(__DIR__ . "/partials/head.php");
 
-// On s'assure que $arrayError est défini
 $arrayError = $arrayError ?? [];
-$rememberedEmail = $_COOKIE['remembered_email'] ?? ''; // Récupération du cookie s'il existe
+$rememberedEmail = $_COOKIE['remembered_email'] ?? '';
 ?>
 
 <div class="container">
@@ -11,35 +10,47 @@ $rememberedEmail = $_COOKIE['remembered_email'] ?? ''; // Récupération du cook
         <h1>Connexion</h1>
         <p class="text-center">Connectez-vous à votre compte FitGym.</p>
 
+        <!-- Email -->
         <div>
             <label for="mail">Email</label>
             <input type="email" name="mail" id="mail" value="<?= htmlspecialchars($rememberedEmail) ?>" required autocomplete="username">
-            <?php if (isset($arrayError['mail'])) { ?>
+            <?php if (!empty($arrayError['mail'])): ?>
                 <p class="text-danger"><?= $arrayError['mail'] ?></p>
-            <?php } ?>
+            <?php endif; ?>
         </div>
 
-        <div>
+        <!-- Mot de passe avec icône -->
+        <div style="position: relative;">
             <label for="password">Mot de passe</label>
-            <input type="password" name="password" id="password" required autocomplete="current-password">
-            <?php if (isset($arrayError['password'])) { ?>
+            <input type="password" name="password" id="password" required autocomplete="current-password" style="padding-right: 35px;">
+            <span onclick="toggleLoginPassword()" style="position: absolute; right: 10px; top: 38px; cursor: pointer;">👁️</span>
+            <?php if (!empty($arrayError['password'])): ?>
                 <p class="text-danger"><?= $arrayError['password'] ?></p>
-            <?php } ?>
+            <?php endif; ?>
         </div>
 
+        <!-- Se souvenir -->
         <div style="margin-bottom: 20px;">
             <input type="checkbox" name="remember_me" id="remember_me">
             <label for="remember_me">Se souvenir de moi</label>
         </div>
 
+        <!-- Bouton -->
         <button type="submit">Se connecter</button>
 
-        <?php if (isset($arrayError['global'])) { ?>
+        <!-- Erreur globale -->
+        <?php if (!empty($arrayError['global'])): ?>
             <p class="text-danger"><?= $arrayError['global'] ?></p>
-        <?php } ?>
+        <?php endif; ?>
     </form>
 </div>
 
-<?php
-require_once(__DIR__ . '/partials/footer.php');
-?>
+<!-- 👁️ JS pour mot de passe -->
+<script>
+    function toggleLoginPassword() {
+        const pwd = document.getElementById("password");
+        pwd.type = pwd.type === "password" ? "text" : "password";
+    }
+</script>
+
+<?php require_once(__DIR__ . '/partials/footer.php'); ?>

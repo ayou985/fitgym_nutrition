@@ -6,103 +6,43 @@ abstract class AbstractController
 {
     protected array $arrayError = [];
 
-    // Fonction de redirection
     public function redirectToRoute($route)
     {
         http_response_code(303);
         header("Location: {$route}");
-        exit; // Arrêter l'exécution après la redirection
+        exit;
     }
 
-    // Vérifie si un champ est vide
-    public function isNotEmpty($value)
+    public function isNotEmpty($nameInput, $value)
     {
-        if (empty($_POST[$value])) {
-            $this->arrayError[$value] = "Le champ $value ne peut pas être vide.";
-            return $this->arrayError;
+        if (empty($value)) {
+            $this->arrayError[$nameInput] = "Le champ $nameInput ne peut pas être vide.";
+            return true;
         }
         return false;
     }
 
-    // Vérifie le format des valeurs selon un regex
     public function checkFormat($nameInput, $value)
     {
-        $regexName = '/^[a-zA-Zà-üÀ-Ü -_]{2,255}$/';
         $regexPassword = '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/';
-        $regexTitle = '/^[a-zA-Zà-üÀ-Ü0-9 #?!@$%^,.;&*-]{4,255}$/';
-        $regexContent = '/^[a-zA-Zà-üÀ-Ü0-9 #?!@$%^,.;&*-]{4,}$/';
-        $regexRole = '/^[12]$/';
-        $regexDateTime = '/^[2][0][2-3][0-9][-][0-1][0-9][-][0-3][0-9][T][0-2][0-9][:][0-6][0-9]$/';
-        $regexPoint = '/^[0-9]{1,}$/';
 
         switch ($nameInput) {
-            case 'pseudo':
-                if (!preg_match($regexName, $value)) {
-                    $this->arrayError['pseudo'] = 'Merci de renseigner un pseudo correcte!';
-                }
-                break;
             case 'mail':
                 if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    $this->arrayError['mail'] = 'Merci de renseigner un e-mail correcte!';
+                    $this->arrayError['mail'] = 'Merci de renseigner un e-mail valide.';
                 }
                 break;
             case 'password':
                 if (!preg_match($regexPassword, $value)) {
-                    $this->arrayError['password'] = 'Merci de donner un mot de passe avec au minimum : 8 caractères, 1 majuscule, 1 minuscule, 1 caractère spécial!';
-                }
-                break;
-            case 'title':
-                if (!preg_match($regexTitle, $value)) {
-                    $this->arrayError['title'] = 'Merci de renseigner un titre correcte!';
-                }
-                break;
-            case 'description':
-                if (!preg_match($regexTitle, $value)) {
-                    $this->arrayError['description'] = 'Merci de renseigner une description correcte!';
-                }
-                break;
-            case 'content':
-                if (!preg_match($regexContent, $value)) {
-                    $this->arrayError['content'] = 'Merci de renseigner un contenu correcte!';
-                }
-                break;
-            case 'id_Role':
-                if (!preg_match($regexRole, $value)) {
-                    $this->arrayError[''] = 'Merci de renseigner un rôle correct!';
-                }
-                break;
-            case 'start_task':
-                if (!preg_match($regexDateTime, $value)) {
-                    $this->arrayError['start_task'] = 'Merci de renseigner une date et heure correcte!';
-                }
-                break;
-            case 'stop_task':
-                if (!preg_match($regexDateTime, $value)) {
-                    $this->arrayError['stop_task'] = 'Merci de renseigner une date et heure correcte!';
-                }
-                break;
-            case 'point':
-                if (!preg_match($regexPoint, $value)) {
-                    $this->arrayError['point'] = 'Merci de renseigner un nombre de point(s) correct!';
-                }
-                break;
-            case 'kid':
-                if (!preg_match($regexPoint, $value)) {
-                    $this->arrayError['kid'] = 'Merci de renseigner un enfant correct!';
-                }
-                break;
-            case 'status':
-                if (!preg_match($regexName, $value)) {
-                    $this->arrayError['status'] = 'Merci de renseigner un status correct!';
+                    $this->arrayError['password'] = 'Le mot de passe doit contenir au moins 8 caractères, 1 majuscule, 1 chiffre, 1 caractère spécial.';
                 }
                 break;
         }
     }
 
-    // Fonction principale de validation des champs
     public function check($nameInput, $value)
     {
-        $this->isNotEmpty($nameInput);
+        $this->isNotEmpty($nameInput, $value);
         $value = htmlspecialchars($value);
         $this->checkFormat($nameInput, $value);
         return $this->arrayError;

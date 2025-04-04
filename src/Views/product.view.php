@@ -18,7 +18,7 @@ require_once(__DIR__ . "/partials/head.php");
             <form method="GET" action="/products">
                 <h6>Catégorie</h6>
                 <?php
-                $categories = ["BCAA", "Barres protéinées", "Multivitamines", "Whey isolate", "Pre-workout"];
+                $categories = ["BCAA", "Créatine", "Multivitamines", "Whey isolate", "Pre-workout", "Whey gainer"];
                 foreach ($categories as $cat) {
                     $checked = isset($_GET['category']) && in_array($cat, $_GET['category']) ? 'checked' : '';
                     echo "<div><input type='checkbox' name='category[]' value=\"$cat\" $checked> $cat</div>";
@@ -27,7 +27,7 @@ require_once(__DIR__ . "/partials/head.php");
 
                 <h6 class="mt-3">Saveur</h6>
                 <?php
-                $flavors = ["Chocolat", "Chocolat brownie", "Citron vert", "Vanille"];
+                $flavors = ["Chocolat", "Chocolat brownie","Vanille"];
                 foreach ($flavors as $flavor) {
                     $checked = isset($_GET['flavor']) && in_array($flavor, $_GET['flavor']) ? 'checked' : '';
                     echo "<div><input type='checkbox' name='flavor[]' value=\"$flavor\" $checked> $flavor</div>";

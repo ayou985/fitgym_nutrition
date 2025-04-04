@@ -20,10 +20,11 @@ if (!isset($products) || !is_array($products)) {
         <h4>Catégorie</h4>
         <ul>
             <li><input type="checkbox"> BCAA</li>
-            <li><input type="checkbox"> Barres protéinées</li>
+            <li><input type="checkbox"> Créatine</li>
             <li><input type="checkbox"> Multivitamines</li>
             <li><input type="checkbox"> Whey isolate</li>
             <li><input type="checkbox"> Pre-workout</li>
+            <li><input type="checkbox"> Whey gainer Chocolat</li>
         </ul>
     </div>
     <div class="filter-category">
@@ -31,7 +32,6 @@ if (!isset($products) || !is_array($products)) {
         <ul>
             <li><input type="checkbox"> Chocolat</li>
             <li><input type="checkbox"> Chocolat brownie</li>
-            <li><input type="checkbox"> Citron vert</li>
             <li><input type="checkbox"> Vanille</li>
         </ul>
     </div>

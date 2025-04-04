@@ -38,11 +38,10 @@ class User
 
     public static function authenticate($email, $password): ?User
     {
-        $pdo = Database::getInstance()->getConnection();
-        $sql = "SELECT * FROM user WHERE email = ?";
-        $statement = $pdo->prepare($sql);
-        $statement->execute([$email]);
-        $row = $statement->fetch(PDO::FETCH_ASSOC);
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM user WHERE email = ?");
+        $stmt->execute([$email]);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         if ($row && password_verify($password, $row['password'])) {
             return new User(
@@ -56,8 +55,10 @@ class User
                 $row['id_Role']
             );
         }
+
         return null;
     }
+
 
     public static function getUserByEmail($email): ?User
     {
@@ -123,22 +124,78 @@ class User
     }
 
     // Getters
-    public function getId(): ?int { return $this->id; }
-    public function getEmail(): ?string { return $this->email; }
-    public function getPassword(): ?string { return $this->password; }
-    public function getFirstName(): ?string { return $this->firstName; }
-    public function getLastName(): ?string { return $this->lastName; }
-    public function getPhoneNumber(): ?string { return $this->phoneNumber; }
-    public function getAddress(): ?string { return $this->address; }
-    public function getId_Role(): ?int { return $this->id_Role; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+    public function getId_Role(): ?int
+    {
+        return $this->id_Role;
+    }
 
     // Setters
-    public function setId(int $id): static { $this->id = $id; return $this; }
-    public function setEmail(string $email): static { $this->email = $email; return $this; }
-    public function setPassword(string $password): static { $this->password = $password; return $this; }
-    public function setFirstName(string $firstName): static { $this->firstName = $firstName; return $this; }
-    public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
-    public function setPhoneNumber(string $phoneNumber): static { $this->phoneNumber = $phoneNumber; return $this; }
-    public function setAddress(string $address): static { $this->address = $address; return $this; }
-    public function setId_Role(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        return $this;
+    }
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+        return $this;
+    }
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+    public function setLastName(string $lastName): static
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+    public function setPhoneNumber(string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
+        return $this;
+    }
+    public function setId_Role(int $id_Role): static
+    {
+        $this->id_Role = $id_Role;
+        return $this;
+    }
 }

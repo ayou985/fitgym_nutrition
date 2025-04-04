@@ -10,21 +10,32 @@ class ProductController
     {
         $productModel = new AllProduct();
         $products = $productModel->getAll();
-
+    
         $categories = $_GET['category'] ?? [];
         $flavors = $_GET['flavor'] ?? [];
         $maxPrice = $_GET['max_price'] ?? null;
-
+    
         $filteredProducts = array_filter($products, function ($product) use ($categories, $flavors, $maxPrice) {
-            $matchesCategory = empty($categories) || in_array($product->getCategory(), $categories);
-            $matchesFlavor = empty($flavors) || array_intersect($flavors, $product->getFlavors());
-            $matchesPrice = is_null($maxPrice) || $product->getPrice() <= $maxPrice;
+            $matchesCategory = empty($categories) || in_array(
+                strtolower(trim($product->getCategory())),
+                array_map(fn($cat) => strtolower(trim($cat)), $categories)
+            );
+    
+            $matchesFlavor = empty($flavors) || array_intersect(
+                array_map('strtolower', $flavors),
+                array_map('strtolower', $product->getFlavors())
+            );
+                        $matchesPrice = is_null($maxPrice) || $product->getPrice() <= $maxPrice;
 
+    
             return $matchesCategory && $matchesFlavor && $matchesPrice;
         });
 
+        
+    
         require_once(__DIR__ . '/../Views/product.view.php');
     }
+    
 
     public function submitReviews()
     {
