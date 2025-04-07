@@ -339,5 +339,102 @@ public function getQuantity() {
     return $this->quantity ?? 1;
 }
 
+public static function searchProducts(string $term): array
+{
+    $pdo = \Config\Database::getInstance()->getConnection();
+
+    $stmt = $pdo->prepare("SELECT * FROM product WHERE name LIKE :term OR description LIKE :term");
+    $stmt->execute(['term' => '%' . $term . '%']);
+
+    $results = [];
+
+    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $results[] = new self(
+            $row['id'],
+            $row['name'],
+            $row['price'],
+            $row['description'],
+            $row['image'],
+            $row['stock'],
+            $row['category'],
+            $row['flavor']
+        );
+    }
+
+    return $results;
+}
+
+public static function search(string $term): array
+{
+    $pdo = \Config\Database::getInstance()->getConnection();
+
+    // On prépare une recherche sur les champs nom, description ou catégorie
+    $sql = "SELECT * FROM product 
+            WHERE name LIKE :term 
+            OR description LIKE :term 
+            OR category LIKE :term";
+
+    $stmt = $pdo->prepare($sql);
+    $term = '%' . $term . '%'; // pour la recherche partielle
+    $stmt->bindParam(':term', $term, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $results = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $results[] = new self(
+            $row['id'],
+            $row['name'],
+            $row['description'],
+            $row['price'],
+            $row['image'],
+            $row['category'],
+            $row['stock'],
+            $row['flavor']
+        );
+    }
+
+    return $results;
+}
+
+public static function searchByNameOrCategory(string $keyword): array
+{
+    $pdo = \Config\Database::getInstance()->getConnection();
+
+    $sql = "SELECT * FROM product WHERE name LIKE :keyword";
+    $stmt = $pdo->prepare($sql);
+    $like = '%' . $keyword . '%';
+    $stmt->bindParam(':keyword', $like, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $results = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $results[] = new self(
+            $row['id'],
+            $row['name'],
+            $row['description'],
+            $row['price'],
+            $row['stock'],
+            $row['category'],
+            $row['image'],
+            $row['flavor'] ?? null // si tu gères les saveurs
+        );
+    }
+
+    return $results;
+}
+
+public static function getReviewByUserAndProduct($userId, $productId)
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM reviews WHERE user_id = :user_id AND product_id = :product_id LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'user_id' => $userId,
+            'product_id' => $productId
+        ]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     
 }

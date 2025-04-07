@@ -32,12 +32,6 @@ require_once(__DIR__ . '/../Views/partials/head.php');
             <input type="text" name="category" value="<?= htmlspecialchars($product->getCategory()); ?>" required>
         </div>
 
-        
-        <!-- <div class="mb-3">
-            <label for="image">Changer l'image</label>
-            <input type="file" name="image" accept="image/*">
-        </div> -->
-
         <button type="submit" class="btn btn-primary">Mettre à jour</button>
     </div>
 </form>

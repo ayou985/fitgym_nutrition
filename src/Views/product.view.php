@@ -27,7 +27,7 @@ require_once(__DIR__ . "/partials/head.php");
 
                 <h6 class="mt-3">Saveur</h6>
                 <?php
-                $flavors = ["Chocolat", "Chocolat brownie","Vanille"];
+                $flavors = ["Chocolat", "Chocolat brownie", "Vanille"];
                 foreach ($flavors as $flavor) {
                     $checked = isset($_GET['flavor']) && in_array($flavor, $_GET['flavor']) ? 'checked' : '';
                     echo "<div><input type='checkbox' name='flavor[]' value=\"$flavor\" $checked> $flavor</div>";
@@ -35,10 +35,21 @@ require_once(__DIR__ . "/partials/head.php");
                 ?>
 
                 <h6 class="mt-3">Prix max</h6>
-                <input type="range" name="max_price" min="1" max="150" value="<?= $_GET['max_price'] ?? 150 ?>" class="form-range">
-                <p>Jusqu'à <?= $_GET['max_price'] ?? 150 ?> €</p>
+
+                <input
+                    type="range"
+                    id="priceRange"
+                    name="max_price"
+                    min="1"
+                    max="150"
+                    value="<?= $_GET['max_price'] ?? 150 ?>"
+                    class="form-range"
+                    oninput="updatePriceDisplay(this.value)">
+
+                <p>Jusqu'à <span id="priceValue"><?= $_GET['max_price'] ?? 150 ?></span> €</p>
 
                 <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
+
             </form>
         </aside>
 
@@ -73,5 +84,18 @@ require_once(__DIR__ . "/partials/head.php");
         </section>
     </div>
 </div>
+
+<script>
+    function updatePriceDisplay(value) {
+        document.getElementById("priceValue").textContent = value;
+    }
+
+    // Init au chargement
+    document.addEventListener("DOMContentLoaded", () => {
+        const slider = document.getElementById("priceRange");
+        if (slider) updatePriceDisplay(slider.value);
+    });
+</script>
+
 
 <?php require_once(__DIR__ . "/partials/footer.php"); ?>

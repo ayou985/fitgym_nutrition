@@ -1,5 +1,19 @@
 <?php require_once(__DIR__ . "/partials/head.php"); ?>
 
+<?php if (!empty($_SESSION['flash'])): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION["flash"]["type"] ?>',
+            title: '<?= $_SESSION["flash"]["type"] === "success" ? "Succès !" : "Erreur" ?>',
+            text: '<?= $_SESSION["flash"]["message"] ?>',
+            confirmButtonColor: '#3085d6'
+        });
+    </script>
+    <?php unset($_SESSION['flash']); ?>
+<?php endif; ?>
+
+
 <div class="container mt-5">
     <h1 class="text-center">Mon Profil</h1>
 
@@ -52,16 +66,22 @@
             </div>
 
             <div class="form-group">
-                <label for="password">Nouveau mot de passe :</label>
-                <input type="password" id="password" name="password"
+                <label for="old_password">Ancien mot de passe :</label>
+                <input type="password" class="form-control" name="old_password" id="old_password" placeholder="Entrez votre mot de passe actuel">
+            </div>
+
+            <div class="form-group">
+                <label for="new_password">Nouveau mot de passe :</label>
+                <input type="password" id="new_password" name="new_password"
                     class="form-control" placeholder="Laissez vide pour ne pas changer">
             </div>
 
             <div class="form-group">
-                <label for="confirmPassword">Confirmer le mot de passe :</label>
-                <input type="password" id="confirmPassword" name="confirmPassword"
+                <label for="confirm_password">Confirmer le mot de passe :</label>
+                <input type="password" id="confirm_password" name="confirm_password"
                     class="form-control" placeholder="Laissez vide pour ne pas changer">
             </div>
+
 
             <div class="form-group">
                 <label for="profile_image">Changer la photo de profil :</label>
@@ -72,5 +92,26 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.querySelector("form").addEventListener("submit", function(e) {
+        const oldPass = document.querySelector('input[name="old_password"]');
+        const newPass = document.querySelector('input[name="new_password"]');
+        const confirmPass = document.querySelector('input[name="confirm_password"]');
+
+        // Si on veut changer le mdp
+        if (newPass.value !== '' || confirmPass.value !== '') {
+            if (oldPass.value === '') {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ancien mot de passe requis',
+                    text: 'Veuillez entrer votre ancien mot de passe pour modifier le mot de passe.',
+                });
+            }
+        }
+    });
+</script>
+
 
 <?php require_once(__DIR__ . "/partials/footer.php"); ?>

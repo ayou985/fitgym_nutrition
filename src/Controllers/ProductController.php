@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\AllProduct;
+use \PDO;
 
 class ProductController
 {
@@ -10,32 +11,39 @@ class ProductController
     {
         $productModel = new AllProduct();
         $products = $productModel->getAll();
-    
+
         $categories = $_GET['category'] ?? [];
         $flavors = $_GET['flavor'] ?? [];
         $maxPrice = $_GET['max_price'] ?? null;
-    
+
+        if (isset($_GET['search'])) {
+            $search = $_GET['search'];
+            $products = AllProduct::searchByNameOrCategory($search);
+        } else {
+            $products = AllProduct::getAll();
+        }
+
         $filteredProducts = array_filter($products, function ($product) use ($categories, $flavors, $maxPrice) {
             $matchesCategory = empty($categories) || in_array(
                 strtolower(trim($product->getCategory())),
                 array_map(fn($cat) => strtolower(trim($cat)), $categories)
             );
-    
+
             $matchesFlavor = empty($flavors) || array_intersect(
                 array_map('strtolower', $flavors),
                 array_map('strtolower', $product->getFlavors())
             );
-                        $matchesPrice = is_null($maxPrice) || $product->getPrice() <= $maxPrice;
+            $matchesPrice = is_null($maxPrice) || $product->getPrice() <= $maxPrice;
 
-    
+
             return $matchesCategory && $matchesFlavor && $matchesPrice;
         });
 
-        
-    
+
+
         require_once(__DIR__ . '/../Views/product.view.php');
     }
-    
+
 
     public function submitReviews()
     {
@@ -57,12 +65,13 @@ class ProductController
                 // ✅ Redirection vers la fiche produit avec l'ID
                 header("Location: /produitdetail?id=" . $productId);
                 exit;
-
             } catch (\Exception $e) {
                 echo "Erreur : " . $e->getMessage();
             }
         }
     }
+
+
 
     public function show()
     {
@@ -76,41 +85,77 @@ class ProductController
         $product = \App\Models\AllProduct::getById($product_id);
         $reviews = \App\Models\AllProduct::getReviewsByProductId($product_id);
 
+        // ✅ Ajout de la vérification si l'utilisateur a déjà laissé un avis
+        $hasAlreadyReviewed = false;
+
+        if (isset($_SESSION['user'])) {
+            $userId = $_SESSION['user']['id'];
+            $existingReview = \App\Models\AllProduct::getReviewByUserAndProduct($userId, $product_id);
+            $hasAlreadyReviewed = $existingReview ? true : false;
+        }
+
         require_once(__DIR__ . '/../Views/product.show.view.php');
     }
 
-    public function updateReviews()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $reviewId = intval($_POST['review_id'] ?? 0);
-            $comment = htmlspecialchars($_POST['comment'] ?? '');
-            $rating = intval($_POST['rating'] ?? 0);
-            $productId = intval($_POST['product_id'] ?? 0);
-    
-            if (!$reviewId || !$comment || $rating < 1 || $rating > 5 || !$productId) {
-                echo "Données invalides";
-                return;
-            }
-    
-            \App\Models\AllProduct::updateReviews($reviewId, $comment, $rating);
-            header("Location: /produitdetail?id=" . $productId);
-            exit;
-        }
-    }
     public function deleteReviews()
     {
         if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['product_id'])) {
             $reviewId = intval($_GET['id']);
             $productId = intval($_GET['product_id']);
-    
+
             \App\Models\AllProduct::deleteReviews($reviewId);
-    
+
             header("Location: /produitdetail?id=" . $productId);
             exit;
         } else {
             echo "Paramètres manquants";
         }
     }
-    
-    
+
+
+    public function showProducts()
+    {
+        $search = $_GET['search'] ?? null;
+
+        if ($search) {
+            $products = AllProduct::search($search);
+        } else {
+            $products = AllProduct::getAll();
+        }
+
+        require_once(__DIR__ . '/../Views/products.view.php');
+    }
+
+
+    public static function getAllFiltered($searchTerm = '')
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+
+        if (!empty($searchTerm)) {
+            $sql = "SELECT * FROM product WHERE name LIKE :search";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute(['search' => '%' . $searchTerm . '%']);
+        } else {
+            $sql = "SELECT * FROM product";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute();
+        }
+
+        $products = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $products[] = new self(
+                $row['id'],
+                $row['name'],
+                $row['price'],
+                $row['description'],
+                $row['image'],
+                $row['stock'],
+                $row['category'],
+                $row['flavor']
+            );
+        }
+
+        return $products;
+    }
 }

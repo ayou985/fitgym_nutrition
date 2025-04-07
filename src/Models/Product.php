@@ -111,4 +111,6 @@ class Product
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
+
+    
 }
