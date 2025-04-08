@@ -22,7 +22,7 @@
         <?php if (!empty($user->getProfileImage())): ?>
             <img src="/public/uploads/<?= htmlspecialchars($user->getProfileImage()) ?>" width="150" class="rounded-circle" alt="Photo de profil">
         <?php else: ?>
-            <img src="/public/images/default-profile.png" width="150" class="rounded-circle" alt="Photo par défaut">
+            <img src="public/img/profile-user.png" width="150" class="rounded-circle" alt="Photo par défaut">
         <?php endif; ?>
     </div>
 

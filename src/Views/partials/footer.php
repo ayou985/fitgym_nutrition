@@ -25,4 +25,10 @@
   <div class="footer-bottom">
     <p>&copy; <?= date('Y'); ?> FitGym Nutrition. Tous droits réservés.</p>
   </div>
+
+
 </footer>
+
+</body>
+
+</html>

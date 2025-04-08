@@ -2,40 +2,43 @@
 require_once(__DIR__ . "/partials/head.php");
 ?>
 
+<!-- Sécurise l'existence de la variable pour éviter les warnings  -->
+
+<?php $hasAlreadyReviewed = $hasAlreadyReviewed ?? false; ?>
 <div class="container product-details">
-    <div class="row">
-        <!-- Image du produit -->
-        <div class="col-md-6">
+    <div class="product-layout">
+        <!-- Colonne gauche : image -->
+        <div class="product-left">
             <img src="/public/uploads/<?= htmlspecialchars($produit->getImage() ?? 'default.jpg') ?>"
                 class="img-fluid product-image"
                 alt="<?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?>">
         </div>
 
-        <!-- Infos produit -->
-        <div class="col-md-6">
-            <h1><?= htmlspecialchars($produit->getName()) ?></h1>
-            <p><strong>Catégorie :</strong> <?= htmlspecialchars($produit->getCategory()) ?></p>
-            <p><strong>Stock :</strong> <?= $produit->getStock() ?> unités disponibles</p>
-            <p><?= nl2br(html_entity_decode($produit->getDescription())) ?></p>
-            <p class="h5"><strong>Prix :</strong> <?= number_format($produit->getPrice(), 2, ',', ' ') ?> €</p>
+        <!-- Colonne droite : infos -->
+        <div class="product-right">
+            <h1><?= htmlspecialchars($produit->getName() ?? 'Nom inconnu') ?></h1>
+            <p class="product-category"><strong>Catégorie :</strong> <?= htmlspecialchars($produit->getCategory() ?? 'Non classé') ?></p>
+            <p class="product-stock"><strong>Stock :</strong> <?= htmlspecialchars($produit->getStock() ?? 0) ?> unités disponibles</p>
+            <p class="product-description"><?= nl2br(html_entity_decode($produit->getDescription() ?? 'Description non disponible')) ?></p>
+            <p class="product-price"><strong>Prix :</strong> <?= number_format($produit->getPrice() ?? 0.00, 2, ',', ' ') ?> €</p>
 
             <?php if (isset($_SESSION['user'])): ?>
-                <form action="/cart/add" method="POST" class="mt-3">
+                <form action="/cart/add" method="POST">
                     <input type="hidden" name="id" value="<?= $produit->getId() ?>">
 
-                    <label for="quantity">Quantité :</label>
-                    <div class="quantity-control d-flex align-items-center gap-2">
+                    <label for="quantity"><strong>Quantité :</strong></label>
+                    <div class="quantity-control">
                         <button type="button" onclick="changeQuantity(-1)">-</button>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?>" class="form-control w-auto">
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="<?= $produit->getStock() ?>">
                         <button type="button" onclick="changeQuantity(1)">+</button>
                     </div>
 
-                    <button type="submit" class="btn btn-danger mt-3">🛒 Ajouter au panier</button>
+                    <button type="submit" class="btn-add-cart">🛒 Ajouter au panier</button>
                 </form>
             <?php else: ?>
-                <div class="alert alert-warning mt-3">
-                    Connectez-vous pour ajouter ce produit au panier.
-                    <a href="/login" class="btn btn-sm btn-primary ms-2">Se connecter</a>
+                <div class="not-logged-message">
+                    <p>🔒 Connectez-vous pour ajouter ce produit au panier.</p>
+                    <a href="/login" class="btn">Se connecter</a>
                 </div>
             <?php endif; ?>
         </div>
@@ -93,7 +96,7 @@ require_once(__DIR__ . "/partials/head.php");
     <?php if (isset($_SESSION['user']) && !$hasAlreadyReviewed): ?>
         <div class="add-comment-form mt-5">
             <h4>Laisser un avis</h4>
-            <form method="POST" action="/product/reviews">
+            <form method="POST" action="/submitReviews">
                 <input type="hidden" name="product_id" value="<?= $produit->getId() ?>">
 
                 <div class="form-group mt-4">
@@ -136,3 +139,31 @@ require_once(__DIR__ . "/partials/head.php");
 <?php
 require_once(__DIR__ . "/partials/footer.php");
 ?>
+
+<script>
+    function changeQuantity(amount) {
+        const qtyInput = document.getElementById("quantity");
+        const maxQty = parseInt(qtyInput.max);
+        const minQty = parseInt(qtyInput.min);
+        let current = parseInt(qtyInput.value);
+
+        const newValue = current + amount;
+
+        if (newValue >= minQty && newValue <= maxQty) {
+            qtyInput.value = newValue;
+        }
+    }
+
+    // Empêche l'utilisateur de taper une valeur supérieure au stock
+    document.getElementById("quantity").addEventListener("input", function () {
+        const max = parseInt(this.max);
+        const min = parseInt(this.min);
+        let value = parseInt(this.value);
+
+        if (value > max) {
+            this.value = max;
+        } else if (value < min || isNaN(value)) {
+            this.value = min;
+        }
+    });
+</script>

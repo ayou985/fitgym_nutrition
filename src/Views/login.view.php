@@ -45,6 +45,20 @@ $rememberedEmail = $_COOKIE['remembered_email'] ?? '';
     </form>
 </div>
 
+<?php if (isset($_SESSION['flash'])): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['flash']['type'] ?>',
+            title: '<?= $_SESSION['flash']['message'] ?>',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#d33',
+        });
+    </script>
+    <?php unset($_SESSION['flash']); ?>
+<?php endif; ?>
+
+
 <!-- 👁️ JS pour mot de passe -->
 <script>
     function toggleLoginPassword() {

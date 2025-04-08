@@ -115,11 +115,14 @@ class UserController
                 $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
                 \App\Models\User::updatePassword($user->getId(), $hashedPassword);
 
+                // 🔐 Déconnexion après changement de mot de passe
+                session_destroy();
+                session_start(); // pour recréer une session et afficher le flash message
                 $_SESSION['flash'] = [
                     'type' => 'success',
-                    'message' => '✅ Mot de passe mis à jour avec succès.'
+                    'message' => '🔐 Mot de passe changé avec succès. Veuillez vous reconnecter.'
                 ];
-                header("Location: /profile");
+                header("Location: /login");
                 exit;
             }
 
@@ -161,7 +164,7 @@ class UserController
 
     public function listUsers()
     {
-        session_start();
+
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
             die("Accès interdit");
         }

@@ -72,6 +72,8 @@ require_once(__DIR__ . "/partials/head.php");
         <p> Adresse : [Adresse complète]</p>
     </section>
 </main>
+
+
 <?php 
 require_once(__DIR__ . "/partials/footer.php");
 ?>

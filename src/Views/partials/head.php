@@ -24,7 +24,11 @@ if (session_status() == PHP_SESSION_NONE) session_start();
       <div class="logo">
         <a href="/"><img src="/public/img/logo.png" alt="Logo"></a>
       </div>
-      <ul class="nav-links">
+
+      <button class="mobile-menu-toggle" id="hamburger">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="mobileMenu">
         <li><a class="nav-link" href="/">Accueil</a></li>
         <li><a class="nav-link" href="/products">Produits</a></li>
         <li><a class="nav-link" href="/about">À propos</a></li>
@@ -93,6 +97,13 @@ if (session_status() == PHP_SESSION_NONE) session_start();
     });
   </script>
 
-</body>
 
-</html>
+<script>
+  const toggle = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  toggle.addEventListener('click', () => {
+    mobileMenu.classList.toggle('active');
+  });
+</script>
+

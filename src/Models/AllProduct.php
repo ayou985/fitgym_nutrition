@@ -253,12 +253,16 @@ class AllProduct
         }
     }
 
-    public static function userHasReviewed($userId, $product_id)
+    public static function userHasReviewed($userId, $productId)
     {
-        $db = Database::getInstance()->getConnection(); // Ensure $db is a PDO instance
-        $query = $db->prepare("SELECT COUNT(*) FROM reviews WHERE user_id = ? AND product_id = ?");
-        $query->execute([$userId, $product_id]);
-        return $query->fetchColumn() > 0;
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $query = "SELECT COUNT(*) FROM reviews WHERE user_id = :user_id AND product_id = :product_id";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([
+            'user_id' => $userId,
+            'product_id' => $productId
+        ]);
+        return $stmt->fetchColumn() > 0;
     }
 
     public static function createReviews($comment, $rating, $created_at, $user_id, $product_id)
@@ -424,17 +428,16 @@ public static function searchByNameOrCategory(string $keyword): array
 }
 
 public static function getReviewByUserAndProduct($userId, $productId)
-    {
-        $pdo = \Config\Database::getInstance()->getConnection();
-        $sql = "SELECT * FROM reviews WHERE user_id = :user_id AND product_id = :product_id LIMIT 1";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            'user_id' => $userId,
-            'product_id' => $productId
-        ]);
+{
+    $pdo = \Config\Database::getInstance()->getConnection();
+    $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id_User = :user_id AND id_Product = :product_id LIMIT 1");
+    $stmt->execute([
+        'user_id' => $userId,
+        'product_id' => $productId
+    ]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
 
     
 }

@@ -7,13 +7,17 @@
         <p>Veuillez remplir les champs indiqués ci-dessous afin de créer votre compte.</p>
 
         <label for="nom">Nom :</label>
-        <input type="text" id="nom" name="lastName" required>
+        <input type="text" id="nom" name="lastName" required
+            value="<?= isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : '' ?>">
 
         <label for="prenom">Prénom :</label>
-        <input type="text" id="prenom" name="firstName" required>
+        <input type="text" id="prenom" name="firstName" required
+            value="<?= isset($_POST['firstName']) ? htmlspecialchars($_POST['firstName']) : '' ?>">
 
         <label for="email">Email :</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required
+            value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>">
+
 
         <label for="password">Mot de passe :</label>
         <div style="position: relative;">

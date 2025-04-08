@@ -82,20 +82,29 @@ class ProductController
             exit;
         }
 
-        $product = \App\Models\AllProduct::getById($product_id);
+        $produit = \App\Models\AllProduct::getById($product_id);
         $reviews = \App\Models\AllProduct::getReviewsByProductId($product_id);
 
-        // ✅ Ajout de la vérification si l'utilisateur a déjà laissé un avis
+        // ✅ Vérifier si l'utilisateur a déjà laissé un avis
         $hasAlreadyReviewed = false;
-
         if (isset($_SESSION['user'])) {
             $userId = $_SESSION['user']['id'];
             $existingReview = \App\Models\AllProduct::getReviewByUserAndProduct($userId, $product_id);
             $hasAlreadyReviewed = $existingReview ? true : false;
         }
 
-        require_once(__DIR__ . '/../Views/product.show.view.php');
+        $reviewModel = new AllProduct(); // ou ReviewModel si tu as un modèle à part
+        $hasAlreadyReviewed = $reviewModel->userHasReviewed($userId, $product_id);
+
+        $hasAlreadyReviewed = false;
+        if (isset($_SESSION['user'])) {
+            $hasAlreadyReviewed = \App\Models\AllProduct::userHasReviewed($_SESSION['user']['id'], $product_id);
+        }
+
+        // ✅ Passer toutes les données nécessaires à la vue
+        require_once(__DIR__ . '/../Views/produitdetail.view.php');
     }
+
 
     public function deleteReviews()
     {
