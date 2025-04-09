@@ -16,7 +16,7 @@ class ContactController
             $name     = htmlspecialchars($_POST['name'] ?? '');
             $surname  = htmlspecialchars($_POST['last_name'] ?? '');
             $email    = filter_var($_POST['email'] ?? '', FILTER_VALIDATE_EMAIL);
-            $message  = htmlspecialchars($_POST['message'] ?? '');
+            $message = strip_tags($_POST['message'], '<h1><p><br><strong><em><ul><li>'); // Autorise seulement quelques balises utiles
 
             // Vérification des champs
             if (!$email || empty($name) || empty($surname) || empty($message)) {

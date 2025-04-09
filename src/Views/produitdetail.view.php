@@ -65,14 +65,21 @@ require_once(__DIR__ . "/partials/head.php");
                         <span class="text-muted">(<?= $review['rating'] ?>/5)</span>
                     </div>
 
-                    <p class="card-text"><?= htmlspecialchars($review['comment']) ?></p>
+                    <p class="card-text"><?= $review['comment'] ?></p>
+
+                    <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
+                        <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
+                            onclick="return confirm('Supprimer cet avis ?')"
+                            class="btn btn-sm btn-outline-danger ms-2">🗑️ Supprimer</a>
+                    <?php endif; ?>
+
 
                     <?php if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $review['user_id']): ?>
                         <form action="/updateReviews" method="POST" class="mt-2">
                             <input type="hidden" name="review_id" value="<?= $review['id'] ?>">
                             <input type="hidden" name="product_id" value="<?= $produit->getId() ?>">
 
-                            <textarea name="comment" rows="2" class="form-control mb-2"><?= htmlspecialchars($review['comment']) ?></textarea>
+                            <textarea name="comment" rows="2" class="form-control mb-2"><?= $review['comment'] ?></textarea>
 
                             <select name="rating" class="form-select mb-2 w-auto d-inline-block">
                                 <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -80,12 +87,20 @@ require_once(__DIR__ . "/partials/head.php");
                                 <?php endfor; ?>
                             </select>
 
+                                    
+
                             <button type="submit" class="btn btn-sm btn-success">✅ Sauvegarder</button>
-                            <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
-                                onclick="return confirm('Supprimer cet avis ?')"
-                                class="btn btn-sm btn-outline-danger ms-2">🗑️ Supprimer</a>
-                        </form>
-                    <?php endif; ?>
+
+                            <?php if (
+                                (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $review['user_id']) ||
+                                (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin')
+                            ): ?>
+                                <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
+                                    onclick="return confirm('Supprimer cet avis ?')"
+                                    class="btn btn-sm btn-outline-danger ms-2">🗑️ Supprimer</a>
+                            <?php endif; ?>
+
+                        <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -136,6 +151,20 @@ require_once(__DIR__ . "/partials/head.php");
     }
 </script>
 
+<?php if (!empty($_SESSION['flash'])): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            icon: '<?= $_SESSION['flash']['type'] === 'success' ? 'success' : 'error' ?>',
+            title: '<?= $_SESSION['flash']['message'] ?>',
+            confirmButtonColor: '#d33',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    </script>
+    <?php unset($_SESSION['flash']); ?>
+<?php endif; ?>
+
 <?php
 require_once(__DIR__ . "/partials/footer.php");
 ?>
@@ -155,7 +184,7 @@ require_once(__DIR__ . "/partials/footer.php");
     }
 
     // Empêche l'utilisateur de taper une valeur supérieure au stock
-    document.getElementById("quantity").addEventListener("input", function () {
+    document.getElementById("quantity").addEventListener("input", function() {
         const max = parseInt(this.max);
         const min = parseInt(this.min);
         let value = parseInt(this.value);

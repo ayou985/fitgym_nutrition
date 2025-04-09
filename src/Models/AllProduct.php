@@ -27,8 +27,8 @@ class AllProduct
         ?string $category = null,
         ?string $image = null,
         ?string $comment = null,
-        ?int $rating= null,
-        ?int $user_id= null
+        ?int $rating = null,
+        ?int $user_id = null
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -199,28 +199,28 @@ class AllProduct
     }
 
     public function createProduct()
-{
-    $db = Database::getInstance();
-    $pdo = $db->getConnection();
+    {
+        $db = Database::getInstance();
+        $pdo = $db->getConnection();
 
-    // Si aucun stock défini, on initialise à 1
-    if ($this->stock === null || $this->stock < 0) {
-        $this->stock = 1;
-    }
+        // Si aucun stock défini, on initialise à 1
+        if ($this->stock === null || $this->stock < 0) {
+            $this->stock = 1;
+        }
 
-    $sql = "INSERT INTO product (name, description, price, stock, category, image) 
+        $sql = "INSERT INTO product (name, description, price, stock, category, image) 
             VALUES (?, ?, ?, ?, ?, ?)";
-    $statement = $pdo->prepare($sql);
+        $statement = $pdo->prepare($sql);
 
-    return $statement->execute([
-        $this->name,
-        $this->description,
-        $this->price,
-        $this->stock,
-        $this->category,
-        $this->image
-    ]);
-}
+        return $statement->execute([
+            $this->name,
+            $this->description,
+            $this->price,
+            $this->stock,
+            $this->category,
+            $this->image
+        ]);
+    }
 
 
     public function addComment()
@@ -237,6 +237,16 @@ class AllProduct
             $this->id
         ]);
     }
+
+    public static function getReviewById($id)
+    {
+        $pdo = Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function delete(): bool
     {
         $db = Database::getInstance();
@@ -268,21 +278,21 @@ class AllProduct
     public static function createReviews($comment, $rating, $created_at, $user_id, $product_id)
     {
         $db = Database::getInstance()->getConnection();
-    
+
         // Vérification des paramètres avant d'exécuter la requête
         if (empty($user_id) || empty($product_id) || empty($comment) || $rating < 1 || $rating > 5) {
             throw new \Exception("Paramètres invalides pour createReviews");
         }
-    
+
         // Si la date n’est pas passée en paramètre, utilisez la date actuelle
         if (empty($created_at)) {
             $created_at = date('Y-m-d H:i:s');
         }
-    
+
         // Préparation de la requête SQL
         $sql = "INSERT INTO reviews (comment, rating, user_id, created_at, product_id) VALUES (?, ?, ?, ?, ?)";
         $stmt = $db->prepare($sql);
-    
+
         // Exécution de la requête avec les paramètres
         $stmt->execute([$comment, $rating, $user_id, $created_at, $product_id]);
     }
@@ -291,18 +301,19 @@ class AllProduct
     {
         // Connexion PDO
         $pdo = \Config\Database::getInstance()->getConnection(); // à adapter si ton accès DB est différent
-    
+
         $stmt = $pdo->prepare("SELECT flavour FROM flavour WHERE id_Product = ?");
         $stmt->execute([$this->id]); // Assure-toi que $this->id existe bien
-    
+
         $flavors = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         return array_map('trim', $flavors); // Nettoie les espaces éventuels
     }
-    
 
-    public static function getReviewsByProductId($productId) {
+
+    public static function getReviewsByProductId($productId)
+    {
         $db = Database::getInstance()->getConnection();
-    
+
         $query = $db->prepare("
             SELECT r.id, r.comment, r.rating, r.created_at, r.user_id, u.firstname, u.lastname
             FROM reviews r
@@ -310,11 +321,24 @@ class AllProduct
             WHERE r.product_id = ?
             ORDER BY r.created_at DESC
         ");
-    
+
         $query->execute([$productId]);
         return $query->fetchAll(PDO::FETCH_ASSOC); // ✅ important pour avoir les clés associatives comme 'user_id'
     }
-    
+
+    public function update()
+    {
+        $sql = "UPDATE reviews SET comment = :comment, rating = :rating WHERE id = :id";
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            'comment' => $this->comment,
+            'rating' => $this->rating,
+            'id' => $this->id
+        ]);
+    }
+
+
     public static function updateReviews($id, $comment, $rating)
     {
         $db = Database::getInstance()->getConnection();
@@ -322,7 +346,7 @@ class AllProduct
         $stmt = $db->prepare($sql);
         $stmt->execute([$comment, $rating, $id]);
     }
-    
+
     public static function deleteReviews($id)
     {
         $db = Database::getInstance()->getConnection();
@@ -331,113 +355,112 @@ class AllProduct
         $stmt->execute([$id]);
     }
 
-        // Dans AllProduct.php
-private $quantity;
+    // Dans AllProduct.php
+    private $quantity;
 
-public function setQuantity($qte) {
-    $this->quantity = $qte;
-    return $this;
-}
-
-public function getQuantity() {
-    return $this->quantity ?? 1;
-}
-
-public static function searchProducts(string $term): array
-{
-    $pdo = \Config\Database::getInstance()->getConnection();
-
-    $stmt = $pdo->prepare("SELECT * FROM product WHERE name LIKE :term OR description LIKE :term");
-    $stmt->execute(['term' => '%' . $term . '%']);
-
-    $results = [];
-
-    while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-        $results[] = new self(
-            $row['id'],
-            $row['name'],
-            $row['price'],
-            $row['description'],
-            $row['image'],
-            $row['stock'],
-            $row['category'],
-            $row['flavor']
-        );
+    public function setQuantity($qte)
+    {
+        $this->quantity = $qte;
+        return $this;
     }
 
-    return $results;
-}
+    public function getQuantity()
+    {
+        return $this->quantity ?? 1;
+    }
 
-public static function search(string $term): array
-{
-    $pdo = \Config\Database::getInstance()->getConnection();
+    public static function searchProducts(string $term): array
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
 
-    // On prépare une recherche sur les champs nom, description ou catégorie
-    $sql = "SELECT * FROM product 
+        $stmt = $pdo->prepare("SELECT * FROM product WHERE name LIKE :term OR description LIKE :term");
+        $stmt->execute(['term' => '%' . $term . '%']);
+
+        $results = [];
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $results[] = new self(
+                $row['id'],
+                $row['name'],
+                $row['price'],
+                $row['description'],
+                $row['image'],
+                $row['stock'],
+                $row['category'],
+                $row['flavor']
+            );
+        }
+
+        return $results;
+    }
+
+    public static function search(string $term): array
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+
+        // On prépare une recherche sur les champs nom, description ou catégorie
+        $sql = "SELECT * FROM product 
             WHERE name LIKE :term 
             OR description LIKE :term 
             OR category LIKE :term";
 
-    $stmt = $pdo->prepare($sql);
-    $term = '%' . $term . '%'; // pour la recherche partielle
-    $stmt->bindParam(':term', $term, PDO::PARAM_STR);
-    $stmt->execute();
+        $stmt = $pdo->prepare($sql);
+        $term = '%' . $term . '%'; // pour la recherche partielle
+        $stmt->bindParam(':term', $term, PDO::PARAM_STR);
+        $stmt->execute();
 
-    $results = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $results[] = new self(
-            $row['id'],
-            $row['name'],
-            $row['description'],
-            $row['price'],
-            $row['image'],
-            $row['category'],
-            $row['stock'],
-            $row['flavor']
-        );
+        $results = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $results[] = new self(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['image'],
+                $row['category'],
+                $row['stock'],
+                $row['flavor']
+            );
+        }
+
+        return $results;
     }
 
-    return $results;
-}
+    public static function searchByNameOrCategory(string $keyword): array
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
 
-public static function searchByNameOrCategory(string $keyword): array
-{
-    $pdo = \Config\Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM product WHERE name LIKE :keyword";
+        $stmt = $pdo->prepare($sql);
+        $like = '%' . $keyword . '%';
+        $stmt->bindParam(':keyword', $like, PDO::PARAM_STR);
+        $stmt->execute();
 
-    $sql = "SELECT * FROM product WHERE name LIKE :keyword";
-    $stmt = $pdo->prepare($sql);
-    $like = '%' . $keyword . '%';
-    $stmt->bindParam(':keyword', $like, PDO::PARAM_STR);
-    $stmt->execute();
+        $results = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $results[] = new self(
+                $row['id'],
+                $row['name'],
+                $row['description'],
+                $row['price'],
+                $row['stock'],
+                $row['category'],
+                $row['image'],
+                $row['flavor'] ?? null // si tu gères les saveurs
+            );
+        }
 
-    $results = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $results[] = new self(
-            $row['id'],
-            $row['name'],
-            $row['description'],
-            $row['price'],
-            $row['stock'],
-            $row['category'],
-            $row['image'],
-            $row['flavor'] ?? null // si tu gères les saveurs
-        );
+        return $results;
     }
 
-    return $results;
-}
-
-public static function getReviewByUserAndProduct($userId, $productId)
-{
-    $pdo = \Config\Database::getInstance()->getConnection();
-    $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id_User = :user_id AND id_Product = :product_id LIMIT 1");
-    $stmt->execute([
-        'user_id' => $userId,
-        'product_id' => $productId
-    ]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
-
-
-    
+    public static function getReviewByUserAndProduct($userId, $productId)
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $stmt = $pdo->prepare("SELECT * FROM reviews WHERE id_User = :user_id AND id_Product = :product_id LIMIT 1");
+        $stmt->execute([
+            'user_id' => $userId,
+            'product_id' => $productId
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

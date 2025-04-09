@@ -36,6 +36,7 @@ $router->addRoute('/deleteProduct', 'AllProductController', 'deleteProduct');
 $router->addRoute('/store', 'AllProductController', 'store');
 $router->addRoute('/read', 'AllProductController', 'index');
 $router->addRoute('/produitdetail', 'ProduitdetailController', 'produitdetail');
+$router->addRoute('/product', 'ProduitdetailController', 'produitdetail');
 $router->addRoute('/cart', 'CartController', 'showCart');
 $router->addRoute('/cart/add', 'CartController', 'addToCart');
 $router->addRoute('/cart/update', 'CartController', 'updateCart');

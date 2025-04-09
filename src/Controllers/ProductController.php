@@ -44,6 +44,51 @@ class ProductController
         require_once(__DIR__ . '/../Views/product.view.php');
     }
 
+    public function updateReviews()
+    {
+        // Exemple de traitement — à adapter selon ta logique
+
+        $userId = $_SESSION['user']['id'] ?? null;
+        $reviewId = $_POST['review_id'] ?? null;
+        $newContent = $_POST['comment'] ?? '';
+        $newRating = $_POST['rating'] ?? null;
+
+        if (!$userId || !$reviewId || !$newContent || !$newRating) {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => "❌ Informations incomplètes pour mettre à jour l'avis."
+            ];
+            header("Location: /product?id=" . $_POST['product_id']);
+            exit;
+        }
+
+
+        // Exemple : je vérifie que l'utilisateur est bien l'auteur
+        $review = \App\Models\AllProduct::getReviewById($reviewId);
+        
+        $review = \App\Models\AllProduct::getReviewById($reviewId);
+
+        
+        if ($review && $review['user_id'] == $userId) {
+            \App\Models\AllProduct::updateReviews($reviewId, $newContent, $newRating);
+        
+
+            $_SESSION['flash'] = [
+                'type' => 'success',
+                'message' => "✅ Avis mis à jour avec succès !"
+            ];
+        } else {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => "❌ Vous ne pouvez pas modifier cet avis."
+            ];
+        }
+
+        header("Location: /product?id=" . $_POST['product_id']);
+
+        exit;
+    }
+
 
     public function submitReviews()
     {
@@ -107,19 +152,34 @@ class ProductController
 
 
     public function deleteReviews()
-    {
-        if (isset($_GET['id']) && is_numeric($_GET['id']) && isset($_GET['product_id'])) {
-            $reviewId = intval($_GET['id']);
-            $productId = intval($_GET['product_id']);
+{
+    session_start();
+    $userId = $_SESSION['user']['id'] ?? null;
+    $userRole = $_SESSION['user']['role'] ?? null;
 
-            \App\Models\AllProduct::deleteReviews($reviewId);
+    $reviewId = $_GET['id'] ?? null;
+    $productId = $_GET['product_id'] ?? null;
 
-            header("Location: /produitdetail?id=" . $productId);
-            exit;
-        } else {
-            echo "Paramètres manquants";
-        }
+    $review = \App\Models\AllProduct::getReviewById($reviewId);
+
+    if ($review && ($review['user_id'] == $userId || $userRole === 'admin')) {
+        \App\Models\AllProduct::deleteReviews($reviewId);
+
+        $_SESSION['flash'] = [
+            'type' => 'success',
+            'message' => '✅ Avis supprimé avec succès.'
+        ];
+    } else {
+        $_SESSION['flash'] = [
+            'type' => 'error',
+            'message' => "❌ Vous n'avez pas le droit de supprimer cet avis."
+        ];
     }
+
+    header("Location: /product?id=$productId");
+    exit;
+}
+
 
 
     public function showProducts()
