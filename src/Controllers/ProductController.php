@@ -154,31 +154,59 @@ class ProductController
     public function deleteReviews()
 {
     session_start();
-    $userId = $_SESSION['user']['id'] ?? null;
-    $userRole = $_SESSION['user']['role'] ?? null;
+
+    // Vérification que l'utilisateur est connecté
+    if (!isset($_SESSION['user'])) {
+        header("Location: /login");
+        exit;
+    }
 
     $reviewId = $_GET['id'] ?? null;
     $productId = $_GET['product_id'] ?? null;
 
+    if (!$reviewId || !$productId) {
+        $_SESSION['flash'] = [
+            'type' => 'error',
+            'message' => "❌ Paramètres manquants."
+        ];
+        header("Location: /product?id=" . $productId);
+        exit;
+    }
+
+    $userId = $_SESSION['user']['id'];
+    $role = $_SESSION['user']['role'] ?? 'user'; // Default to 'user' if undefined
+
+    // On récupère l'avis
     $review = \App\Models\AllProduct::getReviewById($reviewId);
 
-    if ($review && ($review['user_id'] == $userId || $userRole === 'admin')) {
-        \App\Models\AllProduct::deleteReviews($reviewId);
+    // Si l'avis existe
+    if ($review) {
+        $isAuthor = $review['user_id'] == $userId;
+        $isAdmin = $role === 'admin';
 
-        $_SESSION['flash'] = [
-            'type' => 'success',
-            'message' => '✅ Avis supprimé avec succès.'
-        ];
+        if ($isAuthor || $isAdmin) {
+            \App\Models\AllProduct::deleteReviews($reviewId);
+            $_SESSION['flash'] = [
+                'type' => 'success',
+                'message' => "✅ Avis supprimé avec succès."
+            ];
+        } else {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => "❌ Vous n'avez pas l'autorisation de supprimer cet avis."
+            ];
+        }
     } else {
         $_SESSION['flash'] = [
             'type' => 'error',
-            'message' => "❌ Vous n'avez pas le droit de supprimer cet avis."
+            'message' => "❌ Avis introuvable."
         ];
     }
 
-    header("Location: /product?id=$productId");
+    header("Location: /product?id=" . $productId);
     exit;
 }
+
 
 
 

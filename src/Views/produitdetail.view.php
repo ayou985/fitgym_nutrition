@@ -67,40 +67,45 @@ require_once(__DIR__ . "/partials/head.php");
 
                     <p class="card-text"><?= $review['comment'] ?></p>
 
-                    <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
+
+
+                    <!-- ✅ BOUTON SUPPRIMER POUR L’ADMIN (TOUS LES AVIS) -->
+                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['id_Role'] == '1'):?>
                         <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
-                            onclick="return confirm('Supprimer cet avis ?')"
-                            class="btn btn-sm btn-outline-danger ms-2">🗑️ Supprimer</a>
+                            onclick="return confirm('Supprimer cet avis en tant qu\'admin ?')"
+                            class="btn btn-sm btn-outline-danger ms-2">
+                            🗑️ Supprimer (admin)
+                        </a>
                     <?php endif; ?>
 
 
                     <?php if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $review['user_id']): ?>
-                        <form action="/updateReviews" method="POST" class="mt-2">
-                            <input type="hidden" name="review_id" value="<?= $review['id'] ?>">
-                            <input type="hidden" name="product_id" value="<?= $produit->getId() ?>">
+                        <?php if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $review['user_id']): ?>
+                            <form action="/updateReviews" method="POST" class="mt-2">
+                                <input type="hidden" name="review_id" value="<?= $review['id'] ?>">
+                                <input type="hidden" name="product_id" value="<?= $produit->getId() ?>">
 
-                            <textarea name="comment" rows="2" class="form-control mb-2"><?= $review['comment'] ?></textarea>
+                                <textarea name="comment" rows="2" class="form-control mb-2"><?= $review['comment'] ?></textarea>
 
-                            <select name="rating" class="form-select mb-2 w-auto d-inline-block">
-                                <?php for ($i = 1; $i <= 5; $i++): ?>
-                                    <option value="<?= $i ?>" <?= $i == $review['rating'] ? 'selected' : '' ?>><?= $i ?> ⭐</option>
-                                <?php endfor; ?>
-                            </select>
+                                <select name="rating" class="form-select mb-2 w-auto d-inline-block">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <option value="<?= $i ?>" <?= $i == $review['rating'] ? 'selected' : '' ?>><?= $i ?> ⭐</option>
+                                    <?php endfor; ?>
+                                </select>
 
-                                    
+                                <button type="submit" class="btn btn-sm btn-success">✅ Sauvegarder</button>
 
-                            <button type="submit" class="btn btn-sm btn-success">✅ Sauvegarder</button>
-
-                            <?php if (
-                                (isset($_SESSION['user']['id']) && $_SESSION['user']['id'] == $review['user_id']) ||
-                                (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin')
-                            ): ?>
+                                <!-- ✅ BOUTON SUPPRIMER POUR L’AUTEUR SEULEMENT -->
                                 <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
-                                    onclick="return confirm('Supprimer cet avis ?')"
-                                    class="btn btn-sm btn-outline-danger ms-2">🗑️ Supprimer</a>
-                            <?php endif; ?>
-
+                                    onclick="return confirm('Supprimer votre avis ?')"
+                                    class="btn btn-sm btn-outline-danger ms-2">
+                                    🗑️ Supprimer (vous)
+                                </a>
+                            </form>
                         <?php endif; ?>
+
+
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>

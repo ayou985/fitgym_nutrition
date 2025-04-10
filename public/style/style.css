@@ -1111,6 +1111,11 @@ body {
   width: 100%;
 }
 
+.formulaire-contact {
+  margin-top: 50px;
+}
+
+
 /* Section de contact optimisée */
 .contact-section {
   position: relative;
@@ -1185,6 +1190,11 @@ body {
   padding: 40px;
   box-shadow: var(--shadow-lg);
 }
+
+.contact-form-wrapper {
+  margin-top: 50px;
+}
+
 
 .contact-form {
   display: block;
