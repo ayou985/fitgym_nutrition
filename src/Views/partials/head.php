@@ -32,12 +32,28 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         <li><a class="nav-link" href="/">Accueil</a></li>
         <li><a class="nav-link" href="/products">Produits</a></li>
         <li><a class="nav-link" href="/about">À propos</a></li>
+
         <li><a class="nav-link" href="/contact">Contact</a></li>
+
         <?php if (isset($_SESSION['user'])): ?>
           <li class="nav-item">
-            <a class="nav-link" href="/profile"><i class="fa-solid fa-user"></i> Mon Profil</a>
+            <a href="/profile" class="nav-link d-flex align-items-center gap-2" title="Mon Profil" style="padding: 0;">
+              <img
+                src="<?= !empty($_SESSION['user']['profile_image'])
+                        ? '/public/uploads/' . htmlspecialchars($_SESSION['user']['profile_image'])
+                        : '/public/img/profile-user.png' ?>"
+                alt="Profil"
+                style="height: 50px; width: 50px; border-radius: 50%; object-fit: cover; margin-top: -10px;">
+              <span class="fw-semibold"><?= htmlspecialchars($_SESSION['user']['firstName'] ?? 'Profil') ?></span>
+            </a>
           </li>
         <?php endif; ?>
+
+
+
+
+
+
       </ul>
 
       <ul class="nav-icons">
@@ -98,12 +114,12 @@ if (session_status() == PHP_SESSION_NONE) session_start();
   </script>
 
 
-<script>
-  const toggle = document.getElementById('hamburger');
-  const mobileMenu = document.getElementById('mobileMenu');
+  <script>
+    const toggle = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
 
-  toggle.addEventListener('click', () => {
-    mobileMenu.classList.toggle('active');
-  });
-</script>
 
+    toggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+  </script>

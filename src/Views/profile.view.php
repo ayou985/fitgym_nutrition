@@ -93,6 +93,20 @@
     </div>
 </div>
 
+<div class="text-center mt-4">
+    <button class="btn btn-danger" id="delete-account-btn">
+        <i class="fa fa-trash-alt"></i> Supprimer mon compte
+    </button>
+</div>
+
+
+<script>
+    function confirmDeleteAccount() {
+        return confirm("⚠️ Cette action est irréversible. Es-tu sûr de vouloir supprimer ton compte ?");
+    }
+</script>
+
+
 <script>
     document.querySelector("form").addEventListener("submit", function(e) {
         const oldPass = document.querySelector('input[name="old_password"]');
@@ -112,6 +126,39 @@
         }
     });
 </script>
+
+<script>
+    document.getElementById('delete-account-btn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: "⚠️ Cette action est irréversible. Votre compte sera définitivement supprimé.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Oui, supprimer',
+            cancelButtonText: 'Annuler'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/profile/delete', {
+                    method: 'POST'
+                }).then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Compte supprimé',
+                        text: 'Votre compte a été supprimé avec succès.',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        window.location.href = '/';
+                    });
+                });
+            }
+        });
+    });
+</script>
+
+
 
 
 <?php require_once(__DIR__ . "/partials/footer.php"); ?>

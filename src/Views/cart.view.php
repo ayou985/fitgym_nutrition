@@ -48,23 +48,33 @@
                                 <img src="/public/uploads/<?= htmlspecialchars($product->getImage()) ?>" alt="<?= htmlspecialchars($product->getName()) ?>">
                                 <?= htmlspecialchars($product->getName()) ?>
                             </td>
+
                             <td><?= number_format($product->getPrice(), 2, ',', ' ') ?> €</td>
+
                             <td>
-                                <input type="number" name="quantities[<?= $id ?>]"
+                                <input type="number"
+                                    name="quantities[<?= $id ?>]"
                                     value="<?= $quantity ?>"
                                     min="1"
                                     max="<?= $stock ?>"
+                                    class="qty-input"
+                                    data-price="<?= $product->getPrice() ?>"
                                     style="<?= $isOverStock ? 'border: 1px solid red;' : '' ?>">
+
                                 <?php if ($isOverStock): ?>
                                     <p style="color: red;">❌ Stock max disponible : <?= $stock ?></p>
                                 <?php endif; ?>
                             </td>
+
                             <td><?= $stock ?></td>
-                            <td><?= number_format($product->getPrice() * $quantity, 2, ',', ' ') ?> €</td>
+
+                            <td class="line-total"><?= number_format($product->getPrice() * $quantity, 2, ',', ' ') ?> €</td>
+
                             <td>
                                 <a href="/cart/remove?id=<?= $id ?>" class="btn-remove" onclick="return confirm('Supprimer ce produit du panier ?')">🗑</a>
                             </td>
                         </tr>
+
                     <?php endforeach; ?>
                 </tbody>
             </table>
@@ -86,14 +96,14 @@
 <?php require_once(__DIR__ . "/../Views/partials/footer.php"); ?>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const quantityInputs = document.querySelectorAll('input[type="number"][name^="quantities"]');
 
         quantityInputs.forEach(input => {
             const max = parseInt(input.getAttribute('max'));
             const originalValue = parseInt(input.value);
 
-            input.addEventListener("change", function () {
+            input.addEventListener("change", function() {
                 let val = parseInt(this.value);
 
                 // Si valeur inférieure à 1
@@ -112,4 +122,44 @@
             });
         });
     });
+document.addEventListener("DOMContentLoaded", function () {
+    const qtyInputs = document.querySelectorAll('.qty-input');
+
+    qtyInputs.forEach(input => {
+        input.addEventListener("input", function () {
+            const price = parseFloat(this.dataset.price);
+            let quantity = parseInt(this.value);
+            const max = parseInt(this.getAttribute("max"));
+
+            if (isNaN(quantity) || quantity < 1) quantity = 1;
+            if (quantity > max) quantity = max;
+
+            this.value = quantity;
+
+            // Mise à jour du total ligne
+            const row = this.closest("tr");
+            const totalCell = row.querySelector(".line-total");
+            const total = (price * quantity).toFixed(2).replace(".", ",");
+            totalCell.innerText = `${total} €`;
+
+            // Mise à jour du total global
+            updateGlobalTotal();
+        });
+    });
+
+    function updateGlobalTotal() {
+        const lineTotals = document.querySelectorAll(".line-total");
+        let total = 0;
+
+        lineTotals.forEach(cell => {
+            const val = parseFloat(cell.innerText.replace(" €", "").replace(",", "."));
+            if (!isNaN(val)) total += val;
+        });
+
+        const totalGlobalElement = document.querySelector(".cart-total strong");
+        if (totalGlobalElement) {
+            totalGlobalElement.innerText = total.toFixed(2).replace(".", ",") + " €";
+        }
+    }
+});
 </script>

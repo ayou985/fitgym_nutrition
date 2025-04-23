@@ -25,11 +25,11 @@
         <!-- Anti-spam : délai de soumission -->
         <input type="hidden" name="form_token" value="<?= time(); ?>">
 
-        <label for="name">Prénom :</label>
-        <input type="text" id="name" name="name" required>
+        <label for="name">Prénom : (facultatif)</label>
+        <input type="text" id="name" name="name" >
 
-        <label for="last_name">Nom de famille :</label>
-        <input type="text" id="last_name" name="last_name" required>
+        <label for="last_name">Nom de famille :(facultatif)</label>
+        <input type="text" id="last_name" name="last_name" >
 
         <label for="email">Email :</label>
         <input type="email" id="email" name="email" required>

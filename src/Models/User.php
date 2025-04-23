@@ -5,7 +5,7 @@ namespace App\Models;
 use PDO;
 use Config\Database;
 
-require_once(__DIR__ . "/../../config/Database.php");
+
 
 class User
 {

@@ -75,6 +75,20 @@ body {
   transform: scale(1.05);
 }
 
+.navbar-profile-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.navbar-profile-img:hover {
+  transform: scale(1.05);
+}
+
+
 /* Menu de navigation */
 .navbar ul {
   list-style: none;
@@ -2777,6 +2791,7 @@ nav a:hover {
   background-color: #b71c1c;
   transform: scale(1.05);
 }
+
 
 
 /* Anim fade-in */
