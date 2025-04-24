@@ -66,6 +66,7 @@ $router->addRoute('/paiement/process', 'PaiementController', 'processPaiement');
 $router->addRoute('/submitReviews', 'ProductController', 'submitReviews');
 $router->addRoute('/deleteReviews', 'ProductController', 'deleteReviews');
 $router->addRoute('/updateReviews', 'ProductController', 'updateReviews');
+$router->addRoute('/review/delete', 'ReviewController', 'delete');
 
 
 

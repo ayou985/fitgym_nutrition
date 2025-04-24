@@ -48,3 +48,4 @@ class ProduitdetailController
         require_once(__DIR__ . "/../Views/produitdetail.view.php");
     }
 }
+

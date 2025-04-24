@@ -33,22 +33,22 @@ class User
 
     // ✅ INSCRIPTION (sans double hash)
     public function save(): bool
-{
-    $pdo = \Config\Database::getInstance()->getConnection();
-    $sql = "INSERT INTO user (email, password, firstName, lastName, phoneNumber, address, id_Role)
+    {
+        $pdo = \Config\Database::getInstance()->getConnection();
+        $sql = "INSERT INTO user (email, password, firstName, lastName, phoneNumber, address, id_Role)
             VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    $statement = $pdo->prepare($sql);
-    return $statement->execute([
-        $this->email,
-        $this->password, // ✅ déjà hashé dans le controller
-        $this->firstName,
-        $this->lastName,
-        $this->phoneNumber,
-        $this->address,
-        $this->id_Role
-    ]);
-}
+        $statement = $pdo->prepare($sql);
+        return $statement->execute([
+            $this->email,
+            $this->password, // ✅ déjà hashé dans le controller
+            $this->firstName,
+            $this->lastName,
+            $this->phoneNumber,
+            $this->address,
+            $this->id_Role
+        ]);
+    }
 
     // ✅ AUTHENTIFICATION
     public static function authenticate($email, $password): ?User
@@ -103,32 +103,59 @@ class User
         return null;
     }
 
-    // ✅ MISE À JOUR DU PROFIL
-    public function updateUser(): bool
+    public function updateUser()
     {
-        $pdo = Database::getInstance()->getConnection();
+        if (session_status() === PHP_SESSION_NONE) session_start();
 
-        $sql = "UPDATE user 
-                SET email = ?, 
-                    firstName = ?, 
-                    lastName = ?, 
-                    phoneNumber = ?, 
-                    address = ?, 
-                    profile_image = ?
-                WHERE id = ?";
+        if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
+            header("Location: /");
+            exit();
+        }
 
-        $statement = $pdo->prepare($sql);
+        // Récupération des données POST
+        $id = $_POST['id'] ?? null;
+        $email = $_POST['email'] ?? '';
+        $firstName = $_POST['firstName'] ?? '';
+        $lastName = $_POST['lastName'] ?? '';
+        $phoneNumber = $_POST['phoneNumber'] ?? '';
+        $address = $_POST['address'] ?? '';
+        $id_Role = $_POST['id_Role'] ?? 2;
+        $profileImage = $_FILES['profile_image']['name'] ?? null;
 
-        return $statement->execute([
-            $this->email,
-            $this->firstName,
-            $this->lastName,
-            $this->phoneNumber,
-            $this->address,
-            $this->profile_image,
-            $this->id
-        ]);
+        if ($id) {
+            $user = \App\Models\User::getUserById($id);
+
+            if ($user) {
+                // Mise à jour des données
+                $user->setEmail($email)
+                    ->setFirstName($firstName)
+                    ->setLastName($lastName)
+                    ->setPhoneNumber($phoneNumber)
+                    ->setAddress($address)
+                    ->setId_Role($id_Role);
+
+                if ($profileImage && $_FILES['profile_image']['tmp_name']) {
+                    $destination = 'public/uploads/' . basename($profileImage);
+                    move_uploaded_file($_FILES['profile_image']['tmp_name'], $destination);
+                    $user->setProfileImage($profileImage);
+                }
+
+                if ($user->updateUser()) {
+                    $_SESSION['flash'] = ['type' => 'success', 'message' => "✅ Utilisateur mis à jour avec succès."];
+                } else {
+                    $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ La mise à jour a échoué."];
+                }
+            } else {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Utilisateur introuvable."];
+            }
+        } else {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Données manquantes."];
+        }
+
+        header("Location: /listUsers");
+        exit();
     }
+
 
     // ✅ SUPPRESSION D'UN UTILISATEUR
     public function deleteUser(): bool
@@ -186,24 +213,86 @@ class User
     }
 
     // 🔹 Getters
-    public function getId(): ?int { return $this->id; }
-    public function getEmail(): ?string { return $this->email; }
-    public function getPassword(): ?string { return $this->password; }
-    public function getFirstName(): ?string { return $this->firstName; }
-    public function getLastName(): ?string { return $this->lastName; }
-    public function getPhoneNumber(): ?string { return $this->phoneNumber; }
-    public function getAddress(): ?string { return $this->address; }
-    public function getIdRole(): ?int { return $this->id_Role; }
-    public function getProfileImage() { return $this->profile_image ?? null; }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+    public function getPhoneNumber(): ?string
+    {
+        return $this->phoneNumber;
+    }
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+    public function getIdRole(): ?int
+    {
+        return $this->id_Role;
+    }
+    public function getProfileImage()
+    {
+        return $this->profile_image ?? null;
+    }
 
     // 🔹 Setters
-    public function setId(int $id): static { $this->id = $id; return $this; }
-    public function setEmail(string $email): static { $this->email = $email; return $this; }
-    public function setPassword(string $password): static { $this->password = $password; return $this; }
-    public function setFirstName(string $firstName): static { $this->firstName = $firstName; return $this; }
-    public function setLastName(string $lastName): static { $this->lastName = $lastName; return $this; }
-    public function setPhoneNumber(string $phoneNumber): static { $this->phoneNumber = $phoneNumber; return $this; }
-    public function setAddress(string $address): static { $this->address = $address; return $this; }
-    public function setId_Role(int $id_Role): static { $this->id_Role = $id_Role; return $this; }
-    public function setProfileImage($filename) { $this->profile_image = $filename; }
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        return $this;
+    }
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+        return $this;
+    }
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+        return $this;
+    }
+    public function setFirstName(string $firstName): static
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+    public function setLastName(string $lastName): static
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+    public function setPhoneNumber(string $phoneNumber): static
+    {
+        $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+    public function setAddress(string $address): static
+    {
+        $this->address = $address;
+        return $this;
+    }
+    public function setId_Role(int $id_Role): static
+    {
+        $this->id_Role = $id_Role;
+        return $this;
+    }
+    public function setProfileImage($filename)
+    {
+        $this->profile_image = $filename;
+    }
 }

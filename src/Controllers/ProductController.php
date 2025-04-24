@@ -65,13 +65,13 @@ class ProductController
 
         // Exemple : je vérifie que l'utilisateur est bien l'auteur
         $review = \App\Models\AllProduct::getReviewById($reviewId);
-        
+
         $review = \App\Models\AllProduct::getReviewById($reviewId);
 
-        
+
         if ($review && $review['user_id'] == $userId) {
             \App\Models\AllProduct::updateReviews($reviewId, $newContent, $newRating);
-        
+
 
             $_SESSION['flash'] = [
                 'type' => 'success',
@@ -152,60 +152,44 @@ class ProductController
 
 
     public function deleteReviews()
-{
-    session_start();
+    {
+        session_start();
 
-    // Vérification que l'utilisateur est connecté
-    if (!isset($_SESSION['user'])) {
-        header("Location: /login");
-        exit;
-    }
-
-    $reviewId = $_GET['id'] ?? null;
-    $productId = $_GET['product_id'] ?? null;
-
-    if (!$reviewId || !$productId) {
-        $_SESSION['flash'] = [
-            'type' => 'error',
-            'message' => "❌ Paramètres manquants."
-        ];
-        header("Location: /product?id=" . $productId);
-        exit;
-    }
-
-    $userId = $_SESSION['user']['id'];
-    $role = $_SESSION['user']['role'] ?? 'user'; // Default to 'user' if undefined
-
-    // On récupère l'avis
-    $review = \App\Models\AllProduct::getReviewById($reviewId);
-
-    // Si l'avis existe
-    if ($review) {
-        $isAuthor = $review['user_id'] == $userId;
-        $isAdmin = $role === 'admin';
-
-        if ($isAuthor || $isAdmin) {
-            \App\Models\AllProduct::deleteReviews($reviewId);
-            $_SESSION['flash'] = [
-                'type' => 'success',
-                'message' => "✅ Avis supprimé avec succès."
-            ];
-        } else {
-            $_SESSION['flash'] = [
-                'type' => 'error',
-                'message' => "❌ Vous n'avez pas l'autorisation de supprimer cet avis."
-            ];
+        if (!isset($_SESSION['user'])) {
+            header("Location: /login");
+            exit;
         }
-    } else {
-        $_SESSION['flash'] = [
-            'type' => 'error',
-            'message' => "❌ Avis introuvable."
-        ];
-    }
 
-    header("Location: /product?id=" . $productId);
-    exit;
-}
+        $reviewId = $_GET['id'] ?? null;
+        $productId = $_GET['product_id'] ?? null;
+
+        if (!$reviewId || !$productId) {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Paramètres manquants."];
+            header("Location: /product?id=$productId");
+            exit;
+        }
+
+        $userId = $_SESSION['user']['id'];
+        $isAdmin = $_SESSION['user']['id_Role'] == 1;
+
+        $review = \App\Models\AllProduct::getReviewById($reviewId);
+
+        if ($review) {
+            $isAuthor = $review['user_id'] == $userId;
+
+            if ($isAuthor || $isAdmin) {
+                \App\Models\AllProduct::deleteReviews($reviewId);
+                $_SESSION['flash'] = ['type' => 'success', 'message' => "✅ Avis supprimé avec succès."];
+            } else {
+                $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Non autorisé."];
+            }
+        } else {
+            $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Avis introuvable."];
+        }
+
+        header("Location: /product?id=$productId");
+        exit;
+    }
 
 
 

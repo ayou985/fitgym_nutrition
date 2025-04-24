@@ -70,12 +70,14 @@ require_once(__DIR__ . "/partials/head.php");
 
 
                     <!-- ✅ BOUTON SUPPRIMER POUR L’ADMIN (TOUS LES AVIS) -->
-                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['id_Role'] == '1'):?>
-                        <a href="/deleteReviews?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
-                            onclick="return confirm('Supprimer cet avis en tant qu\'admin ?')"
+                    <?php if (isset($_SESSION['user']) && $_SESSION['user']['id_Role'] == '1'): ?>
+                        <a href="/review/delete?id=<?= $review['id'] ?>&product_id=<?= $produit->getId() ?>"
+                            onclick="return confirm('Supprimer cet avis ?')"
                             class="btn btn-sm btn-outline-danger ms-2">
-                            🗑️ Supprimer (admin)
+                            🗑 Supprimer (admin)
                         </a>
+
+
                     <?php endif; ?>
 
 

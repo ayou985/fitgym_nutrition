@@ -29,12 +29,6 @@ $rememberedEmail = $_COOKIE['remembered_email'] ?? '';
             <?php endif; ?>
         </div>
 
-        <!-- Se souvenir -->
-        <div style="margin-bottom: 20px;">
-            <input type="checkbox" name="remember_me" id="remember_me">
-            <label for="remember_me">Se souvenir de moi</label>
-        </div>
-
         <!-- Bouton -->
         <button type="submit">Se connecter</button>
 

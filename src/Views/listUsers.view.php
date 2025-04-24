@@ -28,12 +28,13 @@
                         <td><?= htmlspecialchars($user['address'] ?? 'Non renseignée') ?></td>
                         <td><?= $user['id_Role'] == 1 ? 'Admin' : 'Utilisateur' ?></td>
                         <td>
-                            <a href="/profile?id=<?= $user['id'] ?>" class="btn btn-primary">Voir</a>
-                            <a href="/editUser?id=<?= $user['id'] ?>" class="btn btn-warning">Modifier</a>
-                            <a href="/profile/delete?id=<?= $user['id'] ?>" class="btn btn-danger"
-                                onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-                                Supprimer
-                            </a>
+                            <?php if ($user['id'] != $_SESSION['user']['id']): ?>
+                                <a href="/deleteUser?id=<?= $user['id'] ?>" class="btn btn-danger btn-sm">Supprimer</a>
+                            <?php else: ?>
+                                <span class="text-muted">(vous)</span>
+                            <?php endif; ?>
+
+                            <a href="/editUser?id=<?= $user['id'] ?>" class="btn btn-warning">Voir</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

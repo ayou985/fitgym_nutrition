@@ -17,9 +17,12 @@ class UserController
         require_once(__DIR__ . "/../Views/profile.view.php");
     }
 
+
     public function updateProfile()
     {
+
         session_start();
+        
         if (!isset($_SESSION['user'])) {
             header("Location: /login");
             exit();
@@ -125,9 +128,7 @@ class UserController
                 header("Location: /login");
                 exit;
             }
-
-
-
+            
             // ✅ MAJ infos utilisateur
             $user->updateUser();
 
@@ -144,6 +145,47 @@ class UserController
             header("Location: /profile");
             exit;
         }
+    }
+
+
+    public function updateUser()
+    {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
+            header("Location: /");
+            exit();
+        }
+
+        $id = $_POST['id'] ?? null;
+        $name = $_POST['name'] ?? '';
+        $email = $_POST['email'] ?? '';
+        $role = $_POST['id_Role'] ?? 2;
+
+        if ($id && $name && $email) {
+            $user = \App\Models\User::getUserById($id);
+
+            if ($user) {
+                $user->updateUser($name, $email, $role);
+                $_SESSION['flash'] = [
+                    'type' => 'success',
+                    'message' => "✅ Utilisateur mis à jour avec succès."
+                ];
+            } else {
+                $_SESSION['flash'] = [
+                    'type' => 'error',
+                    'message' => "❌ Utilisateur introuvable."
+                ];
+            }
+        } else {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => "❌ Données incomplètes."
+            ];
+        }
+
+        header("Location: /listUsers");
+        exit();
     }
 
     public function deleteAccount()
@@ -175,7 +217,6 @@ class UserController
 
     public function editUser()
     {
-        session_start();
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
             header("Location: /");
             exit();
@@ -200,19 +241,42 @@ class UserController
 
     public function deleteUser()
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
+        // Sécurité : seul un admin peut supprimer un utilisateur
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
             header("Location: /");
             exit();
         }
 
         $id = $_GET['id'] ?? null;
+        $currentUserId = $_SESSION['user']['id'];
+
         if ($id) {
-            User::getUserById($id)->deleteUser();
+            // 🔐 Empêche de supprimer soi-même
+            if ($id == $currentUserId) {
+                $_SESSION['flash'] = [
+                    'type' => 'error',
+                    'message' => "❌ Vous ne pouvez pas supprimer votre propre compte."
+                ];
+            } else {
+                $user = User::getUserById($id);
+                if ($user) {
+                    $user->deleteUser();
+                    $_SESSION['flash'] = [
+                        'type' => 'success',
+                        'message' => "✅ Utilisateur supprimé avec succès."
+                    ];
+                } else {
+                    $_SESSION['flash'] = [
+                        'type' => 'error',
+                        'message' => "❌ Utilisateur introuvable."
+                    ];
+                }
+            }
         }
 
         header("Location: /listUsers");
         exit();
     }
-
 }
