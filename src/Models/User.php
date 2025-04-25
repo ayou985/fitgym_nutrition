@@ -103,58 +103,35 @@ class User
         return null;
     }
 
-    public function updateUser()
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
+    public function updateUser(): bool
+{
+    $pdo = Database::getInstance()->getConnection();
 
-        if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
-            header("Location: /");
-            exit();
-        }
+    $sql = "UPDATE user SET 
+        email = :email,
+        firstName = :firstName,
+        lastName = :lastName,
+        phoneNumber = :phoneNumber,
+        address = :address,
+        id_Role = :id_Role,
+        profile_image = :profile_image
+        WHERE id = :id";
 
-        // Récupération des données POST
-        $id = $_POST['id'] ?? null;
-        $email = $_POST['email'] ?? '';
-        $firstName = $_POST['firstName'] ?? '';
-        $lastName = $_POST['lastName'] ?? '';
-        $phoneNumber = $_POST['phoneNumber'] ?? '';
-        $address = $_POST['address'] ?? '';
-        $id_Role = $_POST['id_Role'] ?? 2;
-        $profileImage = $_FILES['profile_image']['name'] ?? null;
+    $stmt = $pdo->prepare($sql);
 
-        if ($id) {
-            $user = \App\Models\User::getUserById($id);
+    return $stmt->execute([
+        ':email' => $this->email,
+        ':firstName' => $this->firstName,
+        ':lastName' => $this->lastName,
+        ':phoneNumber' => $this->phoneNumber,
+        ':address' => $this->address,
+        ':id_Role' => $this->id_Role,
+        ':profile_image' => $this->profile_image,
+        ':id' => $this->id
+    ]);
+}
 
-            if ($user) {
-                // Mise à jour des données
-                $user->setEmail($email)
-                    ->setFirstName($firstName)
-                    ->setLastName($lastName)
-                    ->setPhoneNumber($phoneNumber)
-                    ->setAddress($address)
-                    ->setId_Role($id_Role);
 
-                if ($profileImage && $_FILES['profile_image']['tmp_name']) {
-                    $destination = 'public/uploads/' . basename($profileImage);
-                    move_uploaded_file($_FILES['profile_image']['tmp_name'], $destination);
-                    $user->setProfileImage($profileImage);
-                }
-
-                if ($user->updateUser()) {
-                    $_SESSION['flash'] = ['type' => 'success', 'message' => "✅ Utilisateur mis à jour avec succès."];
-                } else {
-                    $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ La mise à jour a échoué."];
-                }
-            } else {
-                $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Utilisateur introuvable."];
-            }
-        } else {
-            $_SESSION['flash'] = ['type' => 'error', 'message' => "❌ Données manquantes."];
-        }
-
-        header("Location: /listUsers");
-        exit();
-    }
 
 
     // ✅ SUPPRESSION D'UN UTILISATEUR

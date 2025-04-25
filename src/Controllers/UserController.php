@@ -22,7 +22,7 @@ class UserController
     {
 
         session_start();
-        
+
         if (!isset($_SESSION['user'])) {
             header("Location: /login");
             exit();
@@ -128,7 +128,7 @@ class UserController
                 header("Location: /login");
                 exit;
             }
-            
+
             // ✅ MAJ infos utilisateur
             $user->updateUser();
 
@@ -217,27 +217,69 @@ class UserController
 
     public function editUser()
     {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+
         if (!isset($_SESSION['user']) || $_SESSION['user']['id_Role'] !== 1) {
             header("Location: /");
             exit();
         }
 
         $id = $_GET['id'] ?? null;
-        if (!$id) die("ID utilisateur manquant");
+        if (!$id) {
+            die("ID utilisateur manquant");
+        }
 
-        $user = User::getUserById($id);
+        $user = \App\Models\User::getUserById($id);
+
+        if (!$user) {
+            $_SESSION['flash'] = [
+                'type' => 'error',
+                'message' => "❌ Utilisateur introuvable."
+            ];
+            header("Location: /listUsers");
+            exit();
+        }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newRole = $_POST['id_Role'] ?? null;
-            if ($newRole !== null) {
-                User::updateRole($id, $newRole);
-                header("Location: /listUsers");
-                exit();
+            // ➔ On récupère les données POST
+            $lastName = trim($_POST['name'] ?? '');
+            $firstName = trim($_POST['firstName'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phoneNumber = trim($_POST['phoneNumber'] ?? '');
+            $address = trim($_POST['address'] ?? '');
+            $role = $_POST['id_Role'] ?? $user->getIdRole();
+
+            // ➔ Si un champ est vide, on garde l'ancien
+            $user->setLastName($lastName !== '' ? $lastName : $user->getLastName())
+                ->setFirstName($firstName !== '' ? $firstName : $user->getFirstName())
+                ->setEmail($email !== '' ? $email : $user->getEmail())
+                ->setPhoneNumber($phoneNumber !== '' ? $phoneNumber : $user->getPhoneNumber())
+                ->setAddress($address !== '' ? $address : $user->getAddress())
+                ->setId_Role($role);
+
+                
+            // ➔ Mise à jour
+            if ($user->updateUser()) {
+                $_SESSION['flash'] = [
+                    'type' => 'success',
+                    'message' => "✅ Utilisateur mis à jour avec succès."
+                ];
+            } else {
+                $_SESSION['flash'] = [
+                    'type' => 'error',
+                    'message' => "❌ La mise à jour a échoué."
+                ];
             }
+
+            header("Location: /listUsers");
+            exit();
         }
 
         require_once(__DIR__ . '/../Views/editUser.view.php');
     }
+
+
+
 
     public function deleteUser()
     {
