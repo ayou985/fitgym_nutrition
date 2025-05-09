@@ -32,9 +32,15 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         <li><a class="nav-link" href="/">Accueil</a></li>
         <li><a class="nav-link" href="/products">Produits</a></li>
         <li><a class="nav-link" href="/about">À propos</a></li>
-
         <li><a class="nav-link" href="/contact">Contact</a></li>
-
+        
+        
+        <?php if (!isset($_SESSION['user'])) : ?>
+            <li><a href="/register">S'inscrire</a></li>
+        <?php else : ?>
+            <li><a href="/logout">Se déconnecter</a></li>
+        <?php endif; ?>       
+        
         <?php if (isset($_SESSION['user'])): ?>
           <li class="nav-item">
             <a href="/profile" class="nav-link d-flex align-items-center gap-2" title="Mon Profil" style="padding: 0;">
@@ -48,13 +54,7 @@ if (session_status() == PHP_SESSION_NONE) session_start();
             </a>
           </li>
         <?php endif; ?>
-
-
-
-
-
-
-      </ul>
+    </ul>
 
       <ul class="nav-icons">
         <li>

@@ -44,12 +44,12 @@ class CartController
             // Récupère le produit
             $product = AllProduct::getById($productId);
 
-            // 🟡 AJOUTE CE BLOC ICI 👇
+            
             if ($product && $product->getStock() >= $quantity) {
                 $newStock = $product->getStock() - $quantity;
                 $product->setStock($newStock)->edit(); // maj BDD
             } else {
-                echo 'Stock insuffisant pour ce produit.'; // Ensure proper syntax
+                echo 'Stock insuffisant pour ce produit.'; 
                 exit;
             }
 
