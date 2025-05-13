@@ -2805,3 +2805,22 @@ nav a:hover {
     transform: translateY(0);
   }
 }
+
+/* Mobile only */
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: block !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+
+
+

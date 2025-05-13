@@ -36,9 +36,9 @@ if (session_status() == PHP_SESSION_NONE) session_start();
         
         
         <?php if (!isset($_SESSION['user'])) : ?>
-            <li><a href="/register">S'inscrire</a></li>
+            <li class="mobile-only"><a href="/register">S'inscrire</a></li>
         <?php else : ?>
-            <li><a href="/logout">Se déconnecter</a></li>
+            <li class="mobile-only"><a href="/logout">Se déconnecter</a></li>
         <?php endif; ?>       
         
         <?php if (isset($_SESSION['user'])): ?>
