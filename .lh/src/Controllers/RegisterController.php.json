@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/Controllers/RegisterController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1775630818533,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1775632325833,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -27,10 +27,10 @@\n             if (empty($this->arrayError)) {\n                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);\n                 $user = new User(null, $email, $hashedPassword, $username, $lastName, null, null, 2);\n                 $user->save();\n-\n-                $this->redirectToRoute('/login');\n+                \n+                $this->redirectToRoute('/fitgym_nutrition-main/login');\n             }\n         }\n \n         require_once(__DIR__ . '/../Views/register.view.php');\n"
+                }
+            ],
+            "date": 1775630818533,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Controllers;\n\nuse App\\Utils\\AbstractController;\nuse App\\Models\\User;\n\nclass RegisterController extends AbstractController {\n    public function register() {\n        if (\n            isset($_POST['email'], $_POST['password'], $_POST['confirm_password'], $_POST['username'], $_POST['lastName'])\n        ) {\n            $email     = $_POST['email'];\n            $password  = $_POST['password'];\n            $confirm   = $_POST['confirm_password'];\n            $username = $_POST['username'];\n            $lastName  = $_POST['lastName'];\n\n            // Validations\n            $this->check('mail', $email);\n            $this->check('password', $password);\n\n            if ($password !== $confirm) {\n                $this->arrayError['password'] = \"❌ Les mots de passe ne correspondent pas.\";\n            }\n\n            if (empty($this->arrayError)) {\n                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);\n                $user = new User(null, $email, $hashedPassword, $username, $lastName, null, null, 2);\n                $user->save();\n\n                $this->redirectToRoute('/login');\n            }\n        }\n\n        require_once(__DIR__ . '/../Views/register.view.php');\n    }\n}\n"
+        }
+    ]
+}

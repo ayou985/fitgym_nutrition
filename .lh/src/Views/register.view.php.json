@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/Views/register.view.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1775630818550,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1775630818550,
+            "name": "Commit-0",
+            "content": "<?php require_once(__DIR__ . \"/partials/head.php\"); ?>\n\n<div class=\"container\">\n    <form method=\"POST\" class=\"register-form\">\n\n        <h1>Inscription</h1>\n        <p>Veuillez remplir les champs indiqués ci-dessous afin de créer votre compte.</p>\n\n        <label for=\"nom\">Nom :</label>\n        <input type=\"text\" id=\"nom\" name=\"lastName\" required\n            value=\"<?= isset($_POST['lastName']) ? htmlspecialchars($_POST['lastName']) : '' ?>\">\n\n        <label for=\"prenom\">Prénom :</label>\n        <input type=\"text\" id=\"prenom\" name=\"username\" required\n            value=\"<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>\">\n\n        <label for=\"email\">Email :</label>\n        <input type=\"email\" id=\"email\" name=\"email\" required\n            value=\"<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>\">\n\n\n        <label for=\"password\">Mot de passe :</label>\n        <div style=\"position: relative;\">\n            <input type=\"password\" id=\"password\" name=\"password\" required style=\"padding-right: 30px;\">\n            <span onclick=\"togglePassword()\" style=\"position: absolute; right: 10px; top: 8px; cursor: pointer;\">👁️</span>\n        </div>\n        <label for=\"confirm-password\">Confirmer le mot de passe :</label>\n        <div style=\"position: relative;\">\n            <input type=\"password\" id=\"confirm-password\" name=\"confirm_password\" required style=\"padding-right: 30px;\">\n            <span onclick=\"toggleConfirmPassword()\" style=\"position: absolute; right: 10px; top: 8px; cursor: pointer;\">👁️</span>\n        </div>\n\n        <?php if (!empty($this->arrayError['password'])): ?>\n            <p style=\"color: red; font-weight: bold;\">\n                <?= $this->arrayError['password'] ?>\n            </p>\n        <?php endif; ?>\n\n\n        <button type=\"submit\">S'inscrire</button>\n\n    </form>\n</div>\n\n<script>\n    function togglePassword() {\n        const pwd = document.getElementById(\"password\");\n        pwd.type = pwd.type === \"password\" ? \"text\" : \"password\";\n    }\n\n    function toggleConfirmPassword() {\n        const confirmPwd = document.getElementById(\"confirm-password\");\n        confirmPwd.type = confirmPwd.type === \"password\" ? \"text\" : \"password\";\n    }\n\n    document.querySelector(\"form\").addEventListener(\"submit\", function(e) {\n        const pwd = document.getElementById(\"password\").value;\n        const confirm = document.getElementById(\"confirm-password\").value;\n\n        if (pwd !== confirm) {\n            e.preventDefault();\n            alert(\"❌ Les mots de passe ne correspondent pas !\");\n        }\n    });\n</script>\n\n\n\n<?php require_once(__DIR__ . \"/partials/footer.php\"); ?>"
+        }
+    ]
+}

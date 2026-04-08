@@ -1,0 +1,22 @@
+{
+    "sourceFile": "src/Controllers/LoginController.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1775630818533,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1775632652863,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -46,9 +46,9 @@\n                     setcookie('remembered_email', $email, time() + (86400 * 30), \"/\"); // 30 jours\n                 }\n \n                 // 🔁 Redirection après succès\n-                $this->redirectToRoute('/');\n+                $this->redirectToRoute('/fitgym_nutrition-main/');\n                 exit;\n             } else {\n                 $this->arrayError['global'] = \"❌ Email ou mot de passe incorrect.\";\n             }\n"
+                }
+            ],
+            "date": 1775630818533,
+            "name": "Commit-0",
+            "content": "<?php\n\nnamespace App\\Controllers;\n\nuse App\\Utils\\AbstractController;\nuse App\\Models\\User;\n\nclass LoginController extends AbstractController\n{\n    public function login()\n    {\n        // ⚙️ Démarrage de session\n        if (session_status() === PHP_SESSION_NONE) {\n            session_start();\n        }\n\n        $this->arrayError = [];\n\n        // ✅ Si l'utilisateur est déjà connecté, on redirige\n        if (isset($_SESSION['user'])) {\n            $this->redirectToRoute('/');\n            exit;\n        }\n\n        // 📥 Traitement du formulaire de connexion\n        if (!empty($_POST['mail']) && !empty($_POST['password'])) {\n            $email = htmlspecialchars($_POST['mail']);\n            $password = $_POST['password']; // NE PAS utiliser htmlspecialchars ici !\n\n            $user = User::authenticate($email, $password);\n\n            if ($user) {\n                // ✅ Création de la session utilisateur\n                $_SESSION['user'] = [\n                    'id'          => $user->getId(),\n                    'email'       => $user->getEmail(),\n                    'username'   => $user->getusername(),\n                    'lastName'    => $user->getLastName(),\n                    'phoneNumber' => $user->getPhoneNumber(),\n                    'address'     => $user->getAddress(),\n                    'id_Role'     => $user->getIdRole()\n                ];\n\n                // 📌 Gérer le cookie \"se souvenir de moi\"\n                if (!empty($_POST['remember_me'])) {\n                    setcookie('remembered_email', $email, time() + (86400 * 30), \"/\"); // 30 jours\n                }\n\n                // 🔁 Redirection après succès\n                $this->redirectToRoute('/');\n                exit;\n            } else {\n                $this->arrayError['global'] = \"❌ Email ou mot de passe incorrect.\";\n            }\n        }\n\n        // 📄 Affichage du formulaire\n        require_once(__DIR__ . '/../Views/login.view.php');\n    }\n}\n"
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/Views/listUsers.view.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1775630818549,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1775630818549,
+            "name": "Commit-0",
+            "content": "<?php require_once(__DIR__ . \"/partials/head.php\"); ?>\n\n<div class=\"container\">\n    <h1 class=\"text-center mt-4\">Liste des Utilisateurs</h1>\n\n    <?php if (!empty($users)) : ?>\n        <table class=\"table table-bordered\">\n            <thead>\n                <tr>\n                    <th>ID</th>\n                    <th>Nom</th>\n                    <th>Prénom</th>\n                    <th>Email</th>\n                    <th>Téléphone</th>\n                    <th>Adresse</th>\n                    <th>Rôle</th>\n                    <th>Actions</th>\n                </tr>\n            </thead>\n            <tbody>\n                <?php foreach ($users as $user) : ?>\n                    <tr>\n                        <td><?= htmlspecialchars($user['id']) ?></td>\n                        <td><?= htmlspecialchars($user['lastName']) ?></td>\n                        <td><?= htmlspecialchars($user['username']) ?></td>\n                        <td><?= htmlspecialchars($user['email']) ?></td>\n                        <td><?= htmlspecialchars($user['phoneNumber'] ?? 'Non renseigné') ?></td>\n                        <td><?= htmlspecialchars($user['address'] ?? 'Non renseignée') ?></td>\n                        <td><?= $user['id_Role'] == 1 ? 'Admin' : 'Utilisateur' ?></td>\n                        <td>\n                            <?php if ($user['id'] != $_SESSION['user']['id']): ?>\n                                <a href=\"/deleteUser?id=<?= $user['id'] ?>\" class=\"btn btn-danger btn-sm\">Supprimer</a>\n                            <?php else: ?>\n                                <span class=\"text-muted\">(vous)</span>\n                            <?php endif; ?>\n\n                            <a href=\"/editUser?id=<?= $user['id'] ?>\" class=\"btn btn-warning\">Voir</a>\n                        </td>\n                    </tr>\n                <?php endforeach; ?>\n            </tbody>\n        </table>\n    <?php else : ?>\n        <p class=\"text-center\">Aucun utilisateur trouvé.</p>\n    <?php endif; ?>\n</div>\n\n<?php require_once(__DIR__ . \"/partials/footer.php\"); ?>"
+        }
+    ]
+}

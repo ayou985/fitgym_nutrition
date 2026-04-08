@@ -1,0 +1,26 @@
+{
+    "sourceFile": "src/Views/partials/footer.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 2,
+            "patches": [
+                {
+                    "date": 1775630269449,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1775630296732,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -12,14 +12,16 @@\n \n   <div class=\"footer-middle\">\n     <h1 class=\"logo\">FitGym Nutrition</h1>\n     <nav class=\"footer-nav\">\n+      <div class=\"footer-links\">\n       <a href=\"<?= $baseUrl ?>/about\">À propos</a>\n       <a href=\"<?= $baseUrl ?>/services\">Services</a>\n       <a href=\"<?= $baseUrl ?>/pourquoinous\">Pourquoi nous</a>\n       <a href=\"<?= $baseUrl ?>/contact\">Contact</a>\n       <a href=\"<?= $baseUrl ?>/mentionlegale\">Mentions légales</a>\n       <a href=\"<?= $baseUrl ?>/cgv\">CGV</a>\n+      </div>\n     </nav>\n   </div>\n \n   <div class=\"footer-bottom\">\n"
+                },
+                {
+                    "date": 1775630450934,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,36 +1,34 @@\n <footer class=\"footer\">\n-  <div class=\"footer-left\">\n-    <a href=\"/\"><img src=\"/public/img/logo.png\" alt=\"logo-footer\"></a>\n-  </div>\n+    <div class=\"footer-left\">\n+        <a href=\"<?= $baseUrl ?>/\"><img src=\"<?= $baseUrl ?>/public/img/logo.png\" alt=\"logo-footer\"></a>\n+    </div>\n \n-  <div class=\"footer-top\">\n-    <p>\n-      Boostez votre performance avec nos compléments de qualité, conçus pour atteindre vos objectifs sportifs – commandez maintenant et faites la différence !\n-    </p>\n-    <a href=\"/contact\" class=\"footer-button\">Contactez-nous</a>\n-  </div>\n+    <div class=\"footer-top\">\n+        <p>\n+            Boostez votre performance avec nos compléments de qualité, conçus pour atteindre vos objectifs sportifs - commandez maintenant et faites la différence !\n+        </p>\n+        <a href=\"<?= $baseUrl ?>/contact\" class=\"footer-button\">Contactez-nous</a>\n+    </div>\n \n-  <div class=\"footer-middle\">\n-    <h1 class=\"logo\">FitGym Nutrition</h1>\n-    <nav class=\"footer-nav\">\n-      <div class=\"footer-links\">\n-      <a href=\"<?= $baseUrl ?>/about\">À propos</a>\n-      <a href=\"<?= $baseUrl ?>/services\">Services</a>\n-      <a href=\"<?= $baseUrl ?>/pourquoinous\">Pourquoi nous</a>\n-      <a href=\"<?= $baseUrl ?>/contact\">Contact</a>\n-      <a href=\"<?= $baseUrl ?>/mentionlegale\">Mentions légales</a>\n-      <a href=\"<?= $baseUrl ?>/cgv\">CGV</a>\n-      </div>\n-    </nav>\n-  </div>\n+    <div class=\"footer-middle\">\n+        <h1 class=\"logo\">FitGym Nutrition</h1>\n+        <nav class=\"footer-nav\">\n+            <div class=\"footer-links\">\n+                <a href=\"<?= $baseUrl ?>/about\">À propos</a>\n+                <a href=\"<?= $baseUrl ?>/services\">Services</a>\n+                <a href=\"<?= $baseUrl ?>/pourquoinous\">Pourquoi nous</a>\n+                <a href=\"<?= $baseUrl ?>/contact\">Contact</a>\n+                <a href=\"<?= $baseUrl ?>/mentionlegale\">Mentions légales</a>\n+                <a href=\"<?= $baseUrl ?>/cgv\">CGV</a>\n+            </div>\n+        </nav>\n+    </div>\n \n-  <div class=\"footer-bottom\">\n-    <p>&copy; <?= date('Y'); ?> FitGym Nutrition. Tous droits réservés.</p>\n-  </div>\n+    <div class=\"footer-bottom\">\n+        <p>&copy; <?= date('Y'); ?> FitGym Nutrition. Tous droits réservés.</p>\n+    </div>\n \n-\n </footer>\n \n </body>\n-\n </html>\n\\ No newline at end of file\n"
+                }
+            ],
+            "date": 1775630269449,
+            "name": "Commit-0",
+            "content": "<footer class=\"footer\">\n  <div class=\"footer-left\">\n    <a href=\"/\"><img src=\"/public/img/logo.png\" alt=\"logo-footer\"></a>\n  </div>\n\n  <div class=\"footer-top\">\n    <p>\n      Boostez votre performance avec nos compléments de qualité, conçus pour atteindre vos objectifs sportifs – commandez maintenant et faites la différence !\n    </p>\n    <a href=\"/contact\" class=\"footer-button\">Contactez-nous</a>\n  </div>\n\n  <div class=\"footer-middle\">\n    <h1 class=\"logo\">FitGym Nutrition</h1>\n    <nav class=\"footer-nav\">\n      <a href=\"<?= $baseUrl ?>/about\">À propos</a>\n      <a href=\"<?= $baseUrl ?>/services\">Services</a>\n      <a href=\"<?= $baseUrl ?>/pourquoinous\">Pourquoi nous</a>\n      <a href=\"<?= $baseUrl ?>/contact\">Contact</a>\n      <a href=\"<?= $baseUrl ?>/mentionlegale\">Mentions légales</a>\n      <a href=\"<?= $baseUrl ?>/cgv\">CGV</a>\n    </nav>\n  </div>\n\n  <div class=\"footer-bottom\">\n    <p>&copy; <?= date('Y'); ?> FitGym Nutrition. Tous droits réservés.</p>\n  </div>\n\n\n</footer>\n\n</body>\n\n</html>"
+        }
+    ]
+}

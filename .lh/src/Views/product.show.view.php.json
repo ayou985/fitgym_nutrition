@@ -1,0 +1,18 @@
+{
+    "sourceFile": "src/Views/product.show.view.php",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1775630818550,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1775630818550,
+            "name": "Commit-0",
+            "content": "<h3 class=\"mt-5 mb-4\">🗣️ Avis des clients</h3>\n\n<?php if (!empty($reviews)): ?>\n    <?php foreach ($reviews as $review): ?>\n        <div class=\"card mb-4 border-0 shadow-sm rounded-3 review-card\">\n            <div class=\"card-body\">\n                <div class=\"d-flex justify-content-between align-items-center mb-2\">\n                    <h5 class=\"mb-0 fw-bold text-primary\">\n                        <?= htmlspecialchars($review['username']) ?> <?= strtoupper(substr($review['lastName'], 0, 1)) ?>.\n                    </h5>\n                    <small class=\"text-muted fst-italic\">\n                        Posté le <?= date('d/m/Y', strtotime($review['created_at'])) ?>\n                    </small>\n                </div>\n\n                <div class=\"mb-2\">\n                    <?php for ($i = 1; $i <= 5; $i++): ?>\n                        <i class=\"fa<?= $i <= $review['rating'] ? 's' : 'r' ?> fa-star text-warning\"></i>\n                    <?php endfor; ?>\n                    <span class=\"ms-1 text-muted\">(<?= $review['rating'] ?>/5)</span>\n                </div>\n\n                <p class=\"card-text fst-italic\"><?= htmlspecialchars($review['comment']) ?></p>\n            </div>\n        </div>\n    <?php endforeach; ?>\n<?php else: ?>\n    <div class=\"alert alert-secondary\">Aucun avis pour ce produit. Soyez le premier à en laisser un ! 😄</div>\n<?php endif; ?>\n"
+        }
+    ]
+}
